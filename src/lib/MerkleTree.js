@@ -1,5 +1,5 @@
 import jsStorage from 'lib/Storage';
-const hasherImpl = require('./MiMC');
+import hasherImpl from 'lib/MiMC';
 
 export default class MerkleTree {
   constructor(n_levels, defaultElements, prefix, storage, hasher) {
