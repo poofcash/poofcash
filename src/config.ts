@@ -28,7 +28,7 @@ const DEMO_PRIVATE_KEY = 'F8D46A5469433C4369BA77749B760F46208066F92EB9D9DCC31F26
 // used to get anonymity set size using TheGraph
 const THE_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/benesjan/tbtc-tornado';
 
-const RELAYER_URL = 'http://127.0.0.1:8000';
+const RELAYER_URL = 'https://poof-relayer.herokuapp.com';
 
 const SERVER_URL = 'http://192.168.1.14:5000';
 
