@@ -1,6 +1,6 @@
 * todo
 - [ ] Anon set
-- [ ] Remove graphql
+- [ ] Fix configs
 - [ ] Add valora
 - [ ] Add CEW?
 - [ ] Use styled components
@@ -10,4 +10,5 @@
 - [ ] Error states (for wallet connections)
 * done
 - [X] Fix approve
+- [X] Remove graphql
 

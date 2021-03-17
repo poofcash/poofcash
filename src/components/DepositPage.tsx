@@ -1,24 +1,23 @@
 import React from "react";
-import { useWeb3React } from "@web3-react/core";
+import {useWeb3React} from "@web3-react/core";
 import {
   DEPOSIT_AMOUNTS,
   NETWORK,
   TORNADO_INSTANCES_ADDRESSES,
   AMOUNTS_DISABLED,
 } from "config";
-import { getNoteStringAndCommitment } from "utils/snarks-functions";
-import { getAnonymitySetSize } from "utils/axios-functions";
+import {getNoteStringAndCommitment} from "utils/snarks-functions";
 import Spinner from "./Spinner";
 import Modal from "./Modal";
-import { ledger } from "connectors";
-import { useActiveWeb3React } from "hooks/web3";
+import {ledger} from "connectors";
+import {useActiveWeb3React} from "hooks/web3";
 import {
   useApproveCallback,
   ApprovalState,
   useDepositCallback,
   DepositState,
 } from "hooks/writeContract";
-import { TokenAmount, CELO, ChainId } from "@ubeswap/sdk";
+import {TokenAmount, CELO, ChainId} from "@ubeswap/sdk";
 
 declare global {
   interface Window {
@@ -29,8 +28,8 @@ declare global {
 
 // pass props and State interface to Component class
 const DepositPage = () => {
-  const { library, account } = useActiveWeb3React();
-  const { activate } = useWeb3React();
+  const {library, account} = useActiveWeb3React();
+  const {activate} = useWeb3React();
   const [state, setState] = React.useState({
     celoAmount: 0.1, // default option
     anonymitySetSize: 0,
@@ -52,9 +51,9 @@ const DepositPage = () => {
   console.log("Deposit", depositState);
 
   const setAnonymitySetSize = async (amount: number) => {
-    setState({ ...state, anonymitySetLoading: true });
-    let size = await getAnonymitySetSize(amount);
-    setState({ ...state, anonymitySetSize: size, anonymitySetLoading: false });
+    setState({...state, anonymitySetLoading: true});
+    // TODO anonymity set size
+    setState({...state, anonymitySetSize: 0, anonymitySetLoading: false});
   };
 
   // TODO balance of contract and divide
@@ -73,14 +72,14 @@ const DepositPage = () => {
 
   // set the amount of BTC which the user wants to deposit
   const setBtcAmountHandler = (amount: number) => {
-    setState({ ...state, celoAmount: amount, showDepositInfo: false });
+    setState({...state, celoAmount: amount, showDepositInfo: false});
 
     // show anonymity set size for selected amount
     setAnonymitySetSize(amount);
   };
 
   const closeModal = async () => {
-    setState({ ...state, showModal: false });
+    setState({...state, showModal: false});
   };
 
   const approveHandler = async () => {
@@ -116,7 +115,7 @@ const DepositPage = () => {
       // et noteString and commitment
       console.log("getting noteString");
 
-      const { noteString, commitment } = getNoteStringAndCommitment(
+      const {noteString, commitment} = getNoteStringAndCommitment(
         "celo",
         celoAmount,
         44787 // TODO hardcode
@@ -125,11 +124,11 @@ const DepositPage = () => {
 
       // send deposit Tx
       depositCallback(commitment);
-      setState({ ...state, showDepositInfo: true, noteString });
+      setState({...state, showDepositInfo: true, noteString});
     } catch (error) {
       console.log("Error occured while making deposit");
       console.error(error);
-      setState({ ...state });
+      setState({...state});
     }
   };
 
