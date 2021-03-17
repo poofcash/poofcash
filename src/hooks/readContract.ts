@@ -1,44 +1,54 @@
-import {useMemo, useState, useEffect} from 'react'
-import {Token, TokenAmount} from '@ubeswap/sdk'
-import {useTokenContract} from 'hooks/getContract'
-import {Contract} from '@ethersproject/contracts'
-import {BigNumber} from '@ethersproject/bignumber'
+import { useMemo, useState, useEffect } from "react";
+import { Token, TokenAmount } from "@ubeswap/sdk";
+import { useTokenContract } from "hooks/getContract";
+import { Contract } from "@ethersproject/contracts";
+import { BigNumber } from "@ethersproject/bignumber";
 
-type MethodArg = string | number | BigNumber
-type OptionalMethodInputs = Array<MethodArg | MethodArg[] | undefined> | undefined
+type MethodArg = string | number | BigNumber;
+type OptionalMethodInputs =
+  | Array<MethodArg | MethodArg[] | undefined | null>
+  | undefined;
 interface ListenerOptions {
   // how often this data should be fetched, by default 1
-  readonly blocksPerFetch?: number
+  readonly blocksPerFetch?: number;
 }
+
 function useSingleCallResult<T>(
   contract: Contract | null | undefined,
   methodName: string,
   inputs?: OptionalMethodInputs,
   options?: ListenerOptions // TODO unused
 ): T | undefined {
-  const [result, setResult] = useState<T>()
+  const [result, setResult] = useState<T>();
 
   useEffect(() => {
     if (inputs) {
-      contract?.[methodName](...inputs).then(setResult).catch(console.error)
+      contract?.[methodName](...inputs)
+        .then(setResult)
+        .catch(console.error);
     } else {
-      contract?.[methodName]().then(setResult).catch(console.error)
+      contract?.[methodName]().then(setResult).catch(console.error);
     }
-  }, [contract, methodName, inputs])
+  }, [contract, methodName, inputs]);
 
-  return result
+  return result;
 }
 
+export function useTokenAllowance(
+  token?: Token,
+  owner?: string | null,
+  spender?: string
+): TokenAmount | undefined {
+  const contract = useTokenContract(token?.address, false);
 
-export function useTokenAllowance(token?: Token, owner?: string, spender?: string): TokenAmount | undefined {
-  const contract = useTokenContract(token?.address, false)
+  const inputs = useMemo(() => [owner, spender], [owner, spender]);
+  const allowance = useSingleCallResult<BigNumber>(
+    contract,
+    "allowance",
+    inputs
+  );
 
-  const inputs = useMemo(() => [owner, spender], [owner, spender])
-  const allowance = useSingleCallResult<BigNumber>(contract, 'allowance', inputs)
-
-  return useMemo(() => (token && allowance ? new TokenAmount(token, allowance.toString()) : undefined), [
-    token,
-    allowance
-  ])
+  return token && allowance
+    ? new TokenAmount(token, allowance.toString())
+    : undefined;
 }
-

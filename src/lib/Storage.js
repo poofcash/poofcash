@@ -18,7 +18,7 @@ export default class JsStorage {
 
   put(key, value) {
     if (key === undefined || value === undefined) {
-      throw Error('key or value is undefined');
+      throw Error("key or value is undefined");
     }
     this.db[key] = value;
   }

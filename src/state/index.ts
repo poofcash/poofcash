@@ -1,13 +1,13 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 
-import user from 'state/user';
-import { updateVersion } from 'state/global';
+import user from "state/user";
+import { updateVersion } from "state/global";
 
 const store = configureStore({
-    reducer: {
-        user,
-    },
-    middleware: [...getDefaultMiddleware({ thunk: false })],
+  reducer: {
+    user,
+  },
+  middleware: [...getDefaultMiddleware({ thunk: false })],
 });
 
 store.dispatch(updateVersion());

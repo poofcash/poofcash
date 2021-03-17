@@ -1,11 +1,11 @@
-const circomlib = require('circomlib')
-const mimcsponge = circomlib.mimcsponge
-const snarkjs = require('snarkjs')
+const circomlib = require("circomlib");
+const mimcsponge = circomlib.mimcsponge;
+const snarkjs = require("snarkjs");
 
-const bigInt = snarkjs.bigInt
+const bigInt = snarkjs.bigInt;
 
 export default class MimcSpongeHasher {
   hash(level, left, right) {
-    return mimcsponge.multiHash([bigInt(left), bigInt(right)]).toString()
+    return mimcsponge.multiHash([bigInt(left), bigInt(right)]).toString();
   }
 }

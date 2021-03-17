@@ -1,0 +1,13 @@
+* todo
+- [ ] Anon set
+- [ ] Remove graphql
+- [ ] Add valora
+- [ ] Add CEW?
+- [ ] Use styled components
+- [ ] Address TODOs
+- [ ] Refactor on view logic
+- [ ] Remove unnecessary consoles
+- [ ] Error states (for wallet connections)
+* done
+- [X] Fix approve
+
