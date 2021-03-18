@@ -79,8 +79,6 @@ export function useTornadoTokenContract(
   tornadoTokenAddress: string,
   withSignerIfPossible: boolean
 ): Contract | null {
-  const web3 = useActiveWeb3React();
-  console.log(web3);
   const contract = useContract(
     tornadoTokenAddress,
     ERC20_TORNADO_ABI,

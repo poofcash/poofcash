@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 import { Token, TokenAmount } from "@ubeswap/sdk";
 import { useTokenContract } from "hooks/getContract";
 import { Contract } from "@ethersproject/contracts";
@@ -13,42 +13,41 @@ interface ListenerOptions {
   readonly blocksPerFetch?: number;
 }
 
-function useSingleCallResult<T>(
+function useGetSingleCallResult<T>(
   contract: Contract | null | undefined,
   methodName: string,
-  inputs?: OptionalMethodInputs,
+  inputs: OptionalMethodInputs = [],
   options?: ListenerOptions // TODO unused
-): T | undefined {
-  const [result, setResult] = useState<T>();
-
-  useEffect(() => {
-    if (inputs) {
-      contract?.[methodName](...inputs)
-        .then(setResult)
-        .catch(console.error);
-    } else {
-      contract?.[methodName]().then(setResult).catch(console.error);
-    }
-  }, [contract, methodName, inputs]);
-
-  return result;
+): () => Promise<T> {
+  const getter = async () => await contract?.[methodName](...inputs);
+  return getter;
 }
 
-export function useTokenAllowance(
+export function useGetTokenAllowance(
   token?: Token,
   owner?: string | null,
   spender?: string
-): TokenAmount | undefined {
+): () => Promise<TokenAmount | undefined> {
   const contract = useTokenContract(token?.address, false);
 
   const inputs = useMemo(() => [owner, spender], [owner, spender]);
-  const allowance = useSingleCallResult<BigNumber>(
+  const getAllowance = useGetSingleCallResult<BigNumber>(
     contract,
     "allowance",
     inputs
   );
 
-  return token && allowance
-    ? new TokenAmount(token, allowance.toString())
-    : undefined;
+  const getTokenAllowance = async () => {
+    const allowance = await getAllowance();
+    if (!allowance) {
+      return;
+    }
+    if (!token) {
+      console.warn("No token specified in `getTokenAllowance`");
+      return;
+    }
+    return new TokenAmount(token, allowance.toString());
+  };
+
+  return getTokenAllowance;
 }

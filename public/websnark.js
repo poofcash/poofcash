@@ -6832,7 +6832,8 @@ function delay(ms) {
             async function init(data) {
               const code = new Uint8Array(data.code);
               const wasmModule = await WebAssembly.compile(code);
-              memory = new WebAssembly.Memory({ initial: data.init });
+              // Using `data.init` will OOM mobile devices
+              memory = new WebAssembly.Memory({ initial: 1000 });
               i32 = new Uint32Array(memory.buffer);
 
               instance = await WebAssembly.instantiate(wasmModule, {

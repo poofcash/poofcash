@@ -2,8 +2,6 @@ import React from "react";
 import WithdrawPage from "components/WithdrawPage";
 import DepositPage from "components/DepositPage";
 import Footer from "components/Footer";
-import { network } from "connectors";
-import { useWeb3React } from "@web3-react/core";
 
 import "styles/App.css";
 import "styles/index.css";
@@ -17,10 +15,6 @@ const App = () => {
     pageSelected: "deposit",
     web3: null,
   });
-  const { activate } = useWeb3React();
-  React.useEffect(() => {
-    activate(network);
-  }, [activate]);
 
   const switchToDeposit = () => {
     setState({ ...state, pageSelected: "deposit" });
@@ -33,15 +27,18 @@ const App = () => {
   let withdrawButtonClasses = "unselected";
   let depositButtonClasses = "unselected";
 
-  let pageContent;
+  const withdrawPage = React.useMemo(() => <WithdrawPage />, []);
+  const depositPage = React.useMemo(() => <DepositPage />, []);
 
+  let pageSelected;
   if (state.pageSelected === "withdraw") {
     withdrawButtonClasses = "selected";
-    pageContent = <WithdrawPage />;
+    pageSelected = withdrawPage;
   } else {
     depositButtonClasses = "selected";
-    pageContent = <DepositPage />;
+    pageSelected = depositPage;
   }
+
   return (
     <>
       <div className="App">
@@ -58,7 +55,7 @@ const App = () => {
               Withdraw
             </button>
           </div>
-          <div className="content-wrapper">{pageContent}</div>
+          <div className="content-wrapper">{pageSelected}</div>
         </div>
       </div>
       <Footer />

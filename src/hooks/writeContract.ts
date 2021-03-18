@@ -1,6 +1,6 @@
 import React from "react";
 import { TokenAmount } from "@ubeswap/sdk";
-import { useTokenAllowance } from "./readContract";
+import { useGetTokenAllowance } from "./readContract";
 import { useActiveWeb3React } from "./web3";
 import { useTokenContract, useTornadoTokenContract } from "./getContract";
 import { calculateGasMargin } from "utils/gas";
@@ -27,25 +27,34 @@ export function useApproveCallback(
 ): [ApprovalState, () => Promise<void>] {
   const { account } = useActiveWeb3React();
   const token = amountToApprove.token;
-  const currentAllowance = useTokenAllowance(token, account, spender);
-  console.log("Current allowance", currentAllowance?.toExact());
+  const getCurrentAllowance = useGetTokenAllowance(token, account, spender);
   const [approvalState, setApprovalState] = React.useState(
     ApprovalState.UNKNOWN
   );
+  const [allowance, setAllowance] = React.useState<TokenAmount | undefined>();
+
+  // TODO, this is kind of fragile
+  React.useEffect(() => {
+    const asyncSetCurrentAllowance = async () => {
+      const currentAllowance = await getCurrentAllowance();
+      setAllowance(currentAllowance);
+    };
+    asyncSetCurrentAllowance();
+  }, [account, approvalState, getCurrentAllowance]);
 
   // check the current approval status
   React.useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
       return;
     }
-    if (currentAllowance && amountToApprove) {
-      if (currentAllowance.lessThan(amountToApprove)) {
+    if (allowance && amountToApprove) {
+      if (allowance.lessThan(amountToApprove)) {
         setApprovalState(ApprovalState.NOT_APPROVED);
       } else {
         setApprovalState(ApprovalState.APPROVED);
       }
     }
-  }, [approvalState, amountToApprove, currentAllowance]);
+  }, [approvalState, amountToApprove, allowance]);
 
   const tokenContract = useTokenContract(token.address);
 

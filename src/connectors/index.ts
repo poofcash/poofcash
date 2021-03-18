@@ -3,6 +3,7 @@ import { ChainId, parseNetwork } from "@ubeswap/sdk";
 import { InjectedConnector } from "@ubeswap/injected-connector";
 import { LedgerConnector } from "./ledger/LedgerConnector";
 import { NetworkConnector } from "./NetworkConnector";
+import { ValoraConnector } from "./valora/ValoraConnector";
 
 export const NETWORK_CHAIN_ID: ChainId = process.env.REACT_APP_CHAIN_ID
   ? parseNetwork(parseInt(process.env.REACT_APP_CHAIN_ID))
@@ -23,3 +24,7 @@ export const injected = new InjectedConnector({
 });
 
 export const ledger = new LedgerConnector();
+
+export const valora = new ValoraConnector({
+  defaultChainId: NETWORK_CHAIN_ID,
+});

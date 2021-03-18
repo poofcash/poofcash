@@ -1,23 +1,27 @@
 import React from "react";
-import {useWeb3React} from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 import {
   DEPOSIT_AMOUNTS,
   NETWORK,
   TORNADO_INSTANCES_ADDRESSES,
   AMOUNTS_DISABLED,
 } from "config";
-import {getNoteStringAndCommitment} from "utils/snarks-functions";
+import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import Spinner from "./Spinner";
 import Modal from "./Modal";
-import {ledger} from "connectors";
-import {useActiveWeb3React} from "hooks/web3";
+import { ledger, valora } from "connectors";
+import { useActiveWeb3React } from "hooks/web3";
 import {
   useApproveCallback,
   ApprovalState,
   useDepositCallback,
   DepositState,
 } from "hooks/writeContract";
-import {TokenAmount, CELO, ChainId} from "@ubeswap/sdk";
+import { TokenAmount, CELO, ChainId } from "@ubeswap/sdk";
+import {
+  requestValoraAuth,
+  useInitValoraResponse,
+} from "connectors/valora/valoraUtils";
 
 declare global {
   interface Window {
@@ -28,8 +32,10 @@ declare global {
 
 // pass props and State interface to Component class
 const DepositPage = () => {
-  const {library, account} = useActiveWeb3React();
-  const {activate} = useWeb3React();
+  useInitValoraResponse();
+
+  const { account } = useActiveWeb3React();
+  const { activate } = useWeb3React();
   const [state, setState] = React.useState({
     celoAmount: 0.1, // default option
     anonymitySetSize: 0,
@@ -51,9 +57,9 @@ const DepositPage = () => {
   console.log("Deposit", depositState);
 
   const setAnonymitySetSize = async (amount: number) => {
-    setState({...state, anonymitySetLoading: true});
+    setState({ ...state, anonymitySetLoading: true });
     // TODO anonymity set size
-    setState({...state, anonymitySetSize: 0, anonymitySetLoading: false});
+    setState({ ...state, anonymitySetSize: 0, anonymitySetLoading: false });
   };
 
   // TODO balance of contract and divide
@@ -65,32 +71,38 @@ const DepositPage = () => {
     approvalState === ApprovalState.PENDING ||
     depositState === DepositState.PENDING;
 
-  const connectWallet = async () => {
-    const connector = ledger;
-    await activate(connector, undefined, true).catch(console.error);
+  const connectLedgerWallet = async () => {
+    await activate(ledger, undefined, true).catch(console.error);
+  };
+
+  const connectValoraWallet = async () => {
+    const resp = await requestValoraAuth();
+    console.log("Resp", resp);
+    valora.setSavedValoraAccount(resp);
+    activate(valora, undefined, true).catch(console.error);
   };
 
   // set the amount of BTC which the user wants to deposit
   const setBtcAmountHandler = (amount: number) => {
-    setState({...state, celoAmount: amount, showDepositInfo: false});
+    setState({ ...state, celoAmount: amount, showDepositInfo: false });
 
     // show anonymity set size for selected amount
     setAnonymitySetSize(amount);
   };
 
   const closeModal = async () => {
-    setState({...state, showModal: false});
+    setState({ ...state, showModal: false });
   };
 
   const approveHandler = async () => {
-    if (!library || !account) {
+    if (!account) {
       return;
     }
     approveCallback();
   };
 
   const depositHandler = async () => {
-    if (!library || !account) {
+    if (!account) {
       return;
     }
 
@@ -115,7 +127,7 @@ const DepositPage = () => {
       // et noteString and commitment
       console.log("getting noteString");
 
-      const {noteString, commitment} = getNoteStringAndCommitment(
+      const { noteString, commitment } = getNoteStringAndCommitment(
         "celo",
         celoAmount,
         44787 // TODO hardcode
@@ -124,11 +136,11 @@ const DepositPage = () => {
 
       // send deposit Tx
       depositCallback(commitment);
-      setState({...state, showDepositInfo: true, noteString});
+      setState({ ...state, showDepositInfo: true, noteString });
     } catch (error) {
       console.log("Error occured while making deposit");
       console.error(error);
-      setState({...state});
+      setState({ ...state });
     }
   };
 
@@ -175,17 +187,25 @@ const DepositPage = () => {
     </button>
   );
 
-  let connectWalletButton = (
-    <button
-      className="make-deposit-button hover-button"
-      onClick={connectWallet}
-    >
-      Connect with Ledger
-    </button>
+  let connectWalletButtons = (
+    <>
+      <button
+        className="make-deposit-button hover-button"
+        onClick={connectLedgerWallet}
+      >
+        Connect with Ledger
+      </button>
+      <button
+        className="make-deposit-button hover-button"
+        onClick={connectValoraWallet}
+      >
+        Connect with Valora
+      </button>
+    </>
   );
 
   let depositButton = <></>;
-  if (library) {
+  if (account) {
     if (state.showDepositInfo) {
       depositButton = <></>;
     } else {
@@ -239,7 +259,7 @@ const DepositPage = () => {
     );
   }
 
-  let button = connectWalletButton;
+  let button = connectWalletButtons;
   if (account) {
     if (approvalState === ApprovalState.NOT_APPROVED) {
       button = approveButton;

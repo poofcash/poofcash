@@ -4,8 +4,15 @@ import { generateProof, parseNote } from "utils/snarks-functions";
 import { NETWORK, TORNADO_INSTANCES_ADDRESSES, RELAYER_URL } from "config";
 import Spinner from "./Spinner";
 import { useTornadoTokenContract } from "hooks/getContract";
+import { network } from "connectors";
+import { useWeb3React } from "@web3-react/core";
 
 const WithdrawPage = () => {
+  const { activate } = useWeb3React();
+  React.useEffect(() => {
+    activate(network);
+  }, [activate]);
+
   const [state, setState] = React.useState({
     noteWithdraw: "",
     ethAddress: "",
@@ -46,7 +53,7 @@ const WithdrawPage = () => {
       const { deposit } = parseNote(state.noteWithdraw);
 
       // generate the proof
-      console.log("Generating proof...");
+      console.log("Generating proof. This may take a few minutes...");
       console.log(tornado); // TODO delete
       let { proof, args } = await generateProof({
         deposit,
@@ -146,7 +153,7 @@ const WithdrawPage = () => {
     txSent = (
       <div className="successful-withdrawal">
         <p className="withdraw-success-message">Success!</p>
-        <p className="withdraw-sent-message">TBTC tokens were sent to:</p>
+        <p className="withdraw-sent-message">CELO tokens were sent to:</p>
         <br />
         <b>{state.ethAddress}</b>
       </div>
