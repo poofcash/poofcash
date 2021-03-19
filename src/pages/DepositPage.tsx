@@ -1,10 +1,10 @@
 import React from "react";
 import { useWeb3React } from "@web3-react/core";
 import {
-  DEPOSIT_AMOUNTS,
   NETWORK,
   TORNADO_INSTANCES_ADDRESSES,
   AMOUNTS_DISABLED,
+  CHAIN_ID,
 } from "config";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import Spinner from "components/Spinner";
@@ -44,7 +44,14 @@ const DepositPage = () => {
     showDepositInfo: false,
     showModal: false,
   });
-  const tornadoAddress = TORNADO_INSTANCES_ADDRESSES[NETWORK][state.celoAmount];
+  const [currency] = React.useState("celo");
+  const tornadoAddress =
+    TORNADO_INSTANCES_ADDRESSES[NETWORK][currency][state.celoAmount];
+  const depositAmounts = Object.keys(
+    TORNADO_INSTANCES_ADDRESSES[NETWORK][currency]
+  )
+    .sort()
+    .map(Number);
   const [approvalState, approveCallback] = useApproveCallback(
     new TokenAmount(
       CELO[ChainId.ALFAJORES],
@@ -77,17 +84,16 @@ const DepositPage = () => {
 
   const connectValoraWallet = async () => {
     const resp = await requestValoraAuth();
-    console.log("Resp", resp);
     valora.setSavedValoraAccount(resp);
     activate(valora, undefined, true).catch(console.error);
   };
 
   // set the amount of BTC which the user wants to deposit
-  const setBtcAmountHandler = (amount: number) => {
-    setState({ ...state, celoAmount: amount, showDepositInfo: false });
+  const changeSize = (size: number) => {
+    setState({ ...state, celoAmount: size, showDepositInfo: false });
 
     // show anonymity set size for selected amount
-    setAnonymitySetSize(amount);
+    setAnonymitySetSize(size);
   };
 
   const closeModal = async () => {
@@ -128,9 +134,9 @@ const DepositPage = () => {
       console.log("getting noteString");
 
       const { noteString, commitment } = getNoteStringAndCommitment(
-        "celo",
+        currency,
         celoAmount,
-        44787 // TODO hardcode
+        CHAIN_ID
       );
       console.log("Commitment", commitment);
 
@@ -146,7 +152,7 @@ const DepositPage = () => {
 
   const amountOptions = (
     <ul className="deposit-amounts-ul">
-      {DEPOSIT_AMOUNTS.map((amount, index) => (
+      {depositAmounts.map((amount, index) => (
         <li key={index}>
           <label className="container">
             {amount} CELO
@@ -156,7 +162,7 @@ const DepositPage = () => {
               name="amounts"
               id={index.toString()}
               value={amount}
-              onChange={() => setBtcAmountHandler(amount)}
+              onChange={() => changeSize(amount)}
               disabled={loading || AMOUNTS_DISABLED.includes(amount)} // don't allow the user to change CELO amount while transactions are being provessed
             />
             <span className="checkmark" />

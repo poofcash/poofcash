@@ -35,7 +35,7 @@ const getNoteStringAndCommitment = (
   ]);
   let commitment = pedersenHash(preimage);
   const note: string = toHex(preimage, 62);
-  const noteString: string = `tornado-${currency}-${amount}-${netId}-${note}`;
+  const noteString: string = `poof-${currency}-${amount}-${netId}-${note}`;
   commitment = toHex(commitment);
   return { noteString, commitment };
 };
@@ -45,7 +45,7 @@ const getNoteStringAndCommitment = (
  * @param noteString the note
  */
 const parseNote = (noteString: string) => {
-  const noteRegex = /tornado-(?<currency>\w+)-(?<amount>[\d.]+)-(?<netId>\d+)-0x(?<note>[0-9a-fA-F]{124})/g;
+  const noteRegex = /poof-(?<currency>\w+)-(?<amount>[\d.]+)-(?<netId>\d+)-0x(?<note>[0-9a-fA-F]{124})/g;
   let match = noteRegex.exec(noteString);
   if (!match) {
     throw new Error("The note has invalid format");

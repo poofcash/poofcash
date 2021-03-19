@@ -3,15 +3,15 @@ import axios from "axios";
 import { generateProof, parseNote } from "utils/snarks-functions";
 import { NETWORK, TORNADO_INSTANCES_ADDRESSES, RELAYER_URL } from "config";
 import Spinner from "components/Spinner";
-import { useTornadoTokenContract } from "hooks/getContract";
+import { getContract } from "hooks/getContract";
 import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
+import { useActiveWeb3React } from "hooks/web3";
+import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 
 const WithdrawPage = () => {
   const { activate } = useWeb3React();
-  React.useEffect(() => {
-    activate(network);
-  }, [activate]);
+  const { library } = useActiveWeb3React();
 
   const [state, setState] = React.useState({
     noteWithdraw: "",
@@ -21,10 +21,6 @@ const WithdrawPage = () => {
     txSent: false,
     error: false,
   });
-  const tornadoAddress = TORNADO_INSTANCES_ADDRESSES[NETWORK][0.1]; // TODO: hardcode
-  const tornado = useTornadoTokenContract(tornadoAddress, true);
-  console.log(tornadoAddress, tornado);
-
   const handleChange = (event: any) => {
     // Handle change of input fields
     switch (event.target.name) {
@@ -43,6 +39,11 @@ const WithdrawPage = () => {
    * Do an ETH withdrawal
    */
   const withdrawHandler = async () => {
+    activate(network);
+    if (!library) {
+      console.error("Library is not defined");
+      return;
+    }
     setState({ ...state, loading: true, txSent: false, error: false });
     const relayerStatus = await axios.get(RELAYER_URL + "/status");
     const { relayerAddress } = relayerStatus.data;
@@ -50,11 +51,13 @@ const WithdrawPage = () => {
     try {
       const refund: string = "0";
       const recipient = state.ethAddress;
-      const { deposit } = parseNote(state.noteWithdraw);
+      const { deposit, currency, amount } = parseNote(state.noteWithdraw);
+      const tornadoAddress =
+        TORNADO_INSTANCES_ADDRESSES[NETWORK][currency][amount];
+      const tornado = getContract(tornadoAddress, ERC20_TORNADO_ABI, library);
 
       // generate the proof
-      console.log("Generating proof. This may take a few minutes...");
-      console.log(tornado); // TODO delete
+      console.log("Generating proof.");
       let { proof, args } = await generateProof({
         deposit,
         recipient,
@@ -64,7 +67,6 @@ const WithdrawPage = () => {
       });
 
       setState({ ...state, proofGenerated: true });
-      console.log(proof, args);
 
       console.log("Sending withdraw transaction through relay");
       try {
@@ -88,24 +90,6 @@ const WithdrawPage = () => {
         }
       }
 
-      //   // sign and send withdraw transaction
-      //   console.log('Signing and sending withdraw transaction...');
-      //   const nonce = await web3.eth.getTransactionCount(accountSender.address);
-      //   const txData = await tornado.methods.withdraw(proof, ...args).encodeABI();
-      //   const txSigned = await web3.eth.accounts.signTransaction(
-      //     {
-      //       nonce: nonce,
-      //       to: tornadoAddress,
-      //       value: refund.toString(),
-      //       data: txData,
-      //       gasPrice: web3.utils.toHex(await web3.eth.getGasPrice()),
-      //       gas: web3.utils.toHex(1e6),
-      //     },
-      //     '0x' + senderPrivateKey,
-      //   );
-
-      //   let receipt = await web3.eth.sendSignedTransaction(txSigned.rawTransaction);
-      //   console.log('SUCCESS! Withdraw transaction sent', receipt);
       setState({
         ...state,
         loading: false,
@@ -143,7 +127,7 @@ const WithdrawPage = () => {
 
   if (state.loading) {
     withdrawButton = <Spinner></Spinner>;
-    loadingInfo = <div>1. Generating proof...</div>;
+    loadingInfo = <div>1. Generating proof. This may take a few minutes.</div>;
     if (state.proofGenerated) {
       sendingTx = <div>2. Sending transaction...</div>;
     }

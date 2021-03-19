@@ -123,7 +123,7 @@ export function useDepositCallback(
   const [depositState, setDepositState] = React.useState(DepositState.UNKNOWN);
 
   const tornadoContract = useTornadoTokenContract(
-    TORNADO_INSTANCES_ADDRESSES[NETWORK][amountToDeposit],
+    TORNADO_INSTANCES_ADDRESSES[NETWORK]["celo"][amountToDeposit],
     true
   );
 

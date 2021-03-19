@@ -6,6 +6,7 @@ import { Button } from "components/Button";
 
 import "styles/App.css";
 import "styles/index.css";
+import { NETWORK } from "config";
 
 // pass props and State interface to Component class
 const App = () => {
@@ -32,6 +33,18 @@ const App = () => {
   return (
     <>
       <div className="App">
+        {NETWORK === "alfajores" && (
+          <div
+            style={{
+              width: "100%",
+              textAlign: "center",
+              background: "#0079ff",
+              color: "white",
+            }}
+          >
+            <p>NOTE: This is poof.cash on the Alfajores testnet.</p>
+          </div>
+        )}
         <h1>Poof</h1>
         <div className="page-wrapper">
           <div className="page-selector-div">
