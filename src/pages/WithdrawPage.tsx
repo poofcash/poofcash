@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { generateProof, parseNote } from "utils/snarks-functions";
 import { NETWORK, TORNADO_INSTANCES_ADDRESSES, RELAYER_URL } from "config";
-import Spinner from "./Spinner";
+import Spinner from "components/Spinner";
 import { useTornadoTokenContract } from "hooks/getContract";
 import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";

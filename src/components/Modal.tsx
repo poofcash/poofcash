@@ -1,40 +1,43 @@
-import React, { Component } from "react";
-import Backdrop from "./Backdrop";
+import React from "react";
+import styled from "@emotion/styled";
+import Backdrop from "components/Backdrop";
+import { CloseButton } from "./Button";
 
-interface Props {
+interface IProps {
   modalClosed: any;
   show: boolean;
 }
 
-class Modal extends Component<Props, {}> {
-  // Order summary updates every time we add incredient. But we don't show order summary.
-  // We want order summary to re-render only when we want to ee it
-  shouldComponentUpdate(nextProps: any, nextState: any) {
-    return (
-      nextProps.show !== this.props.show ||
-      nextProps.children !== this.props.children // update event when children change (because of loading spinner)
-    );
-  }
+const StyledModal = styled.div<{ show: boolean }>(({ show }) => ({
+  position: "fixed",
+  zIndex: 500,
+  backgroundColor: "white",
+  maxWidth: "620px",
+  width: "80%",
+  textAlign: "left",
+  padding: "30px 30px",
+  left: "calc(50% - 310px)",
+  top: "20%",
+  borderRadius: "6px",
+  boxSizing: "border-box",
+  transition: "all 0.3s ease-out",
+  overflow: "hidden",
+  maxHeight: "90vh",
+  border: "5px solid #263238",
+  transform: show ? "translateY(0)" : "translateY(-100vh)",
+  opacity: show ? "1" : "0",
+}));
 
-  render() {
-    return (
-      <>
-        <Backdrop show={this.props.show} clicked={this.props.modalClosed} />
-        <div
-          className="modal"
-          style={{
-            transform: this.props.show ? "translateY(0)" : "translateY(-100vh)",
-            opacity: this.props.show ? "1" : "0",
-          }}
-        >
-          <button className="closeButton" onClick={this.props.modalClosed}>
-            ✖
-          </button>
-          {this.props.children}
-        </div>
-      </>
-    );
-  }
-}
+const Modal: React.FC<IProps> = ({ modalClosed, show, children }) => {
+  return (
+    <>
+      {show && <Backdrop onClick={modalClosed} />}
+      <StyledModal show={show}>
+        <CloseButton onClick={modalClosed} />
+        {children}
+      </StyledModal>
+    </>
+  );
+};
 
 export default Modal;

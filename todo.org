@@ -2,13 +2,13 @@
 - [ ] Refactor on view logic
 - [ ] Anon set
 - [ ] Fix configs
-- [ ] Add CEW?
-- [ ] Use styled components
 - [ ] Address TODOs
 - [ ] Remove unnecessary consoles
 - [ ] Error states (for wallet connections)
+- [ ] Add CEW?
 * done
 - [X] Fix approve
 - [X] Remove graphql
 - [X] Add valora
+- [X] Use styled components
 

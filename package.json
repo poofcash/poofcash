@@ -5,6 +5,8 @@
   "dependencies": {
     "@celo/contractkit": "^1.0.2",
     "@celo/wallet-ledger": "^1.0.2",
+    "@emotion/react": "^11.1.5",
+    "@emotion/styled": "^11.1.5",
     "@ethersproject/contracts": "^5.0.12",
     "@ethersproject/providers": "^5.0.24",
     "@ethersproject/solidity": "^5.0.10",
@@ -68,6 +70,6 @@
     }
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,css,md,tsx,ts}": "prettier --write"
   }
 }

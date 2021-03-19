@@ -1,11 +1,13 @@
-import React from "react";
+import styled from "@emotion/styled";
 
-interface Props {
-  clicked: any;
-  show: boolean;
-}
+const Backdrop = styled.div({
+  width: "100%",
+  height: "100%",
+  position: "fixed",
+  zIndex: 100,
+  left: 0,
+  top: 0,
+  backgroundColor: "rgba(38, 50, 56, 0.7)",
+});
 
-const backdrop = (props: Props) =>
-  props.show ? <div className="backdrop" onClick={props.clicked} /> : null;
-
-export default backdrop;
+export default Backdrop;

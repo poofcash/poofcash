@@ -7,8 +7,8 @@ import {
   AMOUNTS_DISABLED,
 } from "config";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
-import Spinner from "./Spinner";
-import Modal from "./Modal";
+import Spinner from "components/Spinner";
+import Modal from "components/Modal";
 import { ledger, valora } from "connectors";
 import { useActiveWeb3React } from "hooks/web3";
 import {
