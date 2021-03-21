@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { generateProof, parseNote } from "utils/snarks-functions";
-import { NETWORK, TORNADO_INSTANCES_ADDRESSES, RELAYER_URL } from "config";
+import { CHAIN_ID, RELAYER_URL } from "config";
 import Spinner from "components/Spinner";
 import { getContract } from "hooks/getContract";
 import { network } from "connectors";
@@ -9,6 +9,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useActiveWeb3React } from "hooks/web3";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 import { calculateFee } from "utils/gas";
+import { instances } from "poof-token";
 
 const WithdrawPage = () => {
   const { activate } = useWeb3React();
@@ -65,7 +66,7 @@ const WithdrawPage = () => {
       const recipient = state.ethAddress;
       const { deposit, currency, amount } = parseNote(state.noteWithdraw);
       const tornadoAddress =
-        TORNADO_INSTANCES_ADDRESSES[NETWORK][currency][amount];
+        instances[`netId${CHAIN_ID}`][currency].instanceAddress[amount];
       const tornado = getContract(tornadoAddress, ERC20_TORNADO_ABI, library);
 
       const fee = calculateFee({

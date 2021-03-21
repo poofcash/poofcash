@@ -1,11 +1,6 @@
 import React from "react";
 import { useWeb3React } from "@web3-react/core";
-import {
-  NETWORK,
-  TORNADO_INSTANCES_ADDRESSES,
-  AMOUNTS_DISABLED,
-  CHAIN_ID,
-} from "config";
+import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import Spinner from "components/Spinner";
 import Modal from "components/Modal";
@@ -22,6 +17,7 @@ import {
   requestValoraAuth,
   useInitValoraResponse,
 } from "connectors/valora/valoraUtils";
+import { instances } from "poof-token";
 
 declare global {
   interface Window {
@@ -46,9 +42,9 @@ const DepositPage = () => {
   });
   const [currency] = React.useState("celo");
   const tornadoAddress =
-    TORNADO_INSTANCES_ADDRESSES[NETWORK][currency][state.celoAmount];
+    instances[`netId${CHAIN_ID}`][currency].instanceAddress[state.celoAmount];
   const depositAmounts = Object.keys(
-    TORNADO_INSTANCES_ADDRESSES[NETWORK][currency]
+    instances[`netId${CHAIN_ID}`][currency].instanceAddress
   )
     .sort()
     .map(Number);

@@ -6,7 +6,8 @@ import { useTokenContract, useTornadoTokenContract } from "./getContract";
 import { calculateGasMargin } from "utils/gas";
 import { TransactionResponse } from "@ethersproject/providers";
 import { MaxUint256 } from "@ethersproject/constants";
-import { TORNADO_INSTANCES_ADDRESSES, NETWORK } from "config";
+import { CHAIN_ID } from "config";
+import { instances } from "poof-token";
 
 export enum ApprovalState {
   UNKNOWN = "UNKNOWN",
@@ -123,7 +124,7 @@ export function useDepositCallback(
   const [depositState, setDepositState] = React.useState(DepositState.UNKNOWN);
 
   const tornadoContract = useTornadoTokenContract(
-    TORNADO_INSTANCES_ADDRESSES[NETWORK]["celo"][amountToDeposit],
+    instances[`netId${CHAIN_ID}`]["celo"][amountToDeposit],
     true
   );
 

@@ -7,14 +7,6 @@ const RPC_URL: string =
     ? "https://explorer.celo.org"
     : "https://alfajores-forno.celo-testnet.org";
 
-const TORNADO_INSTANCES_ADDRESSES: any = {
-  alfajores: {
-    celo: {
-      0.1: "0xBdD116cF6B447d038B83b018a1E3f044163b6b44",
-    },
-  },
-};
-
 // Do not allow the user to choose the following amounts
 const AMOUNTS_DISABLED: number[] = [];
 
@@ -30,7 +22,6 @@ const RELAYER_URL = "https://poof-relayer.herokuapp.com";
 export {
   CHAIN_ID,
   RPC_URL,
-  TORNADO_INSTANCES_ADDRESSES,
   TOKEN_ADDRESS,
   NETWORK,
   RELAYER_URL,
