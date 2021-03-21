@@ -20,6 +20,8 @@ import {
 import { instances } from "poof-token";
 import { useGetTokenBalance } from "hooks/readContract";
 import { BigNumber } from "@ethersproject/bignumber";
+import { Label, Radio } from "@rebass/forms";
+import { Flex, Text } from "rebass";
 
 declare global {
   interface Window {
@@ -143,27 +145,22 @@ const DepositPage = () => {
   };
 
   const amountOptions = (
-    <ul className="deposit-amounts-ul">
+    <Flex>
       {depositAmounts.map((depositAmount, index) => (
-        <li key={index}>
-          <label className="container">
-            {depositAmount.toLocaleString()} CELO
-            <input
-              checked={depositAmount === selectedAmount}
-              type="radio"
-              name="amounts"
-              id={index.toString()}
+        <Label key={index} justifyContent="center">
+          <Flex flexDirection="column" alignItems="center">
+            <Radio
               value={depositAmount}
-              onChange={() => {
-                setSelectedAmount(depositAmount);
-              }}
-              disabled={loading || AMOUNTS_DISABLED.includes(depositAmount)} // don't allow the user to change CELO amount while transactions are being provessed
+              checked={selectedAmount === depositAmount}
+              onClick={() => setSelectedAmount(depositAmount)}
+              disabled={AMOUNTS_DISABLED.includes(depositAmount)}
             />
-            <span className="checkmark" />
-          </label>
-        </li>
+            <Text>{depositAmount.toLocaleString()}</Text>
+            <Text>CELO</Text>
+          </Flex>
+        </Label>
       ))}
-    </ul>
+    </Flex>
   );
 
   // show deposit information is available
@@ -291,11 +288,14 @@ const DepositPage = () => {
 
       {depositInfo}
 
-      {contractBalance != null && (
-        <p>
-          Current number of deposits: {contractBalance / selectedAmount} CELO
-        </p>
-      )}
+      {
+        // TODO account shouldn't be a neccesary constraint
+        account && contractBalance != null && (
+          <p>
+            Current number of deposits: {contractBalance / selectedAmount} CELO
+          </p>
+        )
+      }
 
       {insufficientBalanceModal}
 
