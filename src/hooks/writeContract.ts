@@ -13,6 +13,7 @@ export enum ApprovalState {
   UNKNOWN = "UNKNOWN",
   NOT_APPROVED = "NOT_APPROVED",
   PENDING = "PENDING",
+  WAITING_CONFIRMATIONS = "WAITING_CONFIRMATIONS",
   APPROVED = "APPROVED",
 }
 
@@ -106,7 +107,8 @@ export function useApproveCallback(
         }
       )
       .then(async (response: TransactionResponse) => {
-        await response.wait(3); // Wait for 3 confirmations
+        setApprovalState(ApprovalState.WAITING_CONFIRMATIONS);
+        await response.wait(1); // Wait for 1 confirmation
         setApprovalState(ApprovalState.APPROVED);
       })
       .catch((error: Error) => {
@@ -124,7 +126,7 @@ export function useDepositCallback(
   const [depositState, setDepositState] = React.useState(DepositState.UNKNOWN);
 
   const tornadoContract = useTornadoTokenContract(
-    instances[`netId${CHAIN_ID}`]["celo"][amountToDeposit],
+    instances[`netId${CHAIN_ID}`]["celo"].instanceAddress[amountToDeposit],
     true
   );
 

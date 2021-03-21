@@ -1,5 +1,6 @@
 * todo
 - [ ] Anon set
+- [ ] Show current balance
 - [ ] Refactor on view logic
 - [ ] Address TODOs
 - [ ] Remove unnecessary consoles

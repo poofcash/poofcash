@@ -32,8 +32,8 @@ const DepositPage = () => {
 
   const { account } = useActiveWeb3React();
   const { activate } = useWeb3React();
+  const [selectedAmount, setSelectedAmount] = React.useState(0.1);
   const [state, setState] = React.useState({
-    celoAmount: 0.1, // default option
     anonymitySetSize: 0,
     noteString: "",
     anonymitySetLoading: false,
@@ -42,7 +42,7 @@ const DepositPage = () => {
   });
   const [currency] = React.useState("celo");
   const tornadoAddress =
-    instances[`netId${CHAIN_ID}`][currency].instanceAddress[state.celoAmount];
+    instances[`netId${CHAIN_ID}`][currency].instanceAddress[selectedAmount];
   const depositAmounts = Object.keys(
     instances[`netId${CHAIN_ID}`][currency].instanceAddress
   )
@@ -51,27 +51,17 @@ const DepositPage = () => {
   const [approvalState, approveCallback] = useApproveCallback(
     new TokenAmount(
       CELO[ChainId.ALFAJORES],
-      (state.celoAmount * 10 ** 18).toString()
+      (selectedAmount * 10 ** 18).toString()
     ),
     tornadoAddress
   );
   console.log("Approval", approvalState);
-  const [depositState, depositCallback] = useDepositCallback(state.celoAmount);
+  const [depositState, depositCallback] = useDepositCallback(selectedAmount);
   console.log("Deposit", depositState);
-
-  const setAnonymitySetSize = async (amount: number) => {
-    setState({ ...state, anonymitySetLoading: true });
-    // TODO anonymity set size
-    setState({ ...state, anonymitySetSize: 0, anonymitySetLoading: false });
-  };
-
-  // TODO balance of contract and divide
-  //React.useEffect(() => {
-  //setAnonymitySetSize(state.celoAmount);
-  //}, [setAnonymitySetSize, state.celoAmount]);
 
   const loading =
     approvalState === ApprovalState.PENDING ||
+    approvalState === ApprovalState.WAITING_CONFIRMATIONS ||
     depositState === DepositState.PENDING;
 
   const connectLedgerWallet = async () => {
@@ -82,14 +72,6 @@ const DepositPage = () => {
     const resp = await requestValoraAuth();
     valora.setSavedValoraAccount(resp);
     activate(valora, undefined, true).catch(console.error);
-  };
-
-  // set the amount of BTC which the user wants to deposit
-  const changeSize = (size: number) => {
-    setState({ ...state, celoAmount: size, showDepositInfo: false });
-
-    // show anonymity set size for selected amount
-    setAnonymitySetSize(size);
   };
 
   const closeModal = async () => {
@@ -109,7 +91,6 @@ const DepositPage = () => {
     }
 
     try {
-      const celoAmount = state.celoAmount;
       // TODO verify sufficient balance
       //const tokenInstance = new Contract(
       //TOKEN_ADDRESS.alfajores,
@@ -120,7 +101,7 @@ const DepositPage = () => {
       // check if the user has sufficient token balance
       // TODO
       // const usersTokenBalance = await tokenInstance.methods.balanceOf(userAddress).call();
-      // if (usersTokenBalance < celoAmount * 10 ** 18) {
+      // if (usersTokenBalance < amount * 10 ** 18) {
       //   setState({...state, showModal: true, loading: false});
       //   throw 'Insufficient balance of CELO tokens';
       // }
@@ -131,7 +112,7 @@ const DepositPage = () => {
 
       const { noteString, commitment } = getNoteStringAndCommitment(
         currency,
-        celoAmount,
+        selectedAmount,
         CHAIN_ID
       );
       console.log("Commitment", commitment);
@@ -148,18 +129,18 @@ const DepositPage = () => {
 
   const amountOptions = (
     <ul className="deposit-amounts-ul">
-      {depositAmounts.map((amount, index) => (
+      {depositAmounts.map((depositAmount, index) => (
         <li key={index}>
           <label className="container">
-            {amount} CELO
+            {depositAmount.toLocaleString()} CELO
             <input
-              checked={state.celoAmount === amount}
+              checked={depositAmount === selectedAmount}
               type="radio"
               name="amounts"
               id={index.toString()}
-              value={amount}
-              onChange={() => changeSize(amount)}
-              disabled={loading || AMOUNTS_DISABLED.includes(amount)} // don't allow the user to change CELO amount while transactions are being provessed
+              value={depositAmount}
+              onChange={() => setSelectedAmount(depositAmount)}
+              disabled={loading || AMOUNTS_DISABLED.includes(depositAmount)} // don't allow the user to change CELO amount while transactions are being provessed
             />
             <span className="checkmark" />
           </label>
@@ -229,6 +210,12 @@ const DepositPage = () => {
         <p className="sending-tx-label">Sending approve transaction...</p>
       </div>
     );
+  } else if (approvalState === ApprovalState.WAITING_CONFIRMATIONS) {
+    loadingApprove = (
+      <div>
+        <p className="sending-tx-label">Waiting for confirmations...</p>
+      </div>
+    );
   }
 
   let loadingDeposit = <></>;
@@ -246,8 +233,8 @@ const DepositPage = () => {
       <Modal modalClosed={closeModal} show={state.showModal}>
         <h2>Insufficient balance</h2>
         <p>
-          You don't have enough CELO tokens. You need {state.celoAmount} CELO.
-          You can get more CELO{" "}
+          You don't have enough CELO tokens. You need {selectedAmount} CELO. You
+          can get more CELO{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
