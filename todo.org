@@ -1,5 +1,7 @@
 * todo
-- [ ] Anon set
+- [-] Anon set
+  - [X] Basic: Show # of deposits in contract
+  - [ ] Advanced: Show current deposits and timestamps
 - [ ] Transaction link to blockscout
 - [ ] Refactor on view logic
 - [ ] Address TODOs

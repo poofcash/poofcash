@@ -67,7 +67,7 @@ export function useGetTokenBalance(
 
   const getTokenBalance = async () => {
     const balance = await getBalance();
-    const zeroTokenAmount = new TokenAmount(token, balance.toString());
+    const zeroTokenAmount = new TokenAmount(token, "0");
     if (!balance) {
       return zeroTokenAmount;
     }

@@ -19,6 +19,7 @@ import {
 } from "connectors/valora/valoraUtils";
 import { instances } from "poof-token";
 import { useGetTokenBalance } from "hooks/readContract";
+import { BigNumber } from "@ethersproject/bignumber";
 
 declare global {
   interface Window {
@@ -36,9 +37,13 @@ const DepositPage = () => {
   const [selectedAmount, setSelectedAmount] = React.useState(0.1);
   const [noteString, setNoteString] = React.useState("");
   const [accountBalance, setAccountBalance] = React.useState<number>();
+  const [contractBalance, setContractBalance] = React.useState<number>();
+  const [
+    showInsufficientBalanceModal,
+    setShowInsufficientBalanceModal,
+  ] = React.useState(false);
   const [state, setState] = React.useState({
     showDepositInfo: false,
-    showModal: false,
   });
   const [currency] = React.useState("celo");
   const tornadoAddress =
@@ -49,16 +54,30 @@ const DepositPage = () => {
     .sort()
     .map(Number);
   const [approvalState, approveCallback] = useApproveCallback(
-    new TokenAmount(CELO[CHAIN_ID], (selectedAmount * 10 ** 18).toString()),
+    new TokenAmount(
+      CELO[CHAIN_ID],
+      // Only supports up to 2 decimal places
+      BigNumber.from(100 * selectedAmount)
+        .mul(BigNumber.from(10).pow(16))
+        .toString()
+    ),
     tornadoAddress
   );
   const [depositState, depositCallback] = useDepositCallback(selectedAmount);
   const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], account);
+  const getContractBalance = useGetTokenBalance(CELO[CHAIN_ID], tornadoAddress);
   React.useEffect(() => {
     getAccountBalance()
       .then((tokenAmount) => setAccountBalance(Number(tokenAmount.toExact())))
       .catch(console.error);
   }, [getAccountBalance, account]);
+  React.useEffect(() => {
+    getContractBalance()
+      .then((tokenAmount) => {
+        setContractBalance(Number(tokenAmount.toExact()));
+      })
+      .catch(console.error);
+  }, [getContractBalance, tornadoAddress]);
 
   const loading =
     approvalState === ApprovalState.PENDING ||
@@ -75,14 +94,19 @@ const DepositPage = () => {
     activate(valora, undefined, true).catch(console.error);
   };
 
-  const closeModal = async () => {
-    setState({ ...state, showModal: false });
-  };
-
   const approveHandler = async () => {
     if (!account) {
       return;
     }
+    if (!accountBalance) {
+      console.error("Tried approving without a defined account balance");
+      return;
+    }
+    if (accountBalance < selectedAmount) {
+      setShowInsufficientBalanceModal(true);
+      return;
+    }
+
     approveCallback();
   };
 
@@ -97,9 +121,7 @@ const DepositPage = () => {
         return;
       }
       if (accountBalance < selectedAmount) {
-        alert(
-          `Insufficient balance (${accountBalance}) for depositing ${selectedAmount} CELO`
-        );
+        setShowInsufficientBalanceModal(true);
         return;
       }
 
@@ -132,7 +154,9 @@ const DepositPage = () => {
               name="amounts"
               id={index.toString()}
               value={depositAmount}
-              onChange={() => setSelectedAmount(depositAmount)}
+              onChange={() => {
+                setSelectedAmount(depositAmount);
+              }}
               disabled={loading || AMOUNTS_DISABLED.includes(depositAmount)} // don't allow the user to change CELO amount while transactions are being provessed
             />
             <span className="checkmark" />
@@ -221,9 +245,12 @@ const DepositPage = () => {
   }
 
   let insufficientBalanceModal = <></>;
-  if (state.showModal) {
+  if (showInsufficientBalanceModal) {
     insufficientBalanceModal = (
-      <Modal modalClosed={closeModal} show={state.showModal}>
+      <Modal
+        modalClosed={() => setShowInsufficientBalanceModal(false)}
+        show={showInsufficientBalanceModal}
+      >
         <h2>Insufficient balance</h2>
         <p>
           You don't have enough CELO tokens. You need {selectedAmount} CELO. You
@@ -264,6 +291,12 @@ const DepositPage = () => {
 
       {depositInfo}
 
+      {contractBalance != null && (
+        <p>
+          Current number of deposits: {contractBalance / selectedAmount} CELO
+        </p>
+      )}
+
       {insufficientBalanceModal}
 
       {loading ? (
@@ -276,7 +309,9 @@ const DepositPage = () => {
         <>{button}</>
       )}
       {account && <p>Account: {account}</p>}
-      {accountBalance != null && <p>Balance: {accountBalance} CELO</p>}
+      {account && accountBalance != null && (
+        <p>Balance: {accountBalance} CELO</p>
+      )}
     </div>
   );
 };
