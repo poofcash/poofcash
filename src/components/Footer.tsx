@@ -1,9 +1,18 @@
-import React from "react";
+import styled from "@emotion/styled";
 import SvgGithubIcon from "./svgIcons/SvgGithubIcon";
+
+const Wrapper = styled.div({
+  display: "flex",
+  justifyContent: "center",
+  position: "fixed",
+  left: 0,
+  bottom: 0,
+  width: "100%",
+});
 
 const Footer = () => {
   return (
-    <div className="footer">
+    <Wrapper>
       <div className="row">
         {/*
                 <div className="column">
@@ -29,7 +38,7 @@ const Footer = () => {
                 </div>
                     */}
       </div>
-    </div>
+    </Wrapper>
   );
 };
 

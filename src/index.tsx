@@ -1,16 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "styles/index.css";
+import theme from "theme";
 import App from "App";
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider, createWeb3ReactRoot } from "@web3-react/core";
 import { Provider } from "react-redux";
 import store from "state";
+import { ThemeProvider } from "theme-ui";
+
+declare global {
+  interface Window {
+    // TODO no-any
+    genZKSnarkProofAndWitness: any;
+  }
+}
 
 export const NetworkContextName = "NETWORK";
 
 function getLibrary(provider: any): Web3Provider {
-  const library = new Web3Provider(provider, "any");
+  const library = new Web3Provider(provider);
   library.pollingInterval = 15000;
   return library;
 }
@@ -22,7 +30,9 @@ ReactDOM.render(
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Provider store={store}>
-          <App />
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
         </Provider>
       </Web3ProviderNetwork>
     </Web3ReactProvider>

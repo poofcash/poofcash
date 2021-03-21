@@ -37,11 +37,13 @@ export function useApproveCallback(
 
   // TODO, this is kind of fragile
   React.useEffect(() => {
-    const asyncSetCurrentAllowance = async () => {
-      const currentAllowance = await getCurrentAllowance();
-      setAllowance(currentAllowance);
-    };
-    asyncSetCurrentAllowance();
+    if (account) {
+      const asyncSetCurrentAllowance = async () => {
+        const currentAllowance = await getCurrentAllowance();
+        setAllowance(currentAllowance);
+      };
+      asyncSetCurrentAllowance();
+    }
   }, [account, approvalState, getCurrentAllowance]);
 
   // check the current approval status

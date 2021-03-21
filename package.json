@@ -5,8 +5,7 @@
   "dependencies": {
     "@celo/contractkit": "^1.0.2",
     "@celo/wallet-ledger": "^1.0.2",
-    "@emotion/react": "^11.1.5",
-    "@emotion/styled": "^11.1.5",
+    "@emotion/styled": "^10.0.27",
     "@ethersproject/contracts": "^5.0.12",
     "@ethersproject/providers": "^5.0.24",
     "@ethersproject/solidity": "^5.0.10",
@@ -20,8 +19,8 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@types/rebass": "^4.0.8",
     "@types/rebass__forms": "^4.0.4",
+    "@types/theme-ui": "^0.3.7",
     "@ubeswap/injected-connector": "^6.0.8",
     "@ubeswap/sdk": "^2.0.1",
     "@web3-react/core": "^6.1.9",
@@ -32,7 +31,7 @@
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
     "react-scripts": "4.0.3",
-    "rebass": "^4.0.7",
+    "theme-ui": "^0.3.5",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1",
     "websnark": "git+https://github.com/tornadocash/websnark.git#2041cfa5fa0b71cd5cca9022a4eeea4afe28c9f7"

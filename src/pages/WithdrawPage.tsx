@@ -2,19 +2,18 @@ import React from "react";
 import axios from "axios";
 import { generateProof, parseNote } from "utils/snarks-functions";
 import { CHAIN_ID, RELAYER_URL } from "config";
-import Spinner from "components/Spinner";
 import { getContract } from "hooks/getContract";
 import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
-import { useActiveWeb3React } from "hooks/web3";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 import { calculateFee } from "utils/gas";
 import { instances } from "poof-token";
 import { NetworkContextName } from "index";
+import { Spinner } from "@theme-ui/components";
+import { Button, Container, Input, Label } from "theme-ui";
 
 const WithdrawPage = () => {
-  const { activate } = useWeb3React(NetworkContextName);
-  const { library } = useActiveWeb3React();
+  const { activate, library } = useWeb3React(NetworkContextName);
 
   React.useEffect(() => {
     if (!library) {
@@ -140,17 +139,19 @@ const WithdrawPage = () => {
   let txSent = <></>;
 
   let withdrawButton = (
-    <button
-      className="hover-button withdraw-button"
-      onClick={withdrawHandler}
-      disabled={state.ethAddress === "" || state.noteWithdraw === ""}
-    >
-      Withdraw
-    </button>
+    <Container mt={16}>
+      <Button
+        variant="primary"
+        onClick={withdrawHandler}
+        disabled={state.ethAddress === "" || state.noteWithdraw === ""}
+      >
+        Withdraw
+      </Button>
+    </Container>
   );
 
   if (state.loading) {
-    withdrawButton = <Spinner></Spinner>;
+    withdrawButton = <Spinner />;
     loadingInfo = <div>1. Generating proof. This may take a few minutes.</div>;
     if (state.proofGenerated) {
       sendingTx = <div>2. Sending transaction...</div>;
@@ -159,9 +160,9 @@ const WithdrawPage = () => {
 
   if (state.txSent && !state.error) {
     txSent = (
-      <div className="successful-withdrawal">
-        <p className="withdraw-success-message">Success!</p>
-        <p className="withdraw-sent-message">CELO tokens were sent to:</p>
+      <div>
+        <p>Success!</p>
+        <p>CELO tokens were sent to:</p>
         <br />
         <b>{state.ethAddress}</b>
       </div>
@@ -170,35 +171,31 @@ const WithdrawPage = () => {
 
   if (state.error) {
     txSent = (
-      <div className="successful-withdrawal">
-        <p className="withdraw-error-message">Something went wrong :(</p>
+      <div>
+        <p>Something went wrong :(</p>
         <span>Check console for more information</span>
       </div>
     );
   }
 
   return (
-    <div className="withdraw-wrapper">
-      <label className="withdraw-note-label">
-        <b>Your Note:</b>
-        <input
-          name="note"
-          type="text"
-          value={state.noteWithdraw}
-          onChange={handleChange}
-        />
-      </label>
+    <div>
+      <Label htmlFor="note">Note</Label>
+      <Input
+        name="note"
+        type="text"
+        value={state.noteWithdraw}
+        onChange={handleChange}
+      />
       <br />
-      <label className="btc-recipient-label">
-        <b>Recipient's Ethereum Address:</b>
-        <input
-          name="ethRecipientAddress"
-          type="text"
-          value={state.ethAddress}
-          onChange={handleChange}
-        />
-      </label>
-      <div className="withdrawal-info">
+      <Label htmlFor="ethRecipientAddress">Recipient Ethereum address</Label>
+      <Input
+        name="ethRecipientAddress"
+        type="text"
+        value={state.ethAddress}
+        onChange={handleChange}
+      />
+      <div>
         {withdrawButton}
         {loadingInfo}
         {proofGenerated}

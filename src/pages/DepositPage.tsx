@@ -2,10 +2,8 @@ import React from "react";
 import { useWeb3React } from "@web3-react/core";
 import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
-import Spinner from "components/Spinner";
 import Modal from "components/Modal";
 import { ledger, valora } from "connectors";
-import { useActiveWeb3React } from "hooks/web3";
 import {
   useApproveCallback,
   ApprovalState,
@@ -21,21 +19,19 @@ import { instances } from "poof-token";
 import { useGetTokenBalance } from "hooks/readContract";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Label, Radio } from "@rebass/forms";
-import { Flex, Text } from "rebass";
+import { Button, Flex, Text, Spinner, Textarea } from "@theme-ui/components";
+import { Grid } from "theme-ui";
+import styled from "@emotion/styled";
 
-declare global {
-  interface Window {
-    // TODO no-any
-    genZKSnarkProofAndWitness: any;
-  }
-}
+const ButtonsWrapper = styled.div({
+  marginTop: "16px",
+});
 
 // pass props and State interface to Component class
 const DepositPage = () => {
   useInitValoraResponse();
 
-  const { account } = useActiveWeb3React();
-  const { activate } = useWeb3React();
+  const { activate, account } = useWeb3React();
   const [selectedAmount, setSelectedAmount] = React.useState(0.1);
   const [noteString, setNoteString] = React.useState("");
   const [accountBalance, setAccountBalance] = React.useState<number>();
@@ -87,7 +83,7 @@ const DepositPage = () => {
     depositState === DepositState.PENDING;
 
   const connectLedgerWallet = async () => {
-    await activate(ledger, undefined, true).catch(console.error);
+    await activate(ledger, undefined, true).catch(alert);
   };
 
   const connectValoraWallet = async () => {
@@ -145,14 +141,14 @@ const DepositPage = () => {
   };
 
   const amountOptions = (
-    <Flex>
+    <Grid columns={[4]}>
       {depositAmounts.map((depositAmount, index) => (
         <Label key={index} justifyContent="center">
-          <Flex flexDirection="column" alignItems="center">
+          <Flex css={{ flexDirection: "column", alignItems: "center" }}>
             <Radio
               value={depositAmount}
               checked={selectedAmount === depositAmount}
-              onClick={() => setSelectedAmount(depositAmount)}
+              onChange={() => setSelectedAmount(depositAmount)}
               disabled={AMOUNTS_DISABLED.includes(depositAmount)}
             />
             <Text>{depositAmount.toLocaleString()}</Text>
@@ -160,45 +156,40 @@ const DepositPage = () => {
           </Flex>
         </Label>
       ))}
-    </Flex>
+    </Grid>
   );
 
   // show deposit information is available
   let depositInfo = <></>;
   if (noteString !== "" && !loading && state.showDepositInfo) {
     depositInfo = (
-      <div className="deposit-info-div">
+      <div>
         <h3>Success!</h3>
         <p>Keep this note. It allows you to withdraw anonymized CELO.</p>
-        <div className="notestring">{noteString}</div>
+        <Textarea readOnly rows={4}>
+          {noteString}
+        </Textarea>
       </div>
     );
   }
 
   let approveButton = (
-    <button
-      className="make-deposit-button hover-button"
-      onClick={approveHandler}
-    >
+    <Button variant="primary" onClick={approveHandler}>
       Approve
-    </button>
+    </Button>
   );
 
   let connectWalletButtons = (
-    <>
-      <button
-        className="make-deposit-button hover-button"
-        onClick={connectLedgerWallet}
-      >
+    <div>
+      <Button variant="primary" onClick={connectLedgerWallet}>
         Connect with Ledger
-      </button>
-      <button
-        className="make-deposit-button hover-button"
-        onClick={connectValoraWallet}
-      >
+      </Button>
+      <br />
+      <br />
+      <Button variant="primary" onClick={connectValoraWallet}>
         Connect with Valora
-      </button>
-    </>
+      </Button>
+    </div>
   );
 
   let depositButton = <></>;
@@ -207,12 +198,9 @@ const DepositPage = () => {
       depositButton = <></>;
     } else {
       depositButton = (
-        <button
-          className="make-deposit-button hover-button"
-          onClick={depositHandler}
-        >
+        <Button variant="primary" onClick={depositHandler}>
           Deposit
-        </button>
+        </Button>
       );
     }
   }
@@ -221,13 +209,13 @@ const DepositPage = () => {
   if (approvalState === ApprovalState.PENDING) {
     loadingApprove = (
       <div>
-        <p className="sending-tx-label">Sending approve transaction...</p>
+        <p>Sending approve transaction...</p>
       </div>
     );
   } else if (approvalState === ApprovalState.WAITING_CONFIRMATIONS) {
     loadingApprove = (
       <div>
-        <p className="sending-tx-label">Waiting for confirmations...</p>
+        <p>Waiting for confirmations...</p>
       </div>
     );
   }
@@ -236,7 +224,7 @@ const DepositPage = () => {
   if (depositState === DepositState.PENDING) {
     loadingDeposit = (
       <div>
-        <p className="sending-tx-label">Sending deposit transaction...</p>
+        <p>Sending deposit transaction...</p>
       </div>
     );
   }
@@ -276,15 +264,9 @@ const DepositPage = () => {
 
   return (
     <div>
-      <h3 className="deposit-headline">Specify a CELO amount to deposit</h3>
+      <h3>Specify a CELO amount to deposit</h3>
 
       {amountOptions}
-      {/*
-      TODO
-            <h3 className="anonymity-size">
-                Anonymity set size: {state.anonymitySetSize === -1 ? <>Loading...</> : <b>{state.anonymitySetSize}</b>}
-              </h3>
-        */}
 
       {depositInfo}
 
@@ -292,7 +274,8 @@ const DepositPage = () => {
         // TODO account shouldn't be a neccesary constraint
         account && contractBalance != null && (
           <p>
-            Current number of deposits: {contractBalance / selectedAmount} CELO
+            Current number of deposits:{" "}
+            {Math.ceil(contractBalance / selectedAmount)}
           </p>
         )
       }
@@ -306,7 +289,7 @@ const DepositPage = () => {
           {loadingDeposit}
         </>
       ) : (
-        <>{button}</>
+        <ButtonsWrapper>{button}</ButtonsWrapper>
       )}
       {account && <p>Account: {account}</p>}
       {account && accountBalance != null && (

@@ -1,12 +1,21 @@
 import React from "react";
 import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
-import Footer from "components/Footer";
-import { Button } from "components/Button";
-
-import "styles/App.css";
-import "styles/index.css";
 import { CHAIN_ID } from "config";
+import { Heading } from "@theme-ui/components";
+import { Alert, Button, Container } from "theme-ui";
+import styled from "@emotion/styled";
+
+const Page = styled.div({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  textAlign: "center",
+});
+
+const PageSwitcher = styled.div({
+  marginTop: "16px",
+});
 
 // pass props and State interface to Component class
 const App = () => {
@@ -22,46 +31,36 @@ const App = () => {
     setSelectedPage(withdrawPage);
   };
 
-  let withdrawButtonClasses = "unselected";
-  let depositButtonClasses = "unselected";
-  if (selectedPage === withdrawPage) {
-    withdrawButtonClasses = "selected";
-  } else {
-    depositButtonClasses = "selected";
-  }
-
   return (
     <>
-      <div className="App">
-        {CHAIN_ID === 44787 && (
-          <div
-            style={{
-              width: "100%",
-              textAlign: "center",
-              background: "#0079ff",
-              color: "white",
-            }}
+      {CHAIN_ID === 44787 && (
+        <Alert>NOTE: This is poof.cash on the Alfajores testnet.</Alert>
+      )}
+      <Page>
+        <Heading>Poof</Heading>
+        <PageSwitcher>
+          <Button
+            variant={
+              selectedPage.type === depositPage.type ? "secondary" : "outline"
+            }
+            onClick={switchToDeposit}
           >
-            <p>NOTE: This is poof.cash on the Alfajores testnet.</p>
-          </div>
-        )}
-        <h1>Poof</h1>
-        <div className="page-wrapper">
-          <div className="page-selector-div">
-            <Button className={depositButtonClasses} onClick={switchToDeposit}>
-              Deposit
-            </Button>
-            <Button
-              className={withdrawButtonClasses}
-              onClick={switchToWithdraw}
-            >
-              Withdraw
-            </Button>
-          </div>
-          <div className="content-wrapper">{selectedPage}</div>
-        </div>
-      </div>
-      <Footer />
+            Deposit
+          </Button>
+          <Button
+            variant={
+              selectedPage.type === withdrawPage.type ? "secondary" : "outline"
+            }
+            onClick={switchToWithdraw}
+          >
+            Withdraw
+          </Button>
+        </PageSwitcher>
+        <Container mt={16} sx={{ width: "66%" }}>
+          {selectedPage}
+        </Container>
+      </Page>
+      {/*TODO footer*/}
     </>
   );
 };
