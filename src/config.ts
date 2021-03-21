@@ -1,6 +1,8 @@
+import { ChainId } from "@ubeswap/sdk";
+
 const CHAIN_ID = Number(process.env.REACT_APP_CHAIN_ID || "42220");
 
-const NETWORK = CHAIN_ID === 42220 ? "mainnet" : "alfajores";
+const NETWORK = CHAIN_ID === ChainId.MAINNET ? "mainnet" : "alfajores";
 
 const RPC_URL: string =
   NETWORK === "mainnet"

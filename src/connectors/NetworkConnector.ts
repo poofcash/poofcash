@@ -2,7 +2,7 @@ import { ContractKit, newKit } from "@celo/contractkit";
 import { ChainId, CHAIN_INFO } from "@ubeswap/sdk";
 import { AbstractConnector } from "@web3-react/abstract-connector";
 import { ConnectorUpdate } from "@web3-react/types";
-import { NETWORK_CHAIN_ID } from "./../connectors";
+import { CHAIN_ID } from "config";
 import invariant from "tiny-invariant";
 
 export interface NetworkConnectorArguments {
@@ -186,7 +186,7 @@ export class NetworkConnector extends AbstractConnector {
       supportedChainIds: Object.keys(CHAIN_INFO).map((k): number => Number(k)),
     });
 
-    this.currentChainId = defaultChainId ?? NETWORK_CHAIN_ID;
+    this.currentChainId = defaultChainId ?? CHAIN_ID;
     this.providers = {
       [ChainId.MAINNET]: new MiniRpcProvider(ChainId.MAINNET),
       [ChainId.ALFAJORES]: new MiniRpcProvider(ChainId.ALFAJORES),

@@ -6,7 +6,7 @@ import { Button } from "components/Button";
 
 import "styles/App.css";
 import "styles/index.css";
-import { NETWORK } from "config";
+import { CHAIN_ID } from "config";
 
 // pass props and State interface to Component class
 const App = () => {
@@ -33,7 +33,7 @@ const App = () => {
   return (
     <>
       <div className="App">
-        {NETWORK === "alfajores" && (
+        {CHAIN_ID === 44787 && (
           <div
             style={{
               width: "100%",

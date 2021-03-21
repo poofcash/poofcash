@@ -1,16 +1,13 @@
 import { Web3Provider } from "@ethersproject/providers";
-import { ChainId, parseNetwork } from "@ubeswap/sdk";
+import { ChainId } from "@ubeswap/sdk";
 import { InjectedConnector } from "@ubeswap/injected-connector";
 import { LedgerConnector } from "./ledger/LedgerConnector";
 import { NetworkConnector } from "./NetworkConnector";
 import { ValoraConnector } from "./valora/ValoraConnector";
-
-export const NETWORK_CHAIN_ID: ChainId = process.env.REACT_APP_CHAIN_ID
-  ? parseNetwork(parseInt(process.env.REACT_APP_CHAIN_ID))
-  : ChainId.ALFAJORES; // TODO update
+import { CHAIN_ID } from "config";
 
 export const network = new NetworkConnector({
-  defaultChainId: NETWORK_CHAIN_ID,
+  defaultChainId: CHAIN_ID,
 });
 
 let networkLibrary: Web3Provider | undefined;
@@ -26,5 +23,5 @@ export const injected = new InjectedConnector({
 export const ledger = new LedgerConnector();
 
 export const valora = new ValoraConnector({
-  defaultChainId: NETWORK_CHAIN_ID,
+  defaultChainId: CHAIN_ID,
 });

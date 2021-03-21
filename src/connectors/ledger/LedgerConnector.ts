@@ -11,7 +11,7 @@ import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import { ChainId, CHAIN_INFO } from "@ubeswap/sdk";
 import { AbstractConnector } from "@web3-react/abstract-connector";
 import { ConnectorUpdate } from "@web3-react/types";
-import { NETWORK_CHAIN_ID } from "./../../connectors";
+import { CHAIN_ID } from "config";
 
 class LedgerKit {
   private closed = false;
@@ -52,16 +52,16 @@ export class LedgerConnector extends AbstractConnector {
   private kit: LedgerKit | null = null;
 
   constructor() {
-    super({ supportedChainIds: [NETWORK_CHAIN_ID] });
+    super({ supportedChainIds: [CHAIN_ID] });
   }
 
   public async activate(): Promise<ConnectorUpdate> {
     const idxs = [0, 1, 2, 3, 4];
-    const ledgerKit = await LedgerKit.init(NETWORK_CHAIN_ID, idxs);
+    const ledgerKit = await LedgerKit.init(CHAIN_ID, idxs);
     this.kit = ledgerKit;
     return {
       provider: ledgerKit.kit.web3.currentProvider,
-      chainId: NETWORK_CHAIN_ID,
+      chainId: CHAIN_ID,
       account: ledgerKit.wallet.getAccounts()[0],
     };
   }
@@ -71,7 +71,7 @@ export class LedgerConnector extends AbstractConnector {
   }
 
   public async getChainId(): Promise<number> {
-    return NETWORK_CHAIN_ID;
+    return CHAIN_ID;
   }
 
   public async getAccount(): Promise<string | null> {
