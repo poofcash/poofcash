@@ -166,9 +166,7 @@ const DepositPage = () => {
       <div>
         <h3>Success!</h3>
         <p>Keep this note. It allows you to withdraw anonymized CELO.</p>
-        <Textarea readOnly rows={4}>
-          {noteString}
-        </Textarea>
+        <Textarea readOnly rows={4} value={noteString} />
       </div>
     );
   }

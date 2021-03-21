@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { generateProof, parseNote } from "utils/snarks-functions";
-import { CHAIN_ID, RELAYER_URL } from "config";
+import { BLOCKSCOUT_URL, CHAIN_ID, RELAYER_URL } from "config";
 import { getContract } from "hooks/getContract";
 import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
@@ -29,6 +29,7 @@ const WithdrawPage = () => {
     txSent: false,
     error: false,
   });
+  const [txHash, setTxHash] = React.useState();
   const handleChange = (event: any) => {
     // Handle change of input fields
     switch (event.target.name) {
@@ -98,13 +99,20 @@ const WithdrawPage = () => {
           proof,
           args,
         });
-        console.log(
-          `Transaction submitted through the relay. The transaction hash is ${relay.data.txHash}`
-        );
 
-        // TODO
-        // const receipt = await waitForTxReceipt({ txHash: relay.data.txHash });
-        // console.log('Transaction mined in block', receipt.blockNumber);
+        // TODO fragile to wait 5 seconds
+        setTimeout(() => {
+          axios
+            .get(RELAYER_URL + `/v1/jobs/${relay.data.id}`)
+            .then((job) => {
+              setTxHash(job.data.txhash);
+              console.log(
+                `Transaction submitted through the relay. The transaction hash is ${job.data.txHash}`
+              );
+              setTxHash(job.data.txHash);
+            })
+            .catch(console.error);
+        }, 5000);
       } catch (e) {
         if (e.response) {
           console.error(e.response.data.error);
@@ -163,8 +171,19 @@ const WithdrawPage = () => {
       <div>
         <p>Success!</p>
         <p>CELO tokens were sent to:</p>
-        <br />
         <b>{state.ethAddress}</b>
+        <br />
+        {txHash ? (
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`${BLOCKSCOUT_URL}/tx/${txHash}`}
+          >
+            View transaction on Blockscout
+          </a>
+        ) : (
+          <p>Fetching transaction hash...</p>
+        )}
       </div>
     );
   }

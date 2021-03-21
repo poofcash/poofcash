@@ -2,11 +2,9 @@
 - [-] Anon set
   - [X] Basic: Show # of deposits in contract
   - [ ] Advanced: Show current deposits and timestamps
-- [ ] Transaction link to blockscout
 - [ ] Refactor on view logic
 - [ ] Address TODOs
 - [ ] Remove unnecessary consoles
-- [ ] Error states (for wallet connections)
 - [ ] Add CEW?
 * done
 - [X] Fix approve
@@ -16,3 +14,5 @@
 - [X] Fix configs
 
 - [X] Show current balance
+- [X] Transaction link to blockscout
+- [X] Error states (for wallet connections)

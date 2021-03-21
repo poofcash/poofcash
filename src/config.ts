@@ -23,6 +23,11 @@ const TOKEN_ADDRESS = {
 const RELAYER_URL = "https://poof-relayer.herokuapp.com";
 // const RELAYER_URL = "http://localhost:8000";
 
+const BLOCKSCOUT_URL =
+  CHAIN_ID === 42220
+    ? "https://explorer.celo.org"
+    : "https://alfajores-blockscout.celo-testnet.org";
+
 export {
   CHAIN_ID,
   RPC_URL,
@@ -30,4 +35,5 @@ export {
   NETWORK,
   RELAYER_URL,
   AMOUNTS_DISABLED,
+  BLOCKSCOUT_URL,
 };
