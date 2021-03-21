@@ -12,12 +12,13 @@ import {
   useDepositCallback,
   DepositState,
 } from "hooks/writeContract";
-import { TokenAmount, CELO, ChainId } from "@ubeswap/sdk";
+import { TokenAmount, CELO } from "@ubeswap/sdk";
 import {
   requestValoraAuth,
   useInitValoraResponse,
 } from "connectors/valora/valoraUtils";
 import { instances } from "poof-token";
+import { useGetTokenBalance } from "hooks/readContract";
 
 declare global {
   interface Window {
@@ -33,10 +34,9 @@ const DepositPage = () => {
   const { account } = useActiveWeb3React();
   const { activate } = useWeb3React();
   const [selectedAmount, setSelectedAmount] = React.useState(0.1);
+  const [noteString, setNoteString] = React.useState("");
+  const [accountBalance, setAccountBalance] = React.useState<number>();
   const [state, setState] = React.useState({
-    anonymitySetSize: 0,
-    noteString: "",
-    anonymitySetLoading: false,
     showDepositInfo: false,
     showModal: false,
   });
@@ -49,15 +49,16 @@ const DepositPage = () => {
     .sort()
     .map(Number);
   const [approvalState, approveCallback] = useApproveCallback(
-    new TokenAmount(
-      CELO[ChainId.ALFAJORES],
-      (selectedAmount * 10 ** 18).toString()
-    ),
+    new TokenAmount(CELO[CHAIN_ID], (selectedAmount * 10 ** 18).toString()),
     tornadoAddress
   );
-  console.log("Approval", approvalState);
   const [depositState, depositCallback] = useDepositCallback(selectedAmount);
-  console.log("Deposit", depositState);
+  const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], account);
+  React.useEffect(() => {
+    getAccountBalance()
+      .then((tokenAmount) => setAccountBalance(Number(tokenAmount.toExact())))
+      .catch(console.error);
+  }, [getAccountBalance, account]);
 
   const loading =
     approvalState === ApprovalState.PENDING ||
@@ -91,35 +92,27 @@ const DepositPage = () => {
     }
 
     try {
-      // TODO verify sufficient balance
-      //const tokenInstance = new Contract(
-      //TOKEN_ADDRESS.alfajores,
-      //tokenABI,
-      //getProviderOrSigner(library, account),
-      //);
+      if (!accountBalance) {
+        console.error("Tried depositing without a defined account balance");
+        return;
+      }
+      if (accountBalance < selectedAmount) {
+        alert(
+          `Insufficient balance (${accountBalance}) for depositing ${selectedAmount} CELO`
+        );
+        return;
+      }
 
-      // check if the user has sufficient token balance
-      // TODO
-      // const usersTokenBalance = await tokenInstance.methods.balanceOf(userAddress).call();
-      // if (usersTokenBalance < amount * 10 ** 18) {
-      //   setState({...state, showModal: true, loading: false});
-      //   throw 'Insufficient balance of CELO tokens';
-      // }
-
-      // ----- DEPOSIT TX -----
-      // et noteString and commitment
-      console.log("getting noteString");
-
-      const { noteString, commitment } = getNoteStringAndCommitment(
+      const { noteString: note, commitment } = getNoteStringAndCommitment(
         currency,
         selectedAmount,
         CHAIN_ID
       );
-      console.log("Commitment", commitment);
 
       // send deposit Tx
       depositCallback(commitment);
-      setState({ ...state, showDepositInfo: true, noteString });
+      setNoteString(note);
+      setState({ ...state, showDepositInfo: true });
     } catch (error) {
       console.log("Error occured while making deposit");
       console.error(error);
@@ -151,12 +144,12 @@ const DepositPage = () => {
 
   // show deposit information is available
   let depositInfo = <></>;
-  if (state.noteString !== "" && !loading && state.showDepositInfo) {
+  if (noteString !== "" && !loading && state.showDepositInfo) {
     depositInfo = (
       <div className="deposit-info-div">
         <h3>Success!</h3>
         <p>Keep this note. It allows you to withdraw anonymized CELO.</p>
-        <div className="notestring">{state.noteString}</div>
+        <div className="notestring">{noteString}</div>
       </div>
     );
   }
@@ -283,6 +276,7 @@ const DepositPage = () => {
         <>{button}</>
       )}
       {account && <p>Account: {account}</p>}
+      {accountBalance != null && <p>Balance: {accountBalance} CELO</p>}
     </div>
   );
 };

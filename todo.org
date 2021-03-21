@@ -1,6 +1,6 @@
 * todo
 - [ ] Anon set
-- [ ] Show current balance
+- [ ] Transaction link to blockscout
 - [ ] Refactor on view logic
 - [ ] Address TODOs
 - [ ] Remove unnecessary consoles
@@ -13,3 +13,4 @@
 - [X] Use styled components
 - [X] Fix configs
 
+- [X] Show current balance

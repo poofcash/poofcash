@@ -10,9 +10,10 @@ import { useActiveWeb3React } from "hooks/web3";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 import { calculateFee } from "utils/gas";
 import { instances } from "poof-token";
+import { NetworkContextName } from "index";
 
 const WithdrawPage = () => {
-  const { activate } = useWeb3React();
+  const { activate } = useWeb3React(NetworkContextName);
   const { library } = useActiveWeb3React();
 
   React.useEffect(() => {

@@ -1,6 +1,8 @@
 import { ChainId } from "@ubeswap/sdk";
 
-const CHAIN_ID = Number(process.env.REACT_APP_CHAIN_ID || "42220");
+type ChainIdType = 42220 | 44787;
+const CHAIN_ID: ChainIdType =
+  process.env.REACT_APP_CHAIN_ID === "42220" ? 42220 : 44787;
 
 const NETWORK = CHAIN_ID === ChainId.MAINNET ? "mainnet" : "alfajores";
 

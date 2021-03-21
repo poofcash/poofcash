@@ -51,3 +51,28 @@ export function useGetTokenAllowance(
 
   return getTokenAllowance;
 }
+
+export function useGetTokenBalance(
+  token: Token,
+  owner?: string | null
+): () => Promise<TokenAmount> {
+  const contract = useTokenContract(token?.address, false);
+
+  const inputs = useMemo(() => [owner], [owner]);
+  const getBalance = useGetSingleCallResult<BigNumber>(
+    contract,
+    "balanceOf",
+    inputs
+  );
+
+  const getTokenBalance = async () => {
+    const balance = await getBalance();
+    const zeroTokenAmount = new TokenAmount(token, balance.toString());
+    if (!balance) {
+      return zeroTokenAmount;
+    }
+    return new TokenAmount(token, balance.toString());
+  };
+
+  return getTokenBalance;
+}
