@@ -25,6 +25,7 @@ const TOKEN_ADDRESS = {
 };
 
 const RELAYER_URL = "https://poof-relayer.herokuapp.com";
+// const RELAYER_URL = "http://localhost:8000";
 
 export {
   CHAIN_ID,

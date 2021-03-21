@@ -80,7 +80,7 @@ const createDeposit = (nullifier: string, secret: string) => {
 const generateProof = async ({
   deposit,
   recipient,
-  relayerAddress = 0,
+  rewardAccount = 0,
   fee = 0,
   refund = 0,
   tornado,
@@ -97,7 +97,7 @@ const generateProof = async ({
     root: root,
     nullifierHash: deposit.nullifierHash,
     recipient: bigInt(recipient),
-    relayer: bigInt(relayerAddress),
+    relayer: bigInt(rewardAccount),
     fee: bigInt(fee),
     refund: bigInt(refund),
 
@@ -115,7 +115,6 @@ const generateProof = async ({
   const provingKey = await (
     await fetch("withdraw_proving_key.bin")
   ).arrayBuffer();
-  console.log(circuit, provingKey);
   // generate proof data
   const proofData = await window.genZKSnarkProofAndWitness(
     input,
@@ -123,7 +122,7 @@ const generateProof = async ({
     provingKey
   );
   const { proof } = websnarkUtils.toSolidityInput(proofData);
-  console.timeEnd("Proof generated. Proof time");
+  console.timeEnd("Proof generated.");
 
   const args = [
     toHex(input.root),

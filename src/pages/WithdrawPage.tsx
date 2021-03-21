@@ -8,10 +8,17 @@ import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import { useActiveWeb3React } from "hooks/web3";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
+import { calculateFee } from "utils/gas";
 
 const WithdrawPage = () => {
   const { activate } = useWeb3React();
   const { library } = useActiveWeb3React();
+
+  React.useEffect(() => {
+    if (!library) {
+      activate(network);
+    }
+  }, [library, activate]);
 
   const [state, setState] = React.useState({
     noteWithdraw: "",
@@ -39,14 +46,19 @@ const WithdrawPage = () => {
    * Do an ETH withdrawal
    */
   const withdrawHandler = async () => {
-    activate(network);
     if (!library) {
       console.error("Library is not defined");
       return;
     }
     setState({ ...state, loading: true, txSent: false, error: false });
     const relayerStatus = await axios.get(RELAYER_URL + "/status");
-    const { relayerAddress } = relayerStatus.data;
+    const {
+      rewardAccount,
+      gasPrices,
+      tornadoServiceFee,
+      celoPrices,
+    } = relayerStatus.data;
+    console.log(relayerStatus);
 
     try {
       const refund: string = "0";
@@ -56,13 +68,23 @@ const WithdrawPage = () => {
         TORNADO_INSTANCES_ADDRESSES[NETWORK][currency][amount];
       const tornado = getContract(tornadoAddress, ERC20_TORNADO_ABI, library);
 
+      const fee = calculateFee({
+        gasPrices,
+        currency,
+        amount,
+        celoPrices,
+        tornadoServiceFee,
+        decimals: 18,
+      }); // TODO decimals hardcode
+
       // generate the proof
       console.log("Generating proof.");
       let { proof, args } = await generateProof({
         deposit,
         recipient,
-        relayerAddress,
+        rewardAccount,
         refund,
+        fee,
         tornado,
       });
 

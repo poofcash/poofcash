@@ -6,3 +6,33 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
     .mul(BigNumber.from(10000).add(BigNumber.from(1000)))
     .div(BigNumber.from(10000));
 }
+
+export function calculateFee({
+  gasPrices,
+  currency,
+  amount,
+  refund = 0,
+  celoPrices,
+  tornadoServiceFee,
+  decimals,
+}: {
+  gasPrices: any;
+  currency: string;
+  amount: number;
+  refund?: number;
+  celoPrices: any;
+  tornadoServiceFee: number;
+  decimals: number;
+}) {
+  // gas price is in gwei. Convert to CELO
+  const gasExpense = gasPrices[1.3] * Math.pow(10, 9) * 5 * Math.pow(10, 5);
+  const serviceFee =
+    amount * (tornadoServiceFee / 100) * Math.pow(10, decimals);
+  let totalExpense = 0;
+  switch (currency) {
+    case "celo": {
+      totalExpense = gasExpense + serviceFee;
+    }
+  }
+  return Math.floor(totalExpense);
+}
