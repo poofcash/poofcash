@@ -23,7 +23,7 @@ const WithdrawPage = () => {
 
   const [state, setState] = React.useState({
     noteWithdraw: "",
-    ethAddress: "",
+    recipientAddress: "",
     loading: false,
     proofGenerated: false,
     txSent: false,
@@ -33,8 +33,12 @@ const WithdrawPage = () => {
   const handleChange = (event: any) => {
     // Handle change of input fields
     switch (event.target.name) {
-      case "ethRecipientAddress":
-        setState({ ...state, ethAddress: event.target.value, txSent: false });
+      case "recipientAddress":
+        setState({
+          ...state,
+          recipientAddress: event.target.value,
+          txSent: false,
+        });
         break;
       case "note":
         setState({ ...state, noteWithdraw: event.target.value, txSent: false });
@@ -45,7 +49,7 @@ const WithdrawPage = () => {
   };
 
   /**
-   * Do an ETH withdrawal
+   * Do a CELO withdrawal
    */
   const withdrawHandler = async () => {
     if (!library) {
@@ -64,7 +68,7 @@ const WithdrawPage = () => {
 
     try {
       const refund: string = "0";
-      const recipient = state.ethAddress;
+      const recipient = state.recipientAddress;
       const { deposit, currency, amount } = parseNote(state.noteWithdraw);
       const tornadoAddress =
         instances[`netId${CHAIN_ID}`][currency].instanceAddress[amount];
@@ -151,7 +155,7 @@ const WithdrawPage = () => {
       <Button
         variant="primary"
         onClick={withdrawHandler}
-        disabled={state.ethAddress === "" || state.noteWithdraw === ""}
+        disabled={state.recipientAddress === "" || state.noteWithdraw === ""}
       >
         Withdraw
       </Button>
@@ -171,7 +175,7 @@ const WithdrawPage = () => {
       <div>
         <p>Success!</p>
         <p>CELO tokens were sent to:</p>
-        <b>{state.ethAddress}</b>
+        <b>{state.recipientAddress}</b>
         <br />
         {txHash ? (
           <a
@@ -207,11 +211,11 @@ const WithdrawPage = () => {
         onChange={handleChange}
       />
       <br />
-      <Label htmlFor="ethRecipientAddress">Recipient Ethereum address</Label>
+      <Label htmlFor="recipientAddress">Recipient address</Label>
       <Input
-        name="ethRecipientAddress"
+        name="recipientAddress"
         type="text"
-        value={state.ethAddress}
+        value={state.recipientAddress}
         onChange={handleChange}
       />
       <div>
