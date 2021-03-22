@@ -20,7 +20,10 @@ const TOKEN_ADDRESS = {
   },
 };
 
-const RELAYER_URL = "https://poof-relayer.herokuapp.com";
+const RELAYER_URL =
+  CHAIN_ID === ChainId.MAINNET
+    ? "https://poof-relayer-prod.herokuapp.com"
+    : "https://poof-relayer.herokuapp.com";
 // const RELAYER_URL = "http://localhost:8000";
 
 const BLOCKSCOUT_URL =
