@@ -1,6 +1,7 @@
 import React from "react";
+import moment from "moment";
 import { useWeb3React } from "@web3-react/core";
-import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
+import { AMOUNTS_DISABLED, BLOCKSCOUT_URL, CHAIN_ID } from "config";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import Modal from "components/Modal";
 import { ledger, valora } from "connectors";
@@ -16,11 +17,11 @@ import {
   useInitValoraResponse,
 } from "connectors/valora/valoraUtils";
 import { instances } from "poof-token";
-import { useGetTokenBalance } from "hooks/readContract";
+import { useGetTokenBalance, useTornadoDeposits } from "hooks/readContract";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Label, Radio } from "@rebass/forms";
 import { Button, Flex, Text, Spinner, Textarea } from "@theme-ui/components";
-import { Grid } from "theme-ui";
+import { Card, Grid } from "theme-ui";
 import styled from "@emotion/styled";
 
 const ButtonsWrapper = styled.div({
@@ -65,9 +66,11 @@ const DepositPage = () => {
   const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], account);
   const getContractBalance = useGetTokenBalance(CELO[CHAIN_ID], tornadoAddress);
   React.useEffect(() => {
-    getAccountBalance()
-      .then((tokenAmount) => setAccountBalance(Number(tokenAmount.toExact())))
-      .catch(console.error);
+    if (account) {
+      getAccountBalance()
+        .then((tokenAmount) => setAccountBalance(Number(tokenAmount.toExact())))
+        .catch(console.error);
+    }
   }, [getAccountBalance, account]);
   React.useEffect(() => {
     getContractBalance()
@@ -76,6 +79,8 @@ const DepositPage = () => {
       })
       .catch(console.error);
   }, [getContractBalance, tornadoAddress]);
+
+  const timestamps = useTornadoDeposits(tornadoAddress);
 
   const loading =
     approvalState === ApprovalState.PENDING ||
@@ -141,7 +146,7 @@ const DepositPage = () => {
   };
 
   const amountOptions = (
-    <Grid columns={[4]}>
+    <Grid columns={[2]}>
       {depositAmounts.map((depositAmount, index) => (
         <Label key={index} justifyContent="center">
           <Flex css={{ flexDirection: "column", alignItems: "center" }}>
@@ -264,19 +269,32 @@ const DepositPage = () => {
     <div>
       <h3>Specify a CELO amount to deposit</h3>
 
-      {amountOptions}
+      <Flex css={{ justifyContent: "space-evenly", flexWrap: "wrap" }}>
+        {amountOptions}
+        <Card>
+          {contractBalance != null && (
+            <p>
+              Current number of deposits:{" "}
+              {Math.ceil(contractBalance / selectedAmount)}
+            </p>
+          )}
+
+          <h4>Last 5 deposits</h4>
+          {timestamps.length > 0 ? (
+            <Grid columns={[2]}>
+              {timestamps.slice(0, 5).map((timestamp, idx) => (
+                <p key={idx}>
+                  ({idx + 1}) {moment(timestamp * 1000).fromNow()}
+                </p>
+              ))}
+            </Grid>
+          ) : (
+            <p>There are no deposits in this contract.</p>
+          )}
+        </Card>
+      </Flex>
 
       {depositInfo}
-
-      {
-        // TODO account shouldn't be a neccesary constraint
-        account && contractBalance != null && (
-          <p>
-            Current number of deposits:{" "}
-            {Math.ceil(contractBalance / selectedAmount)}
-          </p>
-        )
-      }
 
       {insufficientBalanceModal}
 
@@ -289,9 +307,39 @@ const DepositPage = () => {
       ) : (
         <ButtonsWrapper>{button}</ButtonsWrapper>
       )}
-      {account && <p>Account: {account}</p>}
-      {account && accountBalance != null && (
-        <p>Balance: {accountBalance} CELO</p>
+      {account && (
+        <>
+          <span>
+            <Text
+              sx={{
+                fontSize: 2,
+                fontWeight: "bold",
+              }}
+            >
+              Account:{" "}
+            </Text>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`${BLOCKSCOUT_URL}/address/${account}`}
+            >
+              <Text sx={{ fontSize: 2 }}>{account}</Text>
+            </a>
+          </span>
+          {accountBalance != null && (
+            <span>
+              <Text
+                sx={{
+                  fontSize: 2,
+                  fontWeight: "bold",
+                }}
+              >
+                Account balance:{" "}
+              </Text>
+              <Text sx={{ fontSize: 2 }}>{accountBalance} CELO</Text>
+            </span>
+          )}
+        </>
       )}
     </div>
   );

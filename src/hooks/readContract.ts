@@ -1,8 +1,11 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Token, TokenAmount } from "@ubeswap/sdk";
-import { useTokenContract } from "hooks/getContract";
+import { getContract, useTokenContract } from "hooks/getContract";
 import { Contract } from "@ethersproject/contracts";
 import { BigNumber } from "@ethersproject/bignumber";
+import { useWeb3React } from "@web3-react/core";
+import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
+import { NetworkContextName } from "index";
 
 type MethodArg = string | number | BigNumber;
 type OptionalMethodInputs =
@@ -78,4 +81,29 @@ export function useGetTokenBalance(
   };
 
   return getTokenBalance;
+}
+
+// Returns a list of timestamps of the latest deposits
+export function useTornadoDeposits(tornadoAddress: string) {
+  const { library } = useWeb3React(NetworkContextName);
+  const tornado = useMemo(
+    () => getContract(tornadoAddress, ERC20_TORNADO_ABI, library),
+    [tornadoAddress, library]
+  );
+  const [timestamps, setTimestamps] = useState<Array<number>>([]);
+  useEffect(() => {
+    if (tornado && library) {
+      const depositFilter = tornado.filters.Deposit();
+      tornado.queryFilter(depositFilter, 0, "latest").then((events) => {
+        const blockPromises = events.map(({ blockNumber }) => {
+          return library.provider.kit.connection.getBlock(blockNumber);
+        });
+        Promise.all(blockPromises).then((blocks) => {
+          setTimestamps(blocks.map(({ timestamp }) => timestamp as number));
+        });
+      });
+    }
+  }, [tornado, library]);
+
+  return timestamps;
 }

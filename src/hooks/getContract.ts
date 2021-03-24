@@ -1,10 +1,11 @@
 import { Contract } from "@ethersproject/contracts";
 import ERC20_ABI from "abis/erc20.json";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
-import { useActiveWeb3React } from "hooks/web3";
 import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 import { getAddress } from "@ethersproject/address";
 import { AddressZero } from "@ethersproject/constants";
+import { NetworkContextName } from "index";
+import { useWeb3React } from "@web3-react/core";
 
 // returns the checksummed address if the address is valid, otherwise returns false
 function isAddress(value: any): string | false {
@@ -52,16 +53,22 @@ function useContract(
   ABI: any,
   withSignerIfPossible = true
 ): Contract | null {
-  const { library, account } = useActiveWeb3React();
+  const { library, account } = useWeb3React();
+  const { library: networkLibrary } = useWeb3React(NetworkContextName);
 
-  if (!address || !ABI || !library) return null;
+  if (!address || !ABI) return null;
   try {
-    return getContract(
-      address,
-      ABI,
-      library,
-      withSignerIfPossible && account ? account : undefined
-    );
+    if (library) {
+      return getContract(
+        address,
+        ABI,
+        library,
+        withSignerIfPossible && account ? account : undefined
+      );
+    } else if (networkLibrary) {
+      return getContract(address, ABI, networkLibrary, undefined);
+    }
+    return null;
   } catch (error) {
     console.error("Failed to get contract", error);
     return null;

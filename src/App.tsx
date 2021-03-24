@@ -6,6 +6,9 @@ import { Heading } from "@theme-ui/components";
 import { Alert, Button, Container } from "theme-ui";
 import styled from "@emotion/styled";
 import axios from "axios";
+import { network } from "connectors";
+import { useWeb3React } from "@web3-react/core";
+import { NetworkContextName } from "index";
 
 type UserLocation = {
   country: string;
@@ -32,6 +35,14 @@ const PageSwitcher = styled.div({
 
 // pass props and State interface to Component class
 const App = () => {
+  const { activate, library } = useWeb3React(NetworkContextName);
+
+  React.useEffect(() => {
+    if (!library) {
+      activate(network);
+    }
+  }, [library, activate]);
+
   const withdrawPage = React.useMemo(() => <WithdrawPage />, []);
   const depositPage = React.useMemo(() => <DepositPage />, []);
   const [selectedPage, setSelectedPage] = React.useState(depositPage);

@@ -3,7 +3,6 @@ import axios from "axios";
 import { generateProof, parseNote } from "utils/snarks-functions";
 import { BLOCKSCOUT_URL, CHAIN_ID, RELAYER_URL } from "config";
 import { getContract } from "hooks/getContract";
-import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 import { calculateFee } from "utils/gas";
@@ -13,13 +12,7 @@ import { Spinner } from "@theme-ui/components";
 import { Button, Container, Input, Label } from "theme-ui";
 
 const WithdrawPage = () => {
-  const { activate, library } = useWeb3React(NetworkContextName);
-
-  React.useEffect(() => {
-    if (!library) {
-      activate(network);
-    }
-  }, [library, activate]);
+  const { library } = useWeb3React(NetworkContextName);
 
   const [state, setState] = React.useState({
     noteWithdraw: "",
@@ -64,7 +57,6 @@ const WithdrawPage = () => {
       tornadoServiceFee,
       celoPrices,
     } = relayerStatus.data;
-    console.log(relayerStatus);
 
     try {
       const refund: string = "0";
@@ -175,7 +167,15 @@ const WithdrawPage = () => {
       <div>
         <p>Success!</p>
         <p>CELO tokens were sent to:</p>
-        <b>{state.recipientAddress}</b>
+        <b>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`${BLOCKSCOUT_URL}/address/${state.recipientAddress}`}
+          >
+            {state.recipientAddress}
+          </a>
+        </b>
         <br />
         {txHash ? (
           <a

@@ -1,7 +1,4 @@
 * todo
-- [-] Anon set
-  - [X] Basic: Show # of deposits in contract
-  - [ ] Advanced: Show current deposits and timestamps
 - [ ] Refactor on view logic
 - [ ] Address TODOs
 - [ ] Remove unnecessary consoles
@@ -16,3 +13,6 @@
 - [X] Show current balance
 - [X] Transaction link to blockscout
 - [X] Error states (for wallet connections)
+- [X] Anon set
+  - [X] Basic: Show # of deposits in contract
+  - [X] Advanced: Show current deposits and timestamps
