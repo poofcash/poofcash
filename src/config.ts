@@ -31,6 +31,8 @@ const BLOCKSCOUT_URL =
     ? "https://explorer.celo.org"
     : "https://alfajores-blockscout.celo-testnet.org";
 
+const IP_URL = "https://ip.tornado.cash";
+
 export {
   CHAIN_ID,
   RPC_URL,
@@ -39,4 +41,5 @@ export {
   RELAYER_URL,
   AMOUNTS_DISABLED,
   BLOCKSCOUT_URL,
+  IP_URL,
 };

@@ -1,10 +1,23 @@
 import React from "react";
 import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
-import { CHAIN_ID } from "config";
+import { CHAIN_ID, IP_URL } from "config";
 import { Heading } from "@theme-ui/components";
 import { Alert, Button, Container } from "theme-ui";
 import styled from "@emotion/styled";
+import axios from "axios";
+
+type UserLocation = {
+  country: string;
+  region: string;
+  eu: string;
+  timezone: string;
+  city: string;
+  ll: Array<number>;
+  metro: number;
+  area: number;
+  ip: string;
+};
 
 const Page = styled.div({
   display: "flex",
@@ -22,6 +35,13 @@ const App = () => {
   const withdrawPage = React.useMemo(() => <WithdrawPage />, []);
   const depositPage = React.useMemo(() => <DepositPage />, []);
   const [selectedPage, setSelectedPage] = React.useState(depositPage);
+  const [userLocation, setUserLocation] = React.useState<UserLocation>();
+  React.useEffect(() => {
+    axios
+      .get(IP_URL)
+      .then(({ data }) => setUserLocation(data))
+      .catch(console.error);
+  }, []);
 
   const switchToDeposit = () => {
     setSelectedPage(depositPage);
@@ -35,6 +55,12 @@ const App = () => {
     <>
       {CHAIN_ID === 44787 && (
         <Alert>NOTE: This is poof.cash on the Alfajores testnet.</Alert>
+      )}
+      {userLocation && (
+        <Alert>
+          Your IP: {userLocation.ip}, {userLocation.city},{" "}
+          {userLocation.country}
+        </Alert>
       )}
       <Page>
         <Heading>Poof</Heading>
