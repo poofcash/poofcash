@@ -1,4 +1,5 @@
 import React from "react";
+import CompliancePage from "pages/CompliancePage";
 import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
 import { CHAIN_ID, IP_URL } from "config";
@@ -45,6 +46,7 @@ const App = () => {
 
   const withdrawPage = React.useMemo(() => <WithdrawPage />, []);
   const depositPage = React.useMemo(() => <DepositPage />, []);
+  const compliancePage = React.useMemo(() => <CompliancePage />, []);
   const [selectedPage, setSelectedPage] = React.useState(depositPage);
   const [userLocation, setUserLocation] = React.useState<UserLocation>();
   React.useEffect(() => {
@@ -57,9 +59,11 @@ const App = () => {
   const switchToDeposit = () => {
     setSelectedPage(depositPage);
   };
-
   const switchToWithdraw = () => {
     setSelectedPage(withdrawPage);
+  };
+  const switchToCompliance = () => {
+    setSelectedPage(compliancePage);
   };
 
   return (
@@ -91,6 +95,16 @@ const App = () => {
             onClick={switchToWithdraw}
           >
             Withdraw
+          </Button>
+          <Button
+            variant={
+              selectedPage.type === compliancePage.type
+                ? "secondary"
+                : "outline"
+            }
+            onClick={switchToCompliance}
+          >
+            Compliance
           </Button>
         </PageSwitcher>
         <Container mt={16} sx={{ width: "66%" }}>

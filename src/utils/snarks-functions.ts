@@ -14,7 +14,7 @@ const pedersenHash = (data: object) =>
   circomlib.babyJub.unpackPoint(circomlib.pedersenHash.hash(data))[0];
 
 // BigNumber to hex string of specified length
-const toHex = (number: any, length = 32) =>
+export const toHex = (number: any, length = 32) =>
   "0x" +
   (number instanceof Buffer
     ? number.toString("hex")
@@ -38,6 +38,12 @@ const getNoteStringAndCommitment = (
   const noteString: string = `poof-${currency}-${amount}-${netId}-${note}`;
   commitment = toHex(commitment);
   return { noteString, commitment };
+};
+
+export const isValidNote = (noteString: string) => {
+  const noteRegex = /poof-(?<currency>\w+)-(?<amount>[\d.]+)-(?<netId>\d+)-0x(?<note>[0-9a-fA-F]{124})/g;
+  let match = noteRegex.exec(noteString);
+  return Boolean(match);
 };
 
 /**

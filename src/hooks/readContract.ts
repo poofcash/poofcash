@@ -84,7 +84,10 @@ export function useGetTokenBalance(
 }
 
 // Returns a list of timestamps of the latest deposits
-export function useTornadoDeposits(tornadoAddress?: string) {
+export function useTornadoDeposits(
+  tornadoAddress?: string,
+  filters?: Array<any>
+) {
   const { library } = useWeb3React(NetworkContextName);
   const tornado = useMemo(() => {
     if (!tornadoAddress) {
@@ -96,7 +99,7 @@ export function useTornadoDeposits(tornadoAddress?: string) {
 
   useEffect(() => {
     if (tornado && library) {
-      const depositFilter = tornado.filters.Deposit();
+      const depositFilter = tornado.filters.Deposit(filters);
       tornado.queryFilter(depositFilter, 0, "latest").then((events) => {
         const blockPromises = events.map(({ blockNumber }) => {
           return library.provider.kit.connection.getBlock(blockNumber);
@@ -106,7 +109,7 @@ export function useTornadoDeposits(tornadoAddress?: string) {
         });
       });
     }
-  }, [tornado, library]);
+  }, [tornado, library, filters]);
 
   return deposits;
 }
