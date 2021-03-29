@@ -80,7 +80,7 @@ const DepositPage = () => {
       .catch(console.error);
   }, [getContractBalance, tornadoAddress]);
 
-  const timestamps = useTornadoDeposits(tornadoAddress);
+  const deposits = useTornadoDeposits(tornadoAddress);
 
   const loading =
     approvalState === ApprovalState.PENDING ||
@@ -280,13 +280,18 @@ const DepositPage = () => {
           )}
 
           <h4>Last 5 deposits</h4>
-          {timestamps.length > 0 ? (
+          {deposits.length > 0 ? (
             <Grid columns={[2]}>
-              {timestamps.slice(0, 5).map((timestamp, idx) => (
-                <p key={idx}>
-                  ({idx + 1}) {moment(timestamp * 1000).fromNow()}
-                </p>
-              ))}
+              {deposits
+                .map((deposit: any) => deposit.timestamp)
+                .sort()
+                .reverse()
+                .slice(0, 5)
+                .map((timestamp: number, idx: number) => (
+                  <p key={idx}>
+                    ({idx + 1}) {moment(timestamp * 1000).fromNow()}
+                  </p>
+                ))}
             </Grid>
           ) : (
             <p>There are no deposits in this contract.</p>

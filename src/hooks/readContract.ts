@@ -84,13 +84,16 @@ export function useGetTokenBalance(
 }
 
 // Returns a list of timestamps of the latest deposits
-export function useTornadoDeposits(tornadoAddress: string) {
+export function useTornadoDeposits(tornadoAddress?: string) {
   const { library } = useWeb3React(NetworkContextName);
-  const tornado = useMemo(
-    () => getContract(tornadoAddress, ERC20_TORNADO_ABI, library),
-    [tornadoAddress, library]
-  );
-  const [timestamps, setTimestamps] = useState<Array<number>>([]);
+  const tornado = useMemo(() => {
+    if (!tornadoAddress) {
+      return;
+    }
+    return getContract(tornadoAddress, ERC20_TORNADO_ABI, library);
+  }, [tornadoAddress, library]);
+  const [deposits, setDeposits] = useState<any>([]);
+
   useEffect(() => {
     if (tornado && library) {
       const depositFilter = tornado.filters.Deposit();
@@ -99,11 +102,11 @@ export function useTornadoDeposits(tornadoAddress: string) {
           return library.provider.kit.connection.getBlock(blockNumber);
         });
         Promise.all(blockPromises).then((blocks) => {
-          setTimestamps(blocks.map(({ timestamp }) => timestamp as number));
+          setDeposits(blocks);
         });
       });
     }
   }, [tornado, library]);
 
-  return timestamps;
+  return deposits;
 }
