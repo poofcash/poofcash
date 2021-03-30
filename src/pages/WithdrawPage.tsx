@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { generateProof, parseNote } from "utils/snarks-functions";
-import { BLOCKSCOUT_URL, CHAIN_ID, RELAYER_URL } from "config";
+import { CHAIN_ID, RELAYER_URL } from "config";
 import { getContract } from "hooks/getContract";
 import { useWeb3React } from "@web3-react/core";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
@@ -10,6 +10,7 @@ import { instances } from "poof-token";
 import { NetworkContextName } from "index";
 import { Spinner } from "@theme-ui/components";
 import { Button, Container, Input, Label } from "theme-ui";
+import { BlockscoutAddressLink, BlockscoutTxLink } from "components/Links";
 
 const WithdrawPage = () => {
   const { library } = useWeb3React(NetworkContextName);
@@ -22,7 +23,7 @@ const WithdrawPage = () => {
     txSent: false,
     error: false,
   });
-  const [txHash, setTxHash] = React.useState();
+  const [txHash, setTxHash] = React.useState<string>();
   const handleChange = (event: any) => {
     // Handle change of input fields
     switch (event.target.name) {
@@ -168,23 +169,15 @@ const WithdrawPage = () => {
         <p>Success!</p>
         <p>CELO tokens were sent to:</p>
         <b>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`${BLOCKSCOUT_URL}/address/${state.recipientAddress}`}
-          >
+          <BlockscoutAddressLink address={state.recipientAddress}>
             {state.recipientAddress}
-          </a>
+          </BlockscoutAddressLink>
         </b>
         <br />
         {txHash ? (
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`${BLOCKSCOUT_URL}/tx/${txHash}`}
-          >
+          <BlockscoutTxLink tx={txHash}>
             View transaction on Blockscout
-          </a>
+          </BlockscoutTxLink>
         ) : (
           <p>Fetching transaction hash...</p>
         )}

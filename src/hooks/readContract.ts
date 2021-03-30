@@ -83,10 +83,10 @@ export function useGetTokenBalance(
   return getTokenBalance;
 }
 
-// Returns a list of timestamps of the latest deposits
+// Returns a list of the latest deposits
 export function useTornadoDeposits(
   tornadoAddress?: string,
-  filters?: Array<any>
+  commitment?: string
 ) {
   const { library } = useWeb3React(NetworkContextName);
   const tornado = useMemo(() => {
@@ -99,7 +99,9 @@ export function useTornadoDeposits(
 
   useEffect(() => {
     if (tornado && library) {
-      const depositFilter = tornado.filters.Deposit(filters);
+      const depositFilter = tornado.filters.Deposit(
+        commitment ? [commitment] : []
+      );
       tornado.queryFilter(depositFilter, 0, "latest").then((events) => {
         const blockPromises = events.map(({ blockNumber }) => {
           return library.provider.kit.connection.getBlock(blockNumber);
@@ -109,7 +111,46 @@ export function useTornadoDeposits(
         });
       });
     }
-  }, [tornado, library, filters]);
+  }, [tornado, library, commitment]);
 
   return deposits;
+}
+
+// Returns a list of the latest withrdaws
+export function useTornadoWithdraws(
+  tornadoAddress?: string,
+  nullifierHash?: string
+) {
+  const { library } = useWeb3React(NetworkContextName);
+  const tornado = useMemo(() => {
+    if (!tornadoAddress) {
+      return;
+    }
+    return getContract(tornadoAddress, ERC20_TORNADO_ABI, library);
+  }, [tornadoAddress, library]);
+  const [withdrawBlocks, setWithdrawBlocks] = useState<any>([]);
+  const [withdrawEvents, setWithdrawEvents] = useState<any>([]);
+
+  useEffect(() => {
+    if (tornado && library) {
+      const withdrawFilter = tornado.filters.Withdrawal();
+      tornado.queryFilter(withdrawFilter, 0, "latest").then((events) => {
+        const filteredEvents = events.filter((event: any) => {
+          if (!nullifierHash) {
+            return true;
+          }
+          return event.args[1] === nullifierHash;
+        });
+        setWithdrawEvents(filteredEvents);
+        const blockPromises = filteredEvents.map(({ blockNumber }) => {
+          return library.provider.kit.connection.getBlock(blockNumber);
+        });
+        Promise.all(blockPromises).then((blocks) => {
+          setWithdrawBlocks(blocks);
+        });
+      });
+    }
+  }, [tornado, library, nullifierHash]);
+
+  return [withdrawBlocks, withdrawEvents];
 }

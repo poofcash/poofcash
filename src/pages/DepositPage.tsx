@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { useWeb3React } from "@web3-react/core";
-import { AMOUNTS_DISABLED, BLOCKSCOUT_URL, CHAIN_ID } from "config";
+import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import Modal from "components/Modal";
 import { ledger, valora } from "connectors";
@@ -23,6 +23,7 @@ import { Label, Radio } from "@rebass/forms";
 import { Button, Flex, Text, Spinner, Textarea } from "@theme-ui/components";
 import { Card, Grid } from "theme-ui";
 import styled from "@emotion/styled";
+import { BlockscoutAddressLink } from "components/Links";
 
 const ButtonsWrapper = styled.div({
   marginTop: "16px",
@@ -323,13 +324,9 @@ const DepositPage = () => {
             >
               Account:{" "}
             </Text>
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`${BLOCKSCOUT_URL}/address/${account}`}
-            >
+            <BlockscoutAddressLink address={account}>
               <Text sx={{ fontSize: 2 }}>{account}</Text>
-            </a>
+            </BlockscoutAddressLink>
           </span>
           {accountBalance != null && (
             <span>
