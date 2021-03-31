@@ -12,7 +12,7 @@ const RPC_URL: string =
     : "https://alfajores-forno.celo-testnet.org";
 
 // Do not allow the user to choose the following amounts
-const AMOUNTS_DISABLED: number[] = [];
+const AMOUNTS_DISABLED: string[] = [];
 
 const TOKEN_ADDRESS = {
   alfajores: {

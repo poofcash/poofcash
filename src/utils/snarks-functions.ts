@@ -23,7 +23,7 @@ export const toHex = (number: any, length = 32) =>
 
 const getNoteStringAndCommitment = (
   currency: string,
-  amount: number,
+  amount: string,
   netId: number
 ) => {
   const nullifier = rbigint(31);

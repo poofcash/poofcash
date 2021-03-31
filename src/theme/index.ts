@@ -2,22 +2,21 @@ export const preset = {
   colors: {
     text: "#000",
     background: "#fff",
-    primary: "#07c",
+    primary: "#499EE9",
     secondary: "#30c",
     muted: "#f6f6f9",
     gray: "#dddddf",
     highlight: "hsla(205, 100%, 40%, 0.125)",
   },
   fonts: {
-    body: "system-ui, sans-serif",
+    body: "Helvetica",
     heading: "inherit",
-    monospace: "Menlo, monospace",
+    monospace: "Helvetica",
   },
   fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96],
   fontWeights: {
-    body: 400,
-    heading: 700,
-    bold: 700,
+    normal: 400,
+    bold: 600,
   },
   lineHeights: {
     body: 1.5,
@@ -27,29 +26,37 @@ export const preset = {
   sizes: {
     avatar: 48,
   },
-  radii: {
-    default: 4,
-    circle: 99999,
-  },
   shadows: {
     card: "0 0 4px rgba(0, 0, 0, .125)",
   },
   // rebass variants
   text: {
-    heading: {
-      fontFamily: "heading",
-      lineHeight: "heading",
-      fontWeight: "heading",
+    regular: {
+      fontWeight: "normal",
+      fontStyle: "normal",
+      fontSize: [16],
+      lineHeight: "20px",
     },
-    display: {
-      fontFamily: "heading",
-      fontWeight: "heading",
-      lineHeight: "heading",
-      fontSize: [5, 6, 7],
+    bold: {
+      fontWeight: "bold",
     },
-    caps: {
-      textTransform: "uppercase",
-      letterSpacing: "0.1em",
+    form: {
+      fontWeight: "normal",
+      fontStyle: "normal",
+      fontSize: [12],
+      lineHeight: "16px",
+    },
+    subtitle: {
+      fontStyle: "normal",
+      fontWeight: "normal",
+      fontSize: 12,
+      lineHeight: "16px",
+    },
+    tableHeader: {
+      fontWeight: "bold",
+      fontStyle: "normal",
+      fontSize: [12],
+      lineHeight: "20px",
     },
   },
   variants: {
@@ -65,6 +72,7 @@ export const preset = {
     },
     link: {
       color: "primary",
+      textDecoration: "none",
     },
     nav: {
       fontSize: 1,
@@ -80,22 +88,41 @@ export const preset = {
   },
   buttons: {
     primary: {
-      fontSize: 2,
-      fontWeight: "bold",
+      ":disabled": {
+        color: "#BABABA",
+        bg: "#F1F4F4",
+      },
       color: "background",
+      borderRadius: "32px",
+      fontSize: 16,
+      fontWeight: "bold",
+      lineHeight: "20px",
       bg: "primary",
-      borderRadius: "default",
     },
     outline: {
       variant: "buttons.primary",
       color: "primary",
-      bg: "transparent",
-      boxShadow: "inset 0 0 2px",
+      bg: "background",
+      border: "2px solid #499EE9",
     },
     secondary: {
       variant: "buttons.primary",
       color: "background",
       bg: "secondary",
+    },
+    switcher: {
+      bg: "transparent",
+      borderRadius: 0,
+      color: "text",
+      mr: 1,
+      ":focus": {
+        outline: "none",
+      },
+      borderBottom: "2px solid transparent",
+    },
+    switcherSelected: {
+      variant: "buttons.switcher",
+      borderBottom: "2px solid black",
     },
   },
   styles: {

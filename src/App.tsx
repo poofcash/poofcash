@@ -4,12 +4,14 @@ import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
 import { CHAIN_ID, IP_URL } from "config";
 import { Heading } from "@theme-ui/components";
-import { Alert, Button, Container } from "theme-ui";
-import styled from "@emotion/styled";
+import { Alert, Button, Container, Flex, Text } from "theme-ui";
 import axios from "axios";
-import { network } from "connectors";
+import { ledger, network, valora } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import { NetworkContextName } from "index";
+import { requestValoraAuth } from "connectors/valora/valoraUtils";
+import { BlockscoutAddressLink } from "components/Links";
+import styled from "@emotion/styled";
 
 type UserLocation = {
   country: string;
@@ -23,26 +25,27 @@ type UserLocation = {
   ip: string;
 };
 
-const Page = styled.div({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  textAlign: "center",
-});
-
-const PageSwitcher = styled.div({
-  marginTop: "16px",
+const AccountCircle = styled.div({
+  height: "32px",
+  width: "32px",
+  backgroundColor: "#499EE9",
+  borderRadius: "50%",
+  display: "inline-block",
+  marginRight: "8px",
 });
 
 // pass props and State interface to Component class
 const App = () => {
-  const { activate, library } = useWeb3React(NetworkContextName);
+  const { activate: activateNetwork, library } = useWeb3React(
+    NetworkContextName
+  );
+  const { activate, account } = useWeb3React();
 
   React.useEffect(() => {
     if (!library) {
-      activate(network);
+      activateNetwork(network);
     }
-  }, [library, activate]);
+  }, [library, activateNetwork]);
 
   const withdrawPage = React.useMemo(() => <WithdrawPage />, []);
   const depositPage = React.useMemo(() => <DepositPage />, []);
@@ -66,51 +69,100 @@ const App = () => {
     setSelectedPage(compliancePage);
   };
 
+  const connectLedgerWallet = async () => {
+    await activate(ledger, undefined, true).catch(alert);
+  };
+
+  const connectValoraWallet = async () => {
+    const resp = await requestValoraAuth();
+    valora.setSavedValoraAccount(resp);
+    activate(valora, undefined, true).catch(console.error);
+  };
+
   return (
     <>
       {CHAIN_ID === 44787 && (
         <Alert>NOTE: This is poof.cash on the Alfajores testnet.</Alert>
       )}
-      {userLocation && (
-        <Alert>
-          Your IP: {userLocation.ip}, {userLocation.city},{" "}
-          {userLocation.country}
-        </Alert>
-      )}
-      <Page>
-        <Heading>Poof</Heading>
-        <PageSwitcher>
-          <Button
-            variant={
-              selectedPage.type === depositPage.type ? "secondary" : "outline"
-            }
-            onClick={switchToDeposit}
-          >
-            Deposit
-          </Button>
-          <Button
-            variant={
-              selectedPage.type === withdrawPage.type ? "secondary" : "outline"
-            }
-            onClick={switchToWithdraw}
-          >
-            Withdraw
-          </Button>
-          <Button
-            variant={
-              selectedPage.type === compliancePage.type
-                ? "secondary"
-                : "outline"
-            }
-            onClick={switchToCompliance}
-          >
-            Compliance
-          </Button>
-        </PageSwitcher>
-        <Container mt={16} sx={{ width: "66%" }}>
-          {selectedPage}
+      <Container sx={{ width: "auto" }}>
+        <Container sx={{ pt: 4, px: 4, backgroundColor: "#F1F4F4" }}>
+          <Flex sx={{ mb: 4, justifyContent: "space-between" }}>
+            <Heading>Poof</Heading>
+            {!account && (
+              <Flex sx={{ justifyContent: "flex-end" }}>
+                <Button
+                  sx={{ mr: 1 }}
+                  variant="outline"
+                  onClick={connectLedgerWallet}
+                >
+                  Ledger
+                </Button>
+                <Button variant="outline" onClick={connectValoraWallet}>
+                  Valora
+                </Button>
+              </Flex>
+            )}
+            {account && (
+              <Flex sx={{ justifyContent: "flex-end" }}>
+                <AccountCircle />
+                <Flex sx={{ flexDirection: "column", maxWidth: "50vw" }}>
+                  <BlockscoutAddressLink address={account}>
+                    <Text
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                      variant="regular"
+                    >
+                      {account}
+                    </Text>
+                  </BlockscoutAddressLink>
+                  {userLocation && (
+                    <Text variant="form">
+                      IP: {userLocation.ip}, {userLocation.city},{" "}
+                      {userLocation.country}
+                    </Text>
+                  )}
+                </Flex>
+              </Flex>
+            )}
+          </Flex>
+          <Flex sx={{ width: "fit-content" }}>
+            <Button
+              variant={
+                selectedPage.type === depositPage.type
+                  ? "switcherSelected"
+                  : "switcher"
+              }
+              onClick={switchToDeposit}
+            >
+              Deposit
+            </Button>
+            <Button
+              variant={
+                selectedPage.type === withdrawPage.type
+                  ? "switcherSelected"
+                  : "switcher"
+              }
+              onClick={switchToWithdraw}
+            >
+              Withdraw
+            </Button>
+            <Button
+              variant={
+                selectedPage.type === compliancePage.type
+                  ? "switcherSelected"
+                  : "switcher"
+              }
+              onClick={switchToCompliance}
+            >
+              Compliance
+            </Button>
+          </Flex>
         </Container>
-      </Page>
+        <Container sx={{ px: 4, py: 4 }}>{selectedPage}</Container>
+      </Container>
       {/*TODO footer*/}
     </>
   );

@@ -9,7 +9,7 @@ import { calculateFee } from "utils/gas";
 import { instances } from "poof-token";
 import { NetworkContextName } from "index";
 import { Spinner } from "@theme-ui/components";
-import { Button, Container, Input, Label } from "theme-ui";
+import { Button, Container, Input, Text } from "theme-ui";
 import { BlockscoutAddressLink, BlockscoutTxLink } from "components/Links";
 
 const WithdrawPage = () => {
@@ -196,7 +196,7 @@ const WithdrawPage = () => {
 
   return (
     <div>
-      <Label htmlFor="note">Note</Label>
+      <Text variant="form">Note</Text>
       <Input
         name="note"
         type="text"
@@ -204,7 +204,7 @@ const WithdrawPage = () => {
         onChange={handleChange}
       />
       <br />
-      <Label htmlFor="recipientAddress">Recipient address</Label>
+      <Text variant="form">Recipient address</Text>
       <Input
         name="recipientAddress"
         type="text"

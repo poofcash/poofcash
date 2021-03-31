@@ -83,6 +83,28 @@ export function useGetTokenBalance(
   return getTokenBalance;
 }
 
+export const getDeposits = async (
+  library: any,
+  tornadoAddress: string,
+  filters?: Array<any>
+) => {
+  const tornado = getContract(tornadoAddress, ERC20_TORNADO_ABI, library);
+  const depositFilter = tornado.filters.Deposit(filters);
+  if (!depositFilter) {
+    return [];
+  }
+  try {
+    const events = await tornado.queryFilter(depositFilter, 0, "latest");
+    const blockPromises = events.map(({ blockNumber }) => {
+      return library.provider.kit.connection.getBlock(blockNumber);
+    });
+    return await Promise.all(blockPromises);
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+};
+
 // Returns a list of the latest deposits
 export function useTornadoDeposits(
   tornadoAddress?: string,

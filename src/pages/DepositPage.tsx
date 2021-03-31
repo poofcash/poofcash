@@ -4,7 +4,6 @@ import { useWeb3React } from "@web3-react/core";
 import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import Modal from "components/Modal";
-import { ledger, valora } from "connectors";
 import {
   useApproveCallback,
   ApprovalState,
@@ -12,32 +11,32 @@ import {
   DepositState,
 } from "hooks/writeContract";
 import { TokenAmount, CELO } from "@ubeswap/sdk";
-import {
-  requestValoraAuth,
-  useInitValoraResponse,
-} from "connectors/valora/valoraUtils";
+import { useInitValoraResponse } from "connectors/valora/valoraUtils";
 import { instances } from "poof-token";
-import { useGetTokenBalance, useTornadoDeposits } from "hooks/readContract";
+import {
+  getDeposits,
+  useGetTokenBalance,
+  useTornadoDeposits,
+} from "hooks/readContract";
 import { BigNumber } from "@ethersproject/bignumber";
-import { Label, Radio } from "@rebass/forms";
-import { Button, Flex, Text, Spinner, Textarea } from "@theme-ui/components";
-import { Card, Grid } from "theme-ui";
-import styled from "@emotion/styled";
-import { BlockscoutAddressLink } from "components/Links";
+import { Button, Text, Spinner, Textarea } from "@theme-ui/components";
+import { Flex, Grid, Select } from "theme-ui";
+import { NetworkContextName } from "index";
 
-const ButtonsWrapper = styled.div({
-  marginTop: "16px",
-});
+type AmountToDeposits = {
+  [depositAmount: string]: Array<any>;
+};
 
 // pass props and State interface to Component class
 const DepositPage = () => {
   useInitValoraResponse();
 
-  const { activate, account } = useWeb3React();
-  const [selectedAmount, setSelectedAmount] = React.useState(0.1);
+  const { account } = useWeb3React();
+  const { library: networkLibrary } = useWeb3React(NetworkContextName);
+
+  const [selectedAmount, setSelectedAmount] = React.useState("");
   const [noteString, setNoteString] = React.useState("");
   const [accountBalance, setAccountBalance] = React.useState<number>();
-  const [contractBalance, setContractBalance] = React.useState<number>();
   const [
     showInsufficientBalanceModal,
     setShowInsufficientBalanceModal,
@@ -45,27 +44,38 @@ const DepositPage = () => {
   const [state, setState] = React.useState({
     showDepositInfo: false,
   });
-  const [currency] = React.useState("celo");
-  const tornadoAddress =
-    instances[`netId${CHAIN_ID}`][currency].instanceAddress[selectedAmount];
-  const depositAmounts = Object.keys(
-    instances[`netId${CHAIN_ID}`][currency].instanceAddress
-  )
-    .sort()
-    .map(Number);
+  const [currency, setCurrency] = React.useState("celo");
+
+  const tornadoAddress = React.useMemo(
+    () =>
+      instances[`netId${CHAIN_ID}`][currency].instanceAddress[selectedAmount],
+    [currency, selectedAmount]
+  );
+  const depositAmounts = React.useMemo(
+    () =>
+      Object.keys(
+        instances[`netId${CHAIN_ID}`][currency].instanceAddress
+      ).sort(),
+    [currency]
+  );
+
   const [approvalState, approveCallback] = useApproveCallback(
     new TokenAmount(
       CELO[CHAIN_ID],
       // Only supports up to 2 decimal places
-      BigNumber.from(100 * selectedAmount)
-        .mul(BigNumber.from(10).pow(16))
-        .toString()
+      selectedAmount !== ""
+        ? BigNumber.from(100 * Number(selectedAmount))
+            .mul(BigNumber.from(10).pow(16))
+            .toString()
+        : "0"
     ),
     tornadoAddress
   );
-  const [depositState, depositCallback] = useDepositCallback(selectedAmount);
+  const [depositState, depositCallback] = useDepositCallback(
+    Number(selectedAmount)
+  );
+
   const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], account);
-  const getContractBalance = useGetTokenBalance(CELO[CHAIN_ID], tornadoAddress);
   React.useEffect(() => {
     if (account) {
       getAccountBalance()
@@ -73,30 +83,34 @@ const DepositPage = () => {
         .catch(console.error);
     }
   }, [getAccountBalance, account]);
-  React.useEffect(() => {
-    getContractBalance()
-      .then((tokenAmount) => {
-        setContractBalance(Number(tokenAmount.toExact()));
-      })
-      .catch(console.error);
-  }, [getContractBalance, tornadoAddress]);
 
-  const deposits = useTornadoDeposits(tornadoAddress);
+  const contractDeposits = useTornadoDeposits(tornadoAddress);
+  const [
+    amountToDeposits,
+    setAmountToDeposits,
+  ] = React.useState<AmountToDeposits>({});
+  React.useEffect(() => {
+    const fn = async () => {
+      const res: AmountToDeposits = {};
+      for (let i = 0; i < depositAmounts.length; i++) {
+        const tornadoAddress =
+          instances[`netId${CHAIN_ID}`][currency].instanceAddress[
+            depositAmounts[i]
+          ];
+        res[depositAmounts[i]] = await getDeposits(
+          networkLibrary,
+          tornadoAddress
+        );
+      }
+      return res;
+    };
+    fn().then((res) => setAmountToDeposits(res));
+  }, [networkLibrary, currency, depositAmounts]);
 
   const loading =
     approvalState === ApprovalState.PENDING ||
     approvalState === ApprovalState.WAITING_CONFIRMATIONS ||
     depositState === DepositState.PENDING;
-
-  const connectLedgerWallet = async () => {
-    await activate(ledger, undefined, true).catch(alert);
-  };
-
-  const connectValoraWallet = async () => {
-    const resp = await requestValoraAuth();
-    valora.setSavedValoraAccount(resp);
-    activate(valora, undefined, true).catch(console.error);
-  };
 
   const approveHandler = async () => {
     if (!account) {
@@ -106,7 +120,7 @@ const DepositPage = () => {
       console.error("Tried approving without a defined account balance");
       return;
     }
-    if (accountBalance < selectedAmount) {
+    if (accountBalance < Number(selectedAmount)) {
       setShowInsufficientBalanceModal(true);
       return;
     }
@@ -124,7 +138,7 @@ const DepositPage = () => {
         console.error("Tried depositing without a defined account balance");
         return;
       }
-      if (accountBalance < selectedAmount) {
+      if (accountBalance < Number(selectedAmount)) {
         setShowInsufficientBalanceModal(true);
         return;
       }
@@ -146,54 +160,14 @@ const DepositPage = () => {
     }
   };
 
-  const amountOptions = (
-    <Grid columns={[2]}>
-      {depositAmounts.map((depositAmount, index) => (
-        <Label key={index} justifyContent="center">
-          <Flex css={{ flexDirection: "column", alignItems: "center" }}>
-            <Radio
-              value={depositAmount}
-              checked={selectedAmount === depositAmount}
-              onChange={() => setSelectedAmount(depositAmount)}
-              disabled={AMOUNTS_DISABLED.includes(depositAmount)}
-            />
-            <Text>{depositAmount.toLocaleString()}</Text>
-            <Text>CELO</Text>
-          </Flex>
-        </Label>
-      ))}
-    </Grid>
-  );
-
-  // show deposit information is available
-  let depositInfo = <></>;
-  if (noteString !== "" && !loading && state.showDepositInfo) {
-    depositInfo = (
-      <div>
-        <h3>Success!</h3>
-        <p>Keep this note. It allows you to withdraw anonymized CELO.</p>
-        <Textarea readOnly rows={4} value={noteString} />
-      </div>
-    );
-  }
-
   let approveButton = (
-    <Button variant="primary" onClick={approveHandler}>
+    <Button
+      variant="primary"
+      onClick={approveHandler}
+      disabled={!account || selectedAmount === ""}
+    >
       Approve
     </Button>
-  );
-
-  let connectWalletButtons = (
-    <div>
-      <Button variant="primary" onClick={connectLedgerWallet}>
-        Connect with Ledger
-      </Button>
-      <br />
-      <br />
-      <Button variant="primary" onClick={connectValoraWallet}>
-        Connect with Valora
-      </Button>
-    </div>
   );
 
   let depositButton = <></>;
@@ -202,7 +176,11 @@ const DepositPage = () => {
       depositButton = <></>;
     } else {
       depositButton = (
-        <Button variant="primary" onClick={depositHandler}>
+        <Button
+          variant="primary"
+          onClick={depositHandler}
+          disabled={!account || selectedAmount === ""}
+        >
           Deposit
         </Button>
       );
@@ -257,7 +235,7 @@ const DepositPage = () => {
     );
   }
 
-  let button = connectWalletButtons;
+  let button = approveButton;
   if (account) {
     if (approvalState === ApprovalState.NOT_APPROVED) {
       button = approveButton;
@@ -268,39 +246,112 @@ const DepositPage = () => {
 
   return (
     <div>
-      <h3>Specify a CELO amount to deposit</h3>
+      <Text variant="form">Currency</Text>
+      <Select value={currency} onChange={(e) => setCurrency(e.target.value)}>
+        <option value={currency}>CELO</option>
+      </Select>
 
-      <Flex css={{ justifyContent: "space-evenly", flexWrap: "wrap" }}>
-        {amountOptions}
-        <Card>
-          {contractBalance != null && (
-            <p>
-              Current number of deposits:{" "}
-              {Math.ceil(contractBalance / selectedAmount)}
-            </p>
-          )}
+      <Text variant="form">Amount</Text>
+      <Select
+        value={selectedAmount}
+        onChange={(e) => setSelectedAmount(e.target.value)}
+      >
+        <option value="">Select an amount</option>
+        {depositAmounts.map((depositAmount, index) => (
+          <option
+            key={index}
+            value={depositAmount}
+            disabled={AMOUNTS_DISABLED.includes(depositAmount)}
+          >
+            {depositAmount.toLocaleString()} {currency.toUpperCase()}
+          </option>
+        ))}
+      </Select>
+      {account && accountBalance != null && (
+        <span>
+          <Text
+            sx={{
+              fontSize: 2,
+              fontWeight: "bold",
+            }}
+          >
+            Account balance:{" "}
+          </Text>
+          <Text sx={{ fontSize: 2 }}>{accountBalance} CELO</Text>
+        </span>
+      )}
 
-          <h4>Last 5 deposits</h4>
-          {deposits.length > 0 ? (
-            <Grid columns={[2]}>
-              {deposits
-                .map((deposit: any) => deposit.timestamp)
-                .sort()
-                .reverse()
-                .slice(0, 5)
-                .map((timestamp: number, idx: number) => (
-                  <p key={idx}>
-                    ({idx + 1}) {moment(timestamp * 1000).fromNow()}
-                  </p>
-                ))}
-            </Grid>
-          ) : (
-            <p>There are no deposits in this contract.</p>
-          )}
-        </Card>
-      </Flex>
+      <Text sx={{ mt: 4 }} variant="subtitle">
+        Anonymity Set
+      </Text>
+      <Text sx={{ mb: 4 }}>
+        <strong>
+          {(selectedAmount === ""
+            ? Object.values(amountToDeposits).flatMap((x) => x).length
+            : contractDeposits.length
+          ).toLocaleString()}
+        </strong>{" "}
+        total deposits
+      </Text>
 
-      {depositInfo}
+      {selectedAmount === "" && (
+        <Grid columns={[3]}>
+          <Text variant="tableHeader">Deposits</Text>
+          <Text variant="tableHeader">Activity</Text>
+          <Text variant="tableHeader">Amount</Text>
+          <div
+            style={{
+              margin: "-8px",
+              height: "1px",
+              gridColumnStart: 1,
+              gridColumnEnd: 4,
+              background: "black",
+            }}
+          ></div>
+          {Object.entries(amountToDeposits)
+            .sort((a, b) => Number(a[0]) - Number(b[0]))
+            .map(([amount, deposits], idx) => {
+              return (
+                <React.Fragment key={idx}>
+                  <Text variant="bold">{deposits.length.toLocaleString()}</Text>
+                  <Text sx={{ width: "100%" }} variant="regular">
+                    {deposits.length > 0
+                      ? moment(
+                          deposits[deposits.length - 1].timestamp * 1000
+                        ).fromNow()
+                      : "--"}
+                  </Text>
+                  <Text variant="bold">{amount}</Text>
+                </React.Fragment>
+              );
+            })}
+        </Grid>
+      )}
+      {selectedAmount !== "" && (
+        <Grid columns={[2]}>
+          <Text>Deposit ID</Text>
+          <Text>Time</Text>
+          {contractDeposits
+            .map((deposit: any) => deposit.timestamp)
+            .sort()
+            .reverse()
+            .slice(0, 5)
+            .map((timestamp: number, idx: number) => (
+              <>
+                <Text>{(contractDeposits.length - idx).toLocaleString()}</Text>
+                <Text>{moment(timestamp * 1000).fromNow()}</Text>
+              </>
+            ))}
+        </Grid>
+      )}
+
+      {noteString !== "" && !loading && state.showDepositInfo && (
+        <div>
+          <h3>Success!</h3>
+          <p>Keep this note. It allows you to withdraw anonymized CELO.</p>
+          <Textarea readOnly rows={4} value={noteString} />
+        </div>
+      )}
 
       {insufficientBalanceModal}
 
@@ -311,37 +362,7 @@ const DepositPage = () => {
           {loadingDeposit}
         </>
       ) : (
-        <ButtonsWrapper>{button}</ButtonsWrapper>
-      )}
-      {account && (
-        <>
-          <span>
-            <Text
-              sx={{
-                fontSize: 2,
-                fontWeight: "bold",
-              }}
-            >
-              Account:{" "}
-            </Text>
-            <BlockscoutAddressLink address={account}>
-              <Text sx={{ fontSize: 2 }}>{account}</Text>
-            </BlockscoutAddressLink>
-          </span>
-          {accountBalance != null && (
-            <span>
-              <Text
-                sx={{
-                  fontSize: 2,
-                  fontWeight: "bold",
-                }}
-              >
-                Account balance:{" "}
-              </Text>
-              <Text sx={{ fontSize: 2 }}>{accountBalance} CELO</Text>
-            </span>
-          )}
-        </>
+        <Flex sx={{ mt: 4, mr: 4, justifyContent: "flex-end" }}>{button}</Flex>
       )}
     </div>
   );

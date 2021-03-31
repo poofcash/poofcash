@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { isValidNote, parseNote, toHex } from "utils/snarks-functions";
-import { Container, Input, Label, Text } from "theme-ui";
+import { Container, Input, Text } from "theme-ui";
 import { useTornadoDeposits, useTornadoWithdraws } from "hooks/readContract";
 import { CHAIN_ID } from "config";
 import { instances } from "poof-token";
@@ -57,7 +57,7 @@ const CompliancePage = () => {
    */
   return (
     <div>
-      <Text>
+      <Text sx={{ mb: 2 }} variant="regular">
         Maintaining financial privacy is essential to preserving our freedoms.
         However, it should not come at the cost of non-compliance. With
         Poof.cash, you can always provide cryptographically verified proof of
@@ -66,7 +66,7 @@ const CompliancePage = () => {
         held in your withdrawal address. To generate a compliance report, please
         enter your Poof.cash Note below.
       </Text>
-      <Label htmlFor="note">Note</Label>
+      <Text variant="form">Note</Text>
       <Input name="note" type="text" value={note} onChange={handleChange} />
       {note && !noteIsValid && <Text>Note is invalid.</Text>}
       <br />
