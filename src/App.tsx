@@ -4,7 +4,7 @@ import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
 import { CHAIN_ID, IP_URL } from "config";
 import { Heading } from "@theme-ui/components";
-import { Alert, Button, Container, Flex, Text } from "theme-ui";
+import { Button, Container, Flex, Text } from "theme-ui";
 import axios from "axios";
 import { ledger, network, valora } from "connectors";
 import { useWeb3React } from "@web3-react/core";
@@ -81,13 +81,16 @@ const App = () => {
 
   return (
     <>
-      {CHAIN_ID === 44787 && (
-        <Alert>NOTE: This is poof.cash on the Alfajores testnet.</Alert>
-      )}
       <Container sx={{ width: "auto" }}>
         <Container sx={{ pt: 4, px: 4, backgroundColor: "#F1F4F4" }}>
           <Flex sx={{ mb: 4, justifyContent: "space-between" }}>
-            <Heading>Poof</Heading>
+            <Flex sx={{ alignItems: "baseline" }}>
+              <Heading>Poof</Heading>
+              {CHAIN_ID === 42220 && (
+                <Text variant="subtitle">mainnet beta</Text>
+              )}
+              {CHAIN_ID === 44787 && <Text variant="subtitle">alfajores</Text>}
+            </Flex>
             {!account && (
               <Flex sx={{ justifyContent: "flex-end" }}>
                 <Button
