@@ -27,7 +27,7 @@
     "axios": "^0.21.1",
     "circomlib": "git+https://github.com/tornadocash/circomlib.git#c372f14d324d57339c88451834bf2824e73bbdbc",
     "moment": "^2.29.1",
-    "poof-token": "^1.0.7",
+    "poof-token": "^1.0.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",

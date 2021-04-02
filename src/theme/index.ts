@@ -119,6 +119,7 @@ export const preset = {
         outline: "none",
       },
       borderBottom: "2px solid transparent",
+      textAlign: "left",
     },
     switcherSelected: {
       variant: "buttons.switcher",
