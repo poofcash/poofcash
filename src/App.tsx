@@ -51,7 +51,7 @@ const App = () => {
   const withdrawPage = React.useMemo(() => <WithdrawPage />, []);
   const depositPage = React.useMemo(() => <DepositPage />, []);
   const compliancePage = React.useMemo(() => <CompliancePage />, []);
-  const [selectedPage, setSelectedPage] = React.useState(depositPage);
+  const [selectedPage, setSelectedPage] = React.useState(withdrawPage);
   const [userLocation, setUserLocation] = React.useState<UserLocation>();
   React.useEffect(() => {
     axios
@@ -76,7 +76,11 @@ const App = () => {
         <Container sx={{ pt: 4, px: 4, backgroundColor: "#F1F4F4" }}>
           <Flex sx={{ mb: 2, justifyContent: "space-between" }}>
             <Flex sx={{ alignItems: "baseline" }}>
-              <Heading>Poof</Heading>
+              <Heading>
+                <a href="/" style={{ textDecoration: "none", color: "black" }}>
+                  Poof
+                </a>
+              </Heading>
               {CHAIN_ID === 42220 && (
                 <Text variant="subtitle">mainnet beta</Text>
               )}
