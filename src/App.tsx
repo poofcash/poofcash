@@ -80,7 +80,13 @@ const App = () => {
     <>
       <Container sx={{ width: "auto" }}>
         <Container sx={{ pt: 4, px: 3, backgroundColor: "#F1F4F4" }}>
-          <Flex sx={{ mb: 2, justifyContent: "space-between" }}>
+          <Flex
+            sx={{
+              mb: 2,
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+            }}
+          >
             <Flex sx={{ alignItems: "baseline" }}>
               <Heading>
                 <Link to="/" style={{ textDecoration: "none", color: "black" }}>

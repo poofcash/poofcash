@@ -5,9 +5,10 @@ import App from "App";
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider, createWeb3ReactRoot } from "@web3-react/core";
 import { Provider } from "react-redux";
-import store from "state";
 import { ThemeProvider } from "theme-ui";
 import { BrowserRouter } from "react-router-dom";
+import store from "state";
+import "index.css";
 
 declare global {
   interface Window {

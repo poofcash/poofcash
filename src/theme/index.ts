@@ -9,9 +9,9 @@ export const preset = {
     highlight: "hsla(205, 100%, 40%, 0.125)",
   },
   fonts: {
-    body: "Helvetica",
+    body: "Articulat CF",
     heading: "inherit",
-    monospace: "Helvetica",
+    monospace: "Articulat CF",
   },
   fontSizes: [12, 14, 16, 18, 20, 24, 28, 32, 48, 64, 96],
   fontWeights: {
