@@ -1,0 +1,389 @@
+import React from "react";
+import moment from "moment";
+import { useWeb3React } from "@web3-react/core";
+import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
+import Modal from "components/Modal";
+import { useApproveCallback, ApprovalState } from "hooks/writeContract";
+import { TokenAmount, CELO } from "@ubeswap/sdk";
+import { instances } from "poof-token";
+import {
+  getDeposits,
+  useGetTokenBalance,
+  useTornadoDeposits,
+} from "hooks/readContract";
+import { BigNumber } from "@ethersproject/bignumber";
+import { Button, Text, Spinner } from "@theme-ui/components";
+import { Flex, Grid, Select } from "theme-ui";
+import { NetworkContextName } from "index";
+import { requestValoraAuth } from "connectors/valora/valoraUtils";
+import { ledger, valora } from "connectors";
+
+interface IProps {
+  onDepositClick: () => void;
+  setSelectedAmount: (amount: string) => void;
+  selectedAmount: string;
+  setSelectedCurrency: (currency: string) => void;
+  selectedCurrency: string;
+}
+
+type AmountToDeposits = {
+  [depositAmount: string]: Array<any>;
+};
+
+// pass props and State interface to Component class
+export const PickDeposit: React.FC<IProps> = ({
+  onDepositClick,
+  selectedAmount,
+  setSelectedAmount,
+  selectedCurrency,
+  setSelectedCurrency,
+}) => {
+  const { account, activate } = useWeb3React();
+  const { library: networkLibrary } = useWeb3React(NetworkContextName);
+
+  const [accountBalance, setAccountBalance] = React.useState<number>();
+  const [
+    showInsufficientBalanceModal,
+    setShowInsufficientBalanceModal,
+  ] = React.useState(false);
+  const [showConnectWalletModal, setShowConnectWalletModal] = React.useState(
+    false
+  );
+
+  const tornadoAddress = React.useMemo(
+    () =>
+      instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress[
+        selectedAmount
+      ],
+    [selectedCurrency, selectedAmount]
+  );
+  const depositAmounts = React.useMemo(
+    () =>
+      Object.keys(
+        instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress
+      ).sort(),
+    [selectedCurrency]
+  );
+
+  const [approvalState, approveCallback] = useApproveCallback(
+    new TokenAmount(
+      CELO[CHAIN_ID],
+      // Only supports up to 2 decimal places
+      selectedAmount !== ""
+        ? BigNumber.from(100 * Number(selectedAmount))
+            .mul(BigNumber.from(10).pow(16))
+            .toString()
+        : "0"
+    ),
+    tornadoAddress
+  );
+
+  const connectLedgerWallet = async () => {
+    await activate(ledger, undefined, true).catch(alert);
+  };
+
+  const connectValoraWallet = async () => {
+    const resp = await requestValoraAuth();
+    valora.setSavedValoraAccount(resp);
+    activate(valora, undefined, true).catch(console.error);
+  };
+
+  const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], account);
+  React.useEffect(() => {
+    if (account) {
+      getAccountBalance()
+        .then((tokenAmount) => setAccountBalance(Number(tokenAmount.toExact())))
+        .catch(console.error);
+    }
+  }, [getAccountBalance, account]);
+
+  const contractDeposits = useTornadoDeposits(tornadoAddress);
+  const [
+    amountToDeposits,
+    setAmountToDeposits,
+  ] = React.useState<AmountToDeposits>({});
+  React.useEffect(() => {
+    const fn = async () => {
+      const res: AmountToDeposits = {};
+      for (let i = 0; i < depositAmounts.length; i++) {
+        const tornadoAddress =
+          instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress[
+            depositAmounts[i]
+          ];
+        res[depositAmounts[i]] = await getDeposits(
+          networkLibrary,
+          tornadoAddress
+        );
+      }
+      return res;
+    };
+    fn().then((res) => setAmountToDeposits(res));
+  }, [networkLibrary, selectedCurrency, depositAmounts]);
+
+  const loading =
+    approvalState === ApprovalState.PENDING ||
+    approvalState === ApprovalState.WAITING_CONFIRMATIONS;
+
+  const approveHandler = async () => {
+    if (!account) {
+      return;
+    }
+    if (!accountBalance) {
+      console.error("Tried approving without a defined account balance");
+      return;
+    }
+    if (accountBalance < Number(selectedAmount)) {
+      setShowInsufficientBalanceModal(true);
+      return;
+    }
+
+    approveCallback();
+  };
+
+  const depositHandler = async () => {
+    if (!account) {
+      return;
+    }
+    try {
+      if (!accountBalance) {
+        console.error("Tried depositing without a defined account balance");
+        return;
+      }
+      if (accountBalance < Number(selectedAmount)) {
+        setShowInsufficientBalanceModal(true);
+        return;
+      }
+      onDepositClick();
+    } catch (error) {
+      console.log("Error occured while making deposit");
+      console.error(error);
+    }
+  };
+
+  const connectWalletButton = (
+    <Button variant="primary" onClick={() => setShowConnectWalletModal(true)}>
+      Connect wallet
+    </Button>
+  );
+
+  const approveButton = (
+    <Button variant="primary" onClick={approveHandler}>
+      Approve
+    </Button>
+  );
+
+  const depositButton = (
+    <Button
+      variant="primary"
+      onClick={depositHandler}
+      disabled={selectedAmount === ""}
+    >
+      Deposit
+    </Button>
+  );
+
+  let loadingApprove = <></>;
+  if (approvalState === ApprovalState.PENDING) {
+    loadingApprove = (
+      <div>
+        <p>Sending approve transaction...</p>
+      </div>
+    );
+  } else if (approvalState === ApprovalState.WAITING_CONFIRMATIONS) {
+    loadingApprove = (
+      <div>
+        <p>Waiting for confirmations...</p>
+      </div>
+    );
+  }
+
+  let button = connectWalletButton;
+  if (account) {
+    if (approvalState === ApprovalState.NOT_APPROVED) {
+      button = approveButton;
+    } else {
+      button = depositButton;
+    }
+  }
+
+  return (
+    <div>
+      <Text variant="form">Currency</Text>
+      <Select
+        value={selectedCurrency}
+        onChange={(e) => setSelectedCurrency(e.target.value)}
+      >
+        <option value={selectedCurrency}>CELO</option>
+      </Select>
+
+      <Text variant="form">Amount</Text>
+      <Select
+        value={selectedAmount}
+        onChange={(e) => setSelectedAmount(e.target.value)}
+      >
+        <option value="">Select an amount</option>
+        {depositAmounts.map((depositAmount, index) => (
+          <option
+            key={index}
+            value={depositAmount}
+            disabled={AMOUNTS_DISABLED.includes(depositAmount)}
+          >
+            {depositAmount.toLocaleString()} {selectedCurrency.toUpperCase()}
+          </option>
+        ))}
+      </Select>
+
+      <Text sx={{ mt: 4 }} variant="subtitle">
+        Anonymity Set
+      </Text>
+      <Text sx={{ mb: 4 }}>
+        <strong>
+          {(selectedAmount === ""
+            ? Object.values(amountToDeposits).flatMap((x) => x).length
+            : contractDeposits.length
+          ).toLocaleString()}
+        </strong>{" "}
+        total deposits
+      </Text>
+
+      {selectedAmount === "" && (
+        <Grid columns={[3]}>
+          <Text variant="tableHeader">Deposits</Text>
+          <Text variant="tableHeader">Activity</Text>
+          <Text variant="tableHeader">Amount</Text>
+          <div
+            style={{
+              margin: "-8px",
+              height: "1px",
+              gridColumnStart: 1,
+              gridColumnEnd: 4,
+              background: "black",
+            }}
+          ></div>
+          {Object.entries(amountToDeposits)
+            .sort((a, b) => Number(a[0]) - Number(b[0]))
+            .map(([amount, deposits], idx) => {
+              return (
+                <React.Fragment key={idx}>
+                  <Text variant="bold">{deposits.length.toLocaleString()}</Text>
+                  <Text sx={{ width: "100%" }} variant="regular">
+                    {deposits.length > 0
+                      ? moment(
+                          deposits[deposits.length - 1].timestamp * 1000
+                        ).fromNow()
+                      : "--"}
+                  </Text>
+                  <Text variant="bold">{amount}</Text>
+                </React.Fragment>
+              );
+            })}
+        </Grid>
+      )}
+      {selectedAmount !== "" && (
+        <Grid columns={[2]}>
+          <Text>Deposit ID</Text>
+          <Text>Time</Text>
+          <div
+            style={{
+              margin: "-8px",
+              height: "1px",
+              gridColumnStart: 1,
+              gridColumnEnd: 3,
+              background: "black",
+            }}
+          ></div>
+          {contractDeposits
+            .map((deposit: any) => deposit.timestamp)
+            .sort()
+            .reverse()
+            .slice(0, 5)
+            .map((timestamp: number, idx: number) => (
+              <React.Fragment key={idx}>
+                <Text>{(contractDeposits.length - idx).toLocaleString()}</Text>
+                <Text>{moment(timestamp * 1000).fromNow()}</Text>
+              </React.Fragment>
+            ))}
+        </Grid>
+      )}
+
+      <Modal
+        modalClosed={() => setShowInsufficientBalanceModal(false)}
+        show={showInsufficientBalanceModal}
+      >
+        <h2>Insufficient balance</h2>
+        <p>
+          You don't have enough CELO tokens. You need {selectedAmount} CELO. You
+          can get more CELO{" "}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://celo.org/developers/faucet"
+          >
+            here
+          </a>
+          .
+        </p>
+      </Modal>
+
+      <Modal
+        modalClosed={() => setShowConnectWalletModal(false)}
+        show={showConnectWalletModal}
+      >
+        <h2>Connect wallet</h2>
+        <Button
+          sx={{ mb: 1 }}
+          variant="outline"
+          onClick={() => {
+            connectLedgerWallet();
+            setShowConnectWalletModal(false);
+          }}
+        >
+          Connect with Ledger
+        </Button>
+        <br />
+        <Button
+          variant="outline"
+          onClick={() => {
+            connectValoraWallet();
+            setShowConnectWalletModal(false);
+          }}
+        >
+          Connect with Valora
+        </Button>
+      </Modal>
+
+      {loading ? (
+        <>
+          <Spinner />
+          {loadingApprove}
+        </>
+      ) : (
+        <Flex
+          sx={{
+            mt: 4,
+            mr: 4,
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+          }}
+        >
+          {
+            <span>
+              <Text
+                sx={{
+                  fontSize: 2,
+                  fontWeight: "bold",
+                }}
+              >
+                Balance:{" "}
+              </Text>
+              <Text sx={{ fontSize: 2 }}>
+                {accountBalance != null ? accountBalance : 0} CELO
+              </Text>
+            </span>
+          }
+          {button}
+        </Flex>
+      )}
+    </div>
+  );
+};

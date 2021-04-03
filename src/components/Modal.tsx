@@ -9,23 +9,21 @@ interface IProps {
 }
 
 const StyledModal = styled.div<{ show: boolean }>(({ show }) => ({
-  position: "fixed",
+  position: "absolute",
+  top: "50%",
+  left: "50%",
   zIndex: 500,
   backgroundColor: "white",
-  maxWidth: "620px",
-  width: "80%",
-  textAlign: "left",
-  padding: "30px 30px",
-  left: "calc(50% - 310px)",
-  top: "20%",
-  borderRadius: "6px",
+  textAlign: "center",
+  padding: "32px 32px",
+  borderRadius: "4px",
   boxSizing: "border-box",
   transition: "all 0.3s ease-out",
   overflow: "hidden",
-  maxHeight: "90vh",
-  border: "5px solid #263238",
-  transform: show ? "translateY(0)" : "translateY(-100vh)",
-  opacity: show ? "1" : "0",
+  border: "2px solid #263238",
+  transform: "translate(-50%, -50%)",
+  display: show ? "block" : "none",
+  width: "64%",
 }));
 
 const Modal: React.FC<IProps> = ({ modalClosed, show, children }) => {

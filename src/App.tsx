@@ -6,12 +6,12 @@ import { CHAIN_ID, IP_URL } from "config";
 import { Heading } from "@theme-ui/components";
 import { Button, Container, Flex, Text } from "theme-ui";
 import axios from "axios";
-import { ledger, network, valora } from "connectors";
+import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import { NetworkContextName } from "index";
-import { requestValoraAuth } from "connectors/valora/valoraUtils";
 import { BlockscoutAddressLink } from "components/Links";
 import styled from "@emotion/styled";
+import { useInitValoraResponse } from "connectors/valora/valoraUtils";
 
 type UserLocation = {
   country: string;
@@ -31,15 +31,16 @@ const AccountCircle = styled.div({
   backgroundColor: "#499EE9",
   borderRadius: "50%",
   display: "inline-block",
-  marginRight: "8px",
+  marginLeft: "8px",
 });
 
 // pass props and State interface to Component class
 const App = () => {
+  useInitValoraResponse();
   const { activate: activateNetwork, library } = useWeb3React(
     NetworkContextName
   );
-  const { activate, account } = useWeb3React();
+  const { account } = useWeb3React();
 
   React.useEffect(() => {
     if (!library) {
@@ -69,21 +70,11 @@ const App = () => {
     setSelectedPage(compliancePage);
   };
 
-  const connectLedgerWallet = async () => {
-    await activate(ledger, undefined, true).catch(alert);
-  };
-
-  const connectValoraWallet = async () => {
-    const resp = await requestValoraAuth();
-    valora.setSavedValoraAccount(resp);
-    activate(valora, undefined, true).catch(console.error);
-  };
-
   return (
     <>
       <Container sx={{ width: "auto" }}>
         <Container sx={{ pt: 4, px: 4, backgroundColor: "#F1F4F4" }}>
-          <Flex sx={{ mb: 4, justifyContent: "space-between" }}>
+          <Flex sx={{ mb: 2, justifyContent: "space-between" }}>
             <Flex sx={{ alignItems: "baseline" }}>
               <Heading>Poof</Heading>
               {CHAIN_ID === 42220 && (
@@ -91,24 +82,15 @@ const App = () => {
               )}
               {CHAIN_ID === 44787 && <Text variant="subtitle">alfajores</Text>}
             </Flex>
-            {!account && (
-              <Flex sx={{ justifyContent: "flex-end" }}>
-                <Button
-                  sx={{ mr: 1 }}
-                  variant="outline"
-                  onClick={connectLedgerWallet}
-                >
-                  Ledger
-                </Button>
-                <Button variant="outline" onClick={connectValoraWallet}>
-                  Valora
-                </Button>
-              </Flex>
-            )}
-            {account && (
-              <Flex sx={{ justifyContent: "flex-end" }}>
-                <AccountCircle />
-                <Flex sx={{ flexDirection: "column", maxWidth: "50vw" }}>
+            <Flex sx={{ justifyContent: "flex-end" }}>
+              <Flex
+                sx={{
+                  textAlign: "right",
+                  flexDirection: "column",
+                  maxWidth: "50vw",
+                }}
+              >
+                {account ? (
                   <BlockscoutAddressLink address={account}>
                     <Text
                       sx={{
@@ -121,15 +103,18 @@ const App = () => {
                       {account}
                     </Text>
                   </BlockscoutAddressLink>
-                  {userLocation && (
-                    <Text variant="form">
-                      IP: {userLocation.ip}, {userLocation.city},{" "}
-                      {userLocation.country}
-                    </Text>
-                  )}
-                </Flex>
+                ) : (
+                  <Text>--</Text>
+                )}
+                {userLocation && (
+                  <Text variant="form">
+                    IP: {userLocation.ip}, {userLocation.city},{" "}
+                    {userLocation.country}
+                  </Text>
+                )}
               </Flex>
-            )}
+              <AccountCircle />
+            </Flex>
           </Flex>
           <Flex sx={{ width: "fit-content" }}>
             <Button

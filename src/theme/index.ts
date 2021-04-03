@@ -114,12 +114,12 @@ export const preset = {
       bg: "transparent",
       borderRadius: 0,
       color: "text",
-      mr: 1,
       ":focus": {
         outline: "none",
       },
       borderBottom: "2px solid transparent",
-      textAlign: "left",
+      px: 0,
+      mr: 3,
     },
     switcherSelected: {
       variant: "buttons.switcher",

@@ -39,8 +39,12 @@ export function useApproveCallback(
   React.useEffect(() => {
     if (account && Number(amountToApprove.toExact()) > 0) {
       const asyncSetCurrentAllowance = async () => {
-        const currentAllowance = await getCurrentAllowance();
-        setAllowance(currentAllowance);
+        try {
+          const currentAllowance = await getCurrentAllowance();
+          setAllowance(currentAllowance);
+        } catch (e) {
+          console.error(e);
+        }
       };
       asyncSetCurrentAllowance();
     }
@@ -124,8 +128,9 @@ export function useApproveCallback(
 
 export function useDepositCallback(
   amountToDeposit: number
-): [DepositState, (commitment: string) => Promise<void>] {
+): [DepositState, string, (commitment: string) => Promise<void>] {
   const [depositState, setDepositState] = React.useState(DepositState.UNKNOWN);
+  const [txHash, setTxHash] = React.useState("");
 
   const tornadoContract = useTornadoTokenContract(
     instances[`netId${CHAIN_ID}`]["celo"].instanceAddress[amountToDeposit],
@@ -138,17 +143,18 @@ export function useDepositCallback(
       return tornadoContract
         ?.deposit(commitment, { gasLimit: 2 * 10 ** 6 }) // TODO hardcoded limit
         .then((response: TransactionResponse) => {
+          setTxHash(response.hash);
           setDepositState(DepositState.DONE);
-          console.log(response);
+          console.log(response, response.hash);
         })
         .catch((error: Error) => {
           setDepositState(DepositState.UNKNOWN);
           console.debug("Failed to deposit token", error);
-          throw error;
+          alert(error.toString());
         });
     },
-    [tornadoContract]
+    [tornadoContract, setDepositState, setTxHash]
   );
 
-  return [depositState, deposit];
+  return [depositState, txHash, deposit];
 }
