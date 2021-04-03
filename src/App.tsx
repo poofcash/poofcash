@@ -12,6 +12,14 @@ import { NetworkContextName } from "index";
 import { BlockscoutAddressLink } from "components/Links";
 import styled from "@emotion/styled";
 import { useInitValoraResponse } from "connectors/valora/valoraUtils";
+import {
+  Switch,
+  Route,
+  useHistory,
+  useLocation,
+  Redirect,
+  Link,
+} from "react-router-dom";
 
 type UserLocation = {
   country: string;
@@ -41,6 +49,8 @@ const App = () => {
     NetworkContextName
   );
   const { account } = useWeb3React();
+  const history = useHistory();
+  const location = useLocation();
 
   React.useEffect(() => {
     if (!library) {
@@ -48,10 +58,6 @@ const App = () => {
     }
   }, [library, activateNetwork]);
 
-  const withdrawPage = React.useMemo(() => <WithdrawPage />, []);
-  const depositPage = React.useMemo(() => <DepositPage />, []);
-  const compliancePage = React.useMemo(() => <CompliancePage />, []);
-  const [selectedPage, setSelectedPage] = React.useState(withdrawPage);
   const [userLocation, setUserLocation] = React.useState<UserLocation>();
   React.useEffect(() => {
     axios
@@ -60,16 +66,6 @@ const App = () => {
       .catch(console.error);
   }, []);
 
-  const switchToDeposit = () => {
-    setSelectedPage(depositPage);
-  };
-  const switchToWithdraw = () => {
-    setSelectedPage(withdrawPage);
-  };
-  const switchToCompliance = () => {
-    setSelectedPage(compliancePage);
-  };
-
   return (
     <>
       <Container sx={{ width: "auto" }}>
@@ -77,9 +73,9 @@ const App = () => {
           <Flex sx={{ mb: 2, justifyContent: "space-between" }}>
             <Flex sx={{ alignItems: "baseline" }}>
               <Heading>
-                <a href="/" style={{ textDecoration: "none", color: "black" }}>
+                <Link to="/" style={{ textDecoration: "none", color: "black" }}>
                   Poof
-                </a>
+                </Link>
               </Heading>
               {CHAIN_ID === 42220 && (
                 <Text variant="subtitle">mainnet beta</Text>
@@ -123,37 +119,42 @@ const App = () => {
           <Flex sx={{ width: "fit-content" }}>
             <Button
               variant={
-                selectedPage.type === depositPage.type
+                location.pathname.includes("deposit")
                   ? "switcherSelected"
                   : "switcher"
               }
-              onClick={switchToDeposit}
+              onClick={() => history.push("/deposit")}
             >
               Deposit
             </Button>
             <Button
               variant={
-                selectedPage.type === withdrawPage.type
+                location.pathname.includes("withdraw")
                   ? "switcherSelected"
                   : "switcher"
               }
-              onClick={switchToWithdraw}
+              onClick={() => history.push("/withdraw")}
             >
               Withdraw
             </Button>
-            <Button
-              variant={
-                selectedPage.type === compliancePage.type
-                  ? "switcherSelected"
-                  : "switcher"
-              }
-              onClick={switchToCompliance}
-            >
-              Compliance
-            </Button>
           </Flex>
         </Container>
-        <Container sx={{ px: 4, py: 4 }}>{selectedPage}</Container>
+        <Container sx={{ px: 4, py: 4 }}>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="/deposit" />
+            </Route>
+            <Route exact path="/deposit">
+              <DepositPage />
+            </Route>
+            <Route exact path="/withdraw">
+              <WithdrawPage />
+            </Route>
+            <Route exact path="/compliance">
+              <CompliancePage />
+            </Route>
+          </Switch>
+        </Container>
       </Container>
       {/*TODO footer*/}
     </>

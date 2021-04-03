@@ -88,10 +88,8 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
 
       let done = false;
       let tries = 10;
-      console.log(!done, tries > 0);
       while (!done && tries > 0) {
         const job = await axios.get(RELAYER_URL + `/v1/jobs/${relay.data.id}`);
-        console.log(done);
         if (job.data.txHash) {
           setTxHash(job.data.txHash);
           console.log(

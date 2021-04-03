@@ -7,6 +7,7 @@ import { Web3ReactProvider, createWeb3ReactRoot } from "@web3-react/core";
 import { Provider } from "react-redux";
 import store from "state";
 import { ThemeProvider } from "theme-ui";
+import { BrowserRouter } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -31,7 +32,9 @@ ReactDOM.render(
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Provider store={store}>
           <ThemeProvider theme={theme}>
-            <App />
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
           </ThemeProvider>
         </Provider>
       </Web3ProviderNetwork>
