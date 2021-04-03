@@ -13,6 +13,8 @@ import { DepositState } from "hooks/writeContract";
 import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
+import { Divider } from "components/Divider";
+import { TableDivider } from "components/TableDivider";
 
 interface IProps {
   onBackClick: () => void;
@@ -46,36 +48,37 @@ export const ConfirmDeposit: React.FC<IProps> = ({
   return (
     <Container>
       <BackButton onClick={onBackClick} />
-      <Text sx={{ mb: 4 }}>Confirm Transaction</Text>
-      <Text>Summary</Text>
+      <Text sx={{ mb: 1 }} variant="subtitle">
+        Transaction Summary
+      </Text>
+      <Text sx={{ mb: 4 }} variant="regular">
+        Please review the transaction before continuing
+      </Text>
+      <Text variant="summaryTitle">Summary</Text>
+      <Divider />
       <Grid columns={[2]} sx={{ mb: 4 }}>
-        <Text>Deposit Amount</Text>
-        <Text>
+        <Text variant="form">Deposit Amount</Text>
+        <Text sx={{ textAlign: "right" }} variant="bold">
           {selectedAmount} {selectedCurrency.toUpperCase()}
         </Text>
-        <Text>Network Fee</Text>
-        <Text>{NETWORK_COST} CELO</Text>
-        <div
-          style={{
-            margin: "-8px",
-            height: "1px",
-            gridColumnStart: 1,
-            gridColumnEnd: 3,
-            background: "black",
-          }}
-        ></div>
-        <Text>Total</Text>
-        <Text>{totalCost} CELO</Text>
+        <Text variant="form">Network Fee</Text>
+        <Text sx={{ textAlign: "right" }} variant="bold">
+          {NETWORK_COST} CELO
+        </Text>
+        <TableDivider columns={2} />
+        <Text variant="subtitle">Total</Text>
+        <Text sx={{ textAlign: "right" }} variant="bold">
+          {totalCost} CELO
+        </Text>
       </Grid>
 
-      <Text>Withdrawal Note</Text>
-      <Text>Keep this note to withdraw your deposit.</Text>
-      <Textarea
-        sx={{ mb: 4 }}
-        readOnly
-        rows={4}
-        value={noteStringCommitment.noteString}
-      />
+      <Text sx={{ mb: 1 }} variant="subtitle">
+        Magic Password
+      </Text>
+      <Text sx={{ mb: 3 }} variant="regular">
+        Keep this note safe to withdraw the deposited money later
+      </Text>
+      <Textarea readOnly rows={4} value={noteStringCommitment.noteString} />
       <BottomDrawer>
         {depositState === DepositState.PENDING ? (
           <Flex sx={{ justifyContent: "flex-end" }}>
