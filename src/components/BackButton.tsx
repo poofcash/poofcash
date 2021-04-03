@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton } from "theme-ui";
-import { ArrowLeft } from "icons/ArrowLeft";
+import { ArrowLeftIcon } from "icons/ArrowLeftIcon";
 
 interface IProps {
   onClick: () => void;
@@ -13,7 +13,7 @@ export const BackButton: React.FC<IProps> = ({ onClick }) => {
       aria-label="Go back"
       onClick={onClick}
     >
-      <ArrowLeft />
+      <ArrowLeftIcon />
     </IconButton>
   );
 };

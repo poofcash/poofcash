@@ -1,6 +1,7 @@
 export const preset = {
   colors: {
     text: "#000",
+    accent: "#7C71FD",
     background: "#fff",
     primary: "#499EE9",
     secondary: "#30c",
@@ -36,6 +37,20 @@ export const preset = {
       fontSize: [28],
       lineHeight: "42px",
     },
+    logo: {
+      color: "accent",
+      fontStyle: "normal",
+      fontWeight: 500,
+      fontSize: [20],
+      lineHeight: "28px",
+    },
+    wallet: {
+      color: "accent",
+      fontStyle: "normal",
+      fontWeight: "bold",
+      fontSize: [12],
+      lineHeight: "20px",
+    },
     regular: {
       fontWeight: "normal",
       fontStyle: "normal",
@@ -59,9 +74,10 @@ export const preset = {
       lineHeight: "16px",
     },
     tableHeader: {
+      color: "accent",
       fontWeight: "bold",
       fontStyle: "normal",
-      fontSize: [12],
+      fontSize: [14],
       lineHeight: "20px",
     },
   },

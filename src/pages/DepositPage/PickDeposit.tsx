@@ -18,6 +18,7 @@ import { NetworkContextName } from "index";
 import { ConnectWallet } from "pages/ConnectWallet";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
+import { TableDivider } from "components/TableDivider";
 
 interface IProps {
   onDepositClick: () => void;
@@ -186,6 +187,7 @@ export const PickDeposit: React.FC<IProps> = ({
     <>
       <Text variant="form">Currency</Text>
       <Select
+        sx={{ mb: 3 }}
         value={selectedCurrency}
         onChange={(e) => setSelectedCurrency(e.target.value)}
       >
@@ -226,16 +228,10 @@ export const PickDeposit: React.FC<IProps> = ({
         <Grid columns={[3]}>
           <Text variant="tableHeader">Deposits</Text>
           <Text variant="tableHeader">Activity</Text>
-          <Text variant="tableHeader">Amount</Text>
-          <div
-            style={{
-              margin: "-8px",
-              height: "1px",
-              gridColumnStart: 1,
-              gridColumnEnd: 4,
-              background: "black",
-            }}
-          ></div>
+          <Text sx={{ textAlign: "right" }} variant="tableHeader">
+            Amount
+          </Text>
+          <TableDivider columns={3} />
           {Object.entries(amountToDeposits)
             .sort((a, b) => Number(a[0]) - Number(b[0]))
             .map(([amount, deposits], idx) => {
@@ -249,7 +245,9 @@ export const PickDeposit: React.FC<IProps> = ({
                         ).fromNow()
                       : "--"}
                   </Text>
-                  <Text variant="bold">{amount}</Text>
+                  <Text sx={{ textAlign: "right" }} variant="bold">
+                    {amount}
+                  </Text>
                 </React.Fragment>
               );
             })}
@@ -257,17 +255,11 @@ export const PickDeposit: React.FC<IProps> = ({
       )}
       {selectedAmount !== "" && (
         <Grid columns={[2]}>
-          <Text>Deposit ID</Text>
-          <Text>Time</Text>
-          <div
-            style={{
-              margin: "-8px",
-              height: "1px",
-              gridColumnStart: 1,
-              gridColumnEnd: 3,
-              background: "black",
-            }}
-          ></div>
+          <Text variant="tableHeader">Deposit ID</Text>
+          <Text sx={{ textAlign: "right" }} variant="tableHeader">
+            Time
+          </Text>
+          <TableDivider columns={2} />
           {contractDeposits
             .map((deposit: any) => deposit.timestamp)
             .sort()
@@ -276,7 +268,9 @@ export const PickDeposit: React.FC<IProps> = ({
             .map((timestamp: number, idx: number) => (
               <React.Fragment key={idx}>
                 <Text>{(contractDeposits.length - idx).toLocaleString()}</Text>
-                <Text>{moment(timestamp * 1000).fromNow()}</Text>
+                <Text sx={{ textAlign: "right" }}>
+                  {moment(timestamp * 1000).fromNow()}
+                </Text>
               </React.Fragment>
             ))}
         </Grid>

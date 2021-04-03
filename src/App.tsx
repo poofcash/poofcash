@@ -2,15 +2,13 @@ import React from "react";
 import CompliancePage from "pages/CompliancePage";
 import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
-import { CHAIN_ID, IP_URL } from "config";
-import { Heading } from "@theme-ui/components";
+import { IP_URL } from "config";
 import { Button, Container, Flex, Text } from "theme-ui";
 import axios from "axios";
 import { network, valora } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import { NetworkContextName } from "index";
 import { BlockscoutAddressLink } from "components/Links";
-import styled from "@emotion/styled";
 import { useInitValoraResponse } from "connectors/valora/valoraUtils";
 import {
   Switch,
@@ -18,8 +16,9 @@ import {
   useHistory,
   useLocation,
   Redirect,
-  Link,
 } from "react-router-dom";
+import { ProfileIcon } from "icons/ProfileIcon";
+import { Logo } from "components/Logo";
 
 type UserLocation = {
   country: string;
@@ -32,15 +31,6 @@ type UserLocation = {
   area: number;
   ip: string;
 };
-
-const AccountCircle = styled.div({
-  height: "32px",
-  width: "32px",
-  backgroundColor: "#499EE9",
-  borderRadius: "50%",
-  display: "inline-block",
-  marginLeft: "8px",
-});
 
 // pass props and State interface to Component class
 const App = () => {
@@ -87,31 +77,22 @@ const App = () => {
               alignItems: "flex-end",
             }}
           >
-            <Flex sx={{ alignItems: "baseline" }}>
-              <Heading>
-                <Link to="/" style={{ textDecoration: "none", color: "black" }}>
-                  Poof
-                </Link>
-              </Heading>
-              {CHAIN_ID === 42220 && (
-                <Text variant="subtitle">mainnet beta</Text>
-              )}
-              {CHAIN_ID === 44787 && <Text variant="subtitle">alfajores</Text>}
-            </Flex>
-            <Flex sx={{ justifyContent: "flex-end" }}>
+            <Logo />
+            <Flex sx={{ alignItems: "center", justifyContent: "flex-end" }}>
               <Flex
                 sx={{
-                  textAlign: "right",
                   flexDirection: "column",
                   maxWidth: "50vw",
+                  mr: 2,
+                  textAlign: "right",
                 }}
               >
                 {account ? (
                   <BlockscoutAddressLink address={account}>
-                    <Text variant="regular">{accountName}</Text>
+                    <Text variant="wallet">{accountName}</Text>
                   </BlockscoutAddressLink>
                 ) : (
-                  <Text>--</Text>
+                  <Text variant="wallet">????...????</Text>
                 )}
                 {userLocation && (
                   <Text variant="form">
@@ -120,7 +101,7 @@ const App = () => {
                   </Text>
                 )}
               </Flex>
-              <AccountCircle />
+              <ProfileIcon />
             </Flex>
           </Flex>
           <Flex sx={{ width: "fit-content" }}>
