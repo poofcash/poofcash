@@ -1,10 +1,11 @@
 import React from "react";
-import { Box, Button, Container, Flex, Text, Textarea } from "theme-ui";
+import { Box, Button, Container, Flex, Text } from "theme-ui";
 import { NoteStringCommitment } from "pages/DepositPage";
 import moment from "moment";
 import { BlockscoutTxLink } from "components/Links";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
+import { NoteString } from "components/NoteString";
 
 interface IProps {
   onDoneClick: () => void;
@@ -38,12 +39,7 @@ export const DepositReceipt: React.FC<IProps> = ({
 
       <Text>Withdrawal Note</Text>
       <Text>Keep this note to withdraw your deposit.</Text>
-      <Textarea
-        sx={{ mb: 4 }}
-        readOnly
-        rows={4}
-        value={noteStringCommitment.noteString}
-      />
+      <NoteString noteString={noteStringCommitment.noteString} />
       <BottomDrawer>
         <Flex sx={{ justifyContent: "space-between" }}>
           <LabelWithBalance

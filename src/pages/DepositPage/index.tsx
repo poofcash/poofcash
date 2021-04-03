@@ -17,6 +17,11 @@ enum DepositStep {
   RECEIPT = "RECEIPT",
 }
 
+const initialNoteStringCommitment = {
+  noteString: "",
+  commitment: "",
+};
+
 // pass props and State interface to Component class
 const DepositPage = () => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
@@ -25,7 +30,7 @@ const DepositPage = () => {
   const [
     noteStringCommitment,
     setNoteStringCommitment,
-  ] = React.useState<NoteStringCommitment>({ noteString: "", commitment: "" });
+  ] = React.useState<NoteStringCommitment>(initialNoteStringCommitment);
   const [depositState, txHash, depositCallback] = useDepositCallback(
     Number(selectedAmount)
   );
@@ -65,7 +70,10 @@ const DepositPage = () => {
     case DepositStep.RECEIPT:
       return (
         <DepositReceipt
-          onDoneClick={() => setDepositStep(DepositStep.PICKER)}
+          onDoneClick={() => {
+            setNoteStringCommitment(initialNoteStringCommitment);
+            setDepositStep(DepositStep.PICKER);
+          }}
           selectedAmount={selectedAmount}
           selectedCurrency={selectedCurrency}
           noteStringCommitment={noteStringCommitment}

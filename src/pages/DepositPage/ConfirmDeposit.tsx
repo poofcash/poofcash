@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Button,
-  Container,
-  Flex,
-  Grid,
-  Spinner,
-  Text,
-  Textarea,
-} from "theme-ui";
+import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
 import { NoteStringCommitment } from "pages/DepositPage";
 import { DepositState } from "hooks/writeContract";
 import { BackButton } from "components/BackButton";
@@ -15,6 +7,7 @@ import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Divider } from "components/Divider";
 import { TableDivider } from "components/TableDivider";
+import { NoteString } from "components/NoteString";
 
 interface IProps {
   onBackClick: () => void;
@@ -78,7 +71,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
       <Text sx={{ mb: 3 }} variant="regular">
         Keep this note safe to withdraw the deposited money later
       </Text>
-      <Textarea readOnly rows={4} value={noteStringCommitment.noteString} />
+      <NoteString noteString={noteStringCommitment.noteString} />
       <BottomDrawer>
         {depositState === DepositState.PENDING ? (
           <Flex sx={{ justifyContent: "flex-end" }}>
