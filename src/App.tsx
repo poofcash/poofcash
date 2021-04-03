@@ -6,7 +6,7 @@ import { CHAIN_ID, IP_URL } from "config";
 import { Heading } from "@theme-ui/components";
 import { Button, Container, Flex, Text } from "theme-ui";
 import axios from "axios";
-import { network } from "connectors";
+import { network, valora } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import { NetworkContextName } from "index";
 import { BlockscoutAddressLink } from "components/Links";
@@ -66,10 +66,20 @@ const App = () => {
       .catch(console.error);
   }, []);
 
+  let accountName = account;
+  if (valora.valoraAccount?.phoneNumber) {
+    accountName = valora.valoraAccount.phoneNumber;
+  } else if (accountName) {
+    accountName =
+      accountName.slice(0, 6) +
+      "..." +
+      accountName.slice(accountName.length - 5, accountName.length - 1);
+  }
+
   return (
     <>
       <Container sx={{ width: "auto" }}>
-        <Container sx={{ pt: 4, px: 4, backgroundColor: "#F1F4F4" }}>
+        <Container sx={{ pt: 4, px: 3, backgroundColor: "#F1F4F4" }}>
           <Flex sx={{ mb: 2, justifyContent: "space-between" }}>
             <Flex sx={{ alignItems: "baseline" }}>
               <Heading>
@@ -92,16 +102,7 @@ const App = () => {
               >
                 {account ? (
                   <BlockscoutAddressLink address={account}>
-                    <Text
-                      sx={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                      variant="regular"
-                    >
-                      {account}
-                    </Text>
+                    <Text variant="regular">{accountName}</Text>
                   </BlockscoutAddressLink>
                 ) : (
                   <Text>--</Text>
@@ -139,7 +140,7 @@ const App = () => {
             </Button>
           </Flex>
         </Container>
-        <Container sx={{ px: 4, py: 4 }}>
+        <Container sx={{ px: 3, py: 4 }}>
           <Switch>
             <Route exact path="/">
               <Redirect to="/deposit" />

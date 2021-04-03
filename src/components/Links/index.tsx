@@ -24,6 +24,7 @@ export const BlockscoutAddressLink: React.FC<{
       target="_blank"
       rel="noopener noreferrer"
       href={`${BLOCKSCOUT_URL}/address/${address}`}
+      style={{ textDecoration: "none" }}
     >
       {children}
     </a>

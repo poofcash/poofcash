@@ -13,7 +13,7 @@ export const preset = {
     heading: "inherit",
     monospace: "Helvetica",
   },
-  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96],
+  fontSizes: [12, 14, 16, 18, 20, 24, 28, 32, 48, 64, 96],
   fontWeights: {
     normal: 400,
     bold: 600,
@@ -29,13 +29,19 @@ export const preset = {
   shadows: {
     card: "0 0 4px rgba(0, 0, 0, .125)",
   },
-  // rebass variants
   text: {
+    title: {
+      fontStyle: "normal",
+      fontWeight: 500,
+      fontSize: [28],
+      lineHeight: "42px",
+    },
     regular: {
       fontWeight: "normal",
       fontStyle: "normal",
-      fontSize: [16],
-      lineHeight: "20px",
+      fontSize: [18],
+      lineHeight: "22px",
+      color: "#8D8D8D",
     },
     bold: {
       fontWeight: "bold",

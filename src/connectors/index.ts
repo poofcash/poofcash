@@ -1,5 +1,4 @@
 import { Web3Provider } from "@ethersproject/providers";
-import { ChainId } from "@ubeswap/sdk";
 import { InjectedConnector } from "@ubeswap/injected-connector";
 import { LedgerConnector } from "./ledger/LedgerConnector";
 import { NetworkConnector } from "./NetworkConnector";
@@ -17,7 +16,7 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [ChainId.ALFAJORES, ChainId.BAKLAVA, ChainId.MAINNET],
+  supportedChainIds: [CHAIN_ID],
 });
 
 export const ledger = new LedgerConnector();

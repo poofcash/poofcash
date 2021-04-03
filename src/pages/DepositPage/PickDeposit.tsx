@@ -15,8 +15,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { Button, Text, Spinner } from "@theme-ui/components";
 import { Flex, Grid, Select } from "theme-ui";
 import { NetworkContextName } from "index";
-import { requestValoraAuth } from "connectors/valora/valoraUtils";
-import { ledger, valora } from "connectors";
+import { ConnectWallet } from "pages/ConnectWallet";
 
 interface IProps {
   onDepositClick: () => void;
@@ -38,7 +37,7 @@ export const PickDeposit: React.FC<IProps> = ({
   selectedCurrency,
   setSelectedCurrency,
 }) => {
-  const { account, activate } = useWeb3React();
+  const { account } = useWeb3React();
   const { library: networkLibrary } = useWeb3React(NetworkContextName);
 
   const [accountBalance, setAccountBalance] = React.useState<number>();
@@ -77,16 +76,6 @@ export const PickDeposit: React.FC<IProps> = ({
     ),
     tornadoAddress
   );
-
-  const connectLedgerWallet = async () => {
-    await activate(ledger, undefined, true).catch(alert);
-  };
-
-  const connectValoraWallet = async () => {
-    const resp = await requestValoraAuth();
-    valora.setSavedValoraAccount(resp);
-    activate(valora, undefined, true).catch(console.error);
-  };
 
   const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], account);
   React.useEffect(() => {
@@ -129,7 +118,7 @@ export const PickDeposit: React.FC<IProps> = ({
       return;
     }
     if (!accountBalance) {
-      console.error("Tried approving without a defined account balance");
+      alert("Your account has insufficient funds.");
       return;
     }
     if (accountBalance < Number(selectedAmount)) {
@@ -325,32 +314,10 @@ export const PickDeposit: React.FC<IProps> = ({
         </p>
       </Modal>
 
-      <Modal
-        modalClosed={() => setShowConnectWalletModal(false)}
-        show={showConnectWalletModal}
-      >
-        <h2>Connect wallet</h2>
-        <Button
-          sx={{ mb: 1 }}
-          variant="outline"
-          onClick={() => {
-            connectLedgerWallet();
-            setShowConnectWalletModal(false);
-          }}
-        >
-          Connect with Ledger
-        </Button>
-        <br />
-        <Button
-          variant="outline"
-          onClick={() => {
-            connectValoraWallet();
-            setShowConnectWalletModal(false);
-          }}
-        >
-          Connect with Valora
-        </Button>
-      </Modal>
+      <ConnectWallet
+        isOpen={showConnectWalletModal}
+        goBack={() => setShowConnectWalletModal(false)}
+      ></ConnectWallet>
 
       {loading ? (
         <>
