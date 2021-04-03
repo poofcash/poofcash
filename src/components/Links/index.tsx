@@ -10,6 +10,7 @@ export const BlockscoutTxLink: React.FC<{ tx: string }> = ({
       target="_blank"
       rel="noopener noreferrer"
       href={`${BLOCKSCOUT_URL}/tx/${tx}`}
+      style={{ textDecoration: "none" }}
     >
       {children}
     </a>

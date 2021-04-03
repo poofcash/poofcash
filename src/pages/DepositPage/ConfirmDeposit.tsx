@@ -10,6 +10,9 @@ import {
 } from "theme-ui";
 import { NoteStringCommitment } from "pages/DepositPage";
 import { DepositState } from "hooks/writeContract";
+import { BackButton } from "components/BackButton";
+import { BottomDrawer } from "components/BottomDrawer";
+import { LabelWithBalance } from "components/LabelWithBalance";
 
 interface IProps {
   onBackClick: () => void;
@@ -38,8 +41,11 @@ export const ConfirmDeposit: React.FC<IProps> = ({
     }
   }, [depositState, onConfirmClick]);
 
+  const totalCost = Number(selectedAmount) + Number(NETWORK_COST);
+
   return (
     <Container>
+      <BackButton onClick={onBackClick} />
       <Text sx={{ mb: 4 }}>Confirm Transaction</Text>
       <Text>Summary</Text>
       <Grid columns={[2]} sx={{ mb: 4 }}>
@@ -59,7 +65,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
           }}
         ></div>
         <Text>Total</Text>
-        <Text>{Number(selectedAmount) + Number(NETWORK_COST)} CELO</Text>
+        <Text>{totalCost} CELO</Text>
       </Grid>
 
       <Text>Withdrawal Note</Text>
@@ -70,22 +76,28 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         rows={4}
         value={noteStringCommitment.noteString}
       />
-      {depositState === DepositState.PENDING ? (
-        <Spinner />
-      ) : (
-        <Flex sx={{ justifyContent: "flex-end" }}>
-          <Button sx={{ mr: 2 }} variant="outline" onClick={onBackClick}>
-            Back
-          </Button>
-          <Button
-            onClick={() => {
-              depositCallback(noteStringCommitment.commitment);
-            }}
-          >
-            Confirm
-          </Button>
-        </Flex>
-      )}
+      <BottomDrawer>
+        {depositState === DepositState.PENDING ? (
+          <Flex sx={{ justifyContent: "flex-end" }}>
+            <Spinner />
+          </Flex>
+        ) : (
+          <Flex sx={{ justifyContent: "space-between" }}>
+            <LabelWithBalance
+              label="Total"
+              amount={totalCost.toString()}
+              currency={selectedCurrency.toUpperCase()}
+            />
+            <Button
+              onClick={() => {
+                depositCallback(noteStringCommitment.commitment);
+              }}
+            >
+              Confirm
+            </Button>
+          </Flex>
+        )}
+      </BottomDrawer>
     </Container>
   );
 };

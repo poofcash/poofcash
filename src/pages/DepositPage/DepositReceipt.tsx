@@ -3,6 +3,8 @@ import { Box, Button, Container, Flex, Text, Textarea } from "theme-ui";
 import { NoteStringCommitment } from "pages/DepositPage";
 import moment from "moment";
 import { BlockscoutTxLink } from "components/Links";
+import { BottomDrawer } from "components/BottomDrawer";
+import { LabelWithBalance } from "components/LabelWithBalance";
 
 interface IProps {
   onDoneClick: () => void;
@@ -42,15 +44,22 @@ export const DepositReceipt: React.FC<IProps> = ({
         rows={4}
         value={noteStringCommitment.noteString}
       />
-      <Flex sx={{ justifyContent: "flex-end" }}>
-        <Button
-          onClick={() => {
-            onDoneClick();
-          }}
-        >
-          Done
-        </Button>
-      </Flex>
+      <BottomDrawer>
+        <Flex sx={{ justifyContent: "space-between" }}>
+          <LabelWithBalance
+            label="Deposited"
+            amount={selectedAmount}
+            currency={selectedCurrency.toUpperCase()}
+          />
+          <Button
+            onClick={() => {
+              onDoneClick();
+            }}
+          >
+            Done
+          </Button>
+        </Flex>
+      </BottomDrawer>
     </Container>
   );
 };

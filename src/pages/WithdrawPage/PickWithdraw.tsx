@@ -1,6 +1,8 @@
 import React from "react";
-import { isValidNote } from "utils/snarks-functions";
+import { isValidNote, parseNote } from "utils/snarks-functions";
 import { Button, Flex, Input, Text } from "theme-ui";
+import { BottomDrawer } from "components/BottomDrawer";
+import { LabelWithBalance } from "components/LabelWithBalance";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -17,6 +19,8 @@ export const PickWithdraw: React.FC<IProps> = ({
   setRecipient,
   recipient,
 }) => {
+  const { amount, currency } = parseNote(note);
+
   const handleChange = (event: any) => {
     switch (event.target.name) {
       case "recipientAddress":
@@ -45,8 +49,13 @@ export const PickWithdraw: React.FC<IProps> = ({
         value={recipient}
         onChange={handleChange}
       />
-      <div>
-        <Flex sx={{ mt: 4, justifyContent: "flex-end" }}>
+      <BottomDrawer>
+        <Flex sx={{ justifyContent: "space-between" }}>
+          <LabelWithBalance
+            label="Total"
+            amount={isValidNote(note) ? amount : ""}
+            currency={isValidNote(note) ? currency.toUpperCase() : "CELO"}
+          />
           <Button
             variant="primary"
             onClick={() => {
@@ -61,7 +70,7 @@ export const PickWithdraw: React.FC<IProps> = ({
             Withdraw
           </Button>
         </Flex>
-      </div>
+      </BottomDrawer>
     </div>
   );
 };

@@ -5,9 +5,8 @@ import { NETWORK } from "config";
 import { requestValoraAuth } from "connectors/valora/valoraUtils";
 import { injected, ledger, valora } from "connectors";
 import Modal from "react-modal";
-import { IconButton } from "theme-ui";
-import { ArrowLeft } from "icons/ArrowLeft";
 import { isMobile } from "react-device-detect";
+import { BackButton } from "components/BackButton";
 import Valora from "images/valora.png";
 import Ledger from "images/ledger.png";
 import CEW from "images/cew.png";
@@ -58,13 +57,7 @@ export const ConnectWallet: React.FC<IProps> = ({ isOpen, goBack }) => {
       onRequestClose={goBack}
       style={{ content: { top: 0, left: 0, width: "100%", height: "100%" } }}
     >
-      <IconButton
-        sx={{ mb: 3, ml: "-6px" }}
-        aria-label="Go back"
-        onClick={goBack}
-      >
-        <ArrowLeft />
-      </IconButton>
+      <BackButton onClick={goBack} />
       <Text sx={{ mb: 2 }} variant="title">
         Connect your wallet
       </Text>

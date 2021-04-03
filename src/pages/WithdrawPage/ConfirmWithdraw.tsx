@@ -9,6 +9,9 @@ import { instances } from "poof-token";
 import { getContract } from "hooks/getContract";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 import { calculateFee } from "utils/gas";
+import { BackButton } from "components/BackButton";
+import { BottomDrawer } from "components/BottomDrawer";
+import { LabelWithBalance } from "components/LabelWithBalance";
 
 interface IProps {
   onBackClick: () => void;
@@ -19,7 +22,7 @@ interface IProps {
   setTxHash: (txHash: string) => void;
 }
 
-const GAS_HARDCODE = 0.0000470652;
+export const GAS_HARDCODE = 0.0000470652;
 
 export const ConfirmWithdraw: React.FC<IProps> = ({
   onBackClick,
@@ -34,6 +37,8 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
   const [loading, setLoading] = React.useState(false);
 
   const relayerFee = (Number(amount) * Number(tornadoServiceFee)) / 100;
+
+  const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
 
   const handleWithdraw = async () => {
     if (!networkLibrary) {
@@ -115,6 +120,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
 
   return (
     <Container>
+      <BackButton onClick={onBackClick} />
       <Text>Confirm Transaction</Text>
       <Text>Summary</Text>
       <Grid columns={[2]} sx={{ mb: 4 }}>
@@ -141,19 +147,25 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
         ></div>
         <Text>Total</Text>
         <Text>
-          {Number(amount) - relayerFee - GAS_HARDCODE} {currency.toUpperCase()}
+          {finalWithdrawAmount} {currency.toUpperCase()}
         </Text>
       </Grid>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <Flex sx={{ justifyContent: "flex-end" }}>
-          <Button sx={{ mr: 2 }} variant="outline" onClick={onBackClick}>
-            Back
-          </Button>
-          <Button onClick={handleWithdraw}>Confirm</Button>
-        </Flex>
-      )}
+      <BottomDrawer>
+        {loading ? (
+          <Flex sx={{ justifyContent: "flex-end" }}>
+            <Spinner />
+          </Flex>
+        ) : (
+          <Flex sx={{ justifyContent: "space-between" }}>
+            <LabelWithBalance
+              label="Total"
+              amount={finalWithdrawAmount.toString()}
+              currency={currency.toUpperCase()}
+            />
+            <Button onClick={handleWithdraw}>Confirm</Button>
+          </Flex>
+        )}
+      </BottomDrawer>
     </Container>
   );
 };

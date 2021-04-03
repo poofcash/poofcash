@@ -146,7 +146,9 @@ const App = () => {
             </Button>
           </Flex>
         </Container>
-        <Container sx={{ px: 3, py: 4 }}>
+        <Container
+          sx={{ px: 3, py: 4, mb: "48px", maxHeight: "calc(100vh + 48px)" }}
+        >
           <Switch>
             <Route exact path="/">
               <Redirect to="/deposit" />

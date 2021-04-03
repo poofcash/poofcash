@@ -16,6 +16,8 @@ import { Button, Text, Spinner } from "@theme-ui/components";
 import { Flex, Grid, Select } from "theme-ui";
 import { NetworkContextName } from "index";
 import { ConnectWallet } from "pages/ConnectWallet";
+import { BottomDrawer } from "components/BottomDrawer";
+import { LabelWithBalance } from "components/LabelWithBalance";
 
 interface IProps {
   onDepositClick: () => void;
@@ -171,21 +173,6 @@ export const PickDeposit: React.FC<IProps> = ({
     </Button>
   );
 
-  let loadingApprove = <></>;
-  if (approvalState === ApprovalState.PENDING) {
-    loadingApprove = (
-      <div>
-        <p>Sending approve transaction...</p>
-      </div>
-    );
-  } else if (approvalState === ApprovalState.WAITING_CONFIRMATIONS) {
-    loadingApprove = (
-      <div>
-        <p>Waiting for confirmations...</p>
-      </div>
-    );
-  }
-
   let button = connectWalletButton;
   if (account) {
     if (approvalState === ApprovalState.NOT_APPROVED) {
@@ -196,7 +183,7 @@ export const PickDeposit: React.FC<IProps> = ({
   }
 
   return (
-    <div>
+    <>
       <Text variant="form">Currency</Text>
       <Select
         value={selectedCurrency}
@@ -319,38 +306,27 @@ export const PickDeposit: React.FC<IProps> = ({
         goBack={() => setShowConnectWalletModal(false)}
       ></ConnectWallet>
 
-      {loading ? (
-        <>
-          <Spinner />
-          {loadingApprove}
-        </>
-      ) : (
-        <Flex
-          sx={{
-            mt: 4,
-            mr: 4,
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-          }}
-        >
-          {
-            <span>
-              <Text
-                sx={{
-                  fontSize: 2,
-                  fontWeight: "bold",
-                }}
-              >
-                Balance:{" "}
-              </Text>
-              <Text sx={{ fontSize: 2 }}>
-                {accountBalance != null ? accountBalance : 0} CELO
-              </Text>
-            </span>
-          }
-          {button}
-        </Flex>
-      )}
-    </div>
+      <BottomDrawer>
+        {loading ? (
+          <Flex sx={{ justifyContent: "flex-end" }}>
+            <Spinner />
+          </Flex>
+        ) : (
+          <Flex
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <LabelWithBalance
+              label="Total"
+              amount={selectedAmount}
+              currency={selectedCurrency.toUpperCase()}
+            />
+            {button}
+          </Flex>
+        )}
+      </BottomDrawer>
+    </>
   );
 };

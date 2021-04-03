@@ -1,21 +1,30 @@
+import { BottomDrawer } from "components/BottomDrawer";
+import { LabelWithBalance } from "components/LabelWithBalance";
 import { BlockscoutTxLink } from "components/Links";
 import moment from "moment";
 import React from "react";
 import { Box, Button, Container, Flex, Text } from "theme-ui";
 import { parseNote } from "utils/snarks-functions";
+import { GAS_HARDCODE } from "./ConfirmWithdraw";
 
 interface IProps {
   onDoneClick: () => void;
   note: string;
   txHash: string;
+  tornadoServiceFee: string;
 }
 
 export const WithdrawReceipt: React.FC<IProps> = ({
   onDoneClick,
   note,
   txHash,
+  tornadoServiceFee,
 }) => {
   const { amount, currency } = parseNote(note);
+
+  const relayerFee = (Number(amount) * Number(tornadoServiceFee)) / 100;
+  const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
+
   return (
     <Container>
       <Text sx={{ mb: 4 }}>
@@ -30,15 +39,22 @@ export const WithdrawReceipt: React.FC<IProps> = ({
         </Text>
         <Text>{moment().format("h:mm a")}</Text>
       </Flex>
-      <Flex sx={{ justifyContent: "flex-end" }}>
-        <Button
-          onClick={() => {
-            onDoneClick();
-          }}
-        >
-          Done
-        </Button>
-      </Flex>
+      <BottomDrawer>
+        <Flex sx={{ justifyContent: "space-between" }}>
+          <LabelWithBalance
+            label="Total"
+            amount={finalWithdrawAmount.toString()}
+            currency={currency.toUpperCase()}
+          />
+          <Button
+            onClick={() => {
+              onDoneClick();
+            }}
+          >
+            Done
+          </Button>
+        </Flex>
+      </BottomDrawer>
     </Container>
   );
 };

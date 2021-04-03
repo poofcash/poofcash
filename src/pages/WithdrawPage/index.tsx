@@ -61,6 +61,7 @@ const WithdrawPage = () => {
           }}
           note={note}
           txHash={txHash}
+          tornadoServiceFee={tornadoServiceFee}
         />
       );
   }

@@ -51,6 +51,9 @@ export const isValidNote = (noteString: string) => {
  * @param noteString the note
  */
 const parseNote = (noteString: string) => {
+  if (!isValidNote(noteString)) {
+    return {};
+  }
   const noteRegex = /poof-(?<currency>\w+)-(?<amount>[\d.]+)-(?<netId>\d+)-0x(?<note>[0-9a-fA-F]{124})/g;
   let match = noteRegex.exec(noteString);
   if (!match) {
