@@ -5,7 +5,7 @@ import { NETWORK } from "config";
 import { requestValoraAuth } from "connectors/valora/valoraUtils";
 import { injected, ledger, valora } from "connectors";
 import Modal from "react-modal";
-import { isMobile } from "react-device-detect";
+import { isMobile, isDesktop } from "react-device-detect";
 import { BackButton } from "components/BackButton";
 import Valora from "images/valora.png";
 import Ledger from "images/ledger.png";
@@ -90,19 +90,23 @@ export const ConnectWallet: React.FC<IProps> = ({ isOpen, goBack }) => {
         icon={Ledger}
         text="Ledger"
       />
-      <div
-        style={{
-          border: "1px solid #F1F4F4",
-        }}
-      ></div>
-      <IconText
-        onClick={() => {
-          connectCeloExtensionWallet();
-          goBack();
-        }}
-        icon={CEW}
-        text="Celo Extension Wallet"
-      />
+      {isDesktop && (
+        <>
+          <div
+            style={{
+              border: "1px solid #F1F4F4",
+            }}
+          ></div>
+          <IconText
+            onClick={() => {
+              connectCeloExtensionWallet();
+              goBack();
+            }}
+            icon={CEW}
+            text="Celo Extension Wallet"
+          />
+        </>
+      )}
     </Modal>
   );
 };
