@@ -11163,10 +11163,10 @@ pnp-webpack-plugin@1.6.4:
   dependencies:
     ts-pnp "^1.1.6"
 
-poof-token@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/poof-token/-/poof-token-1.0.8.tgz#b639d37c8b5a7705cfd7481875f7f151e540b9f2"
-  integrity sha512-7INf0n+KMUdTJzh5H+nxWggvftXL3PXXBwC5fDgpJVPB+LZBnU3pHOMHI/iQADLMg0vmmVS6j+kDBvY4V2rx0A==
+poof-token@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/poof-token/-/poof-token-1.0.9.tgz#b7895e9f1b1b274e8e2a51b7632700444b759d5d"
+  integrity sha512-DBJzayT8EsM8hAZN1b6glxtABDd4phcOU3WTdKUr0AbwNS0TmTd9IxB6Tnj/68vyq1CRf/0ZIJPvCnGrQ/TTAg==
   dependencies:
     "@openzeppelin/contracts" "^3.1.0"
     eth-sig-util "^2.5.3"
