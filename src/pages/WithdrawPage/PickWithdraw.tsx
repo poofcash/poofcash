@@ -57,7 +57,7 @@ export const PickWithdraw: React.FC<IProps> = ({
             currency={isValidNote(note) ? currency.toUpperCase() : "CELO"}
           />
           <Button
-            variant="primary"
+            variant="secondary"
             onClick={() => {
               if (!isValidNote(note)) {
                 alert("Note is not valid");

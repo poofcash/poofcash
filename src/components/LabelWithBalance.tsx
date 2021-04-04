@@ -22,7 +22,7 @@ export const LabelWithBalance: React.FC<IProps> = ({
       >
         {label}
       </Text>
-      <Text sx={{ fontSize: 2 }}>
+      <Text variant="largeNumber">
         {amount !== "" ? amount : 0} {currency}
       </Text>
     </span>

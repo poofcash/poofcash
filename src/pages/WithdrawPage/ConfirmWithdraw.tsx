@@ -12,6 +12,8 @@ import { calculateFee } from "utils/gas";
 import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
+import { Divider } from "components/Divider";
+import { TableDivider } from "components/TableDivider";
 
 interface IProps {
   onBackClick: () => void;
@@ -22,6 +24,7 @@ interface IProps {
   setTxHash: (txHash: string) => void;
 }
 
+export const PRECISION = 7;
 export const GAS_HARDCODE = 0.0000470652;
 
 export const ConfirmWithdraw: React.FC<IProps> = ({
@@ -106,48 +109,52 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       }
+      onConfirmClick();
     } catch (e) {
       if (e.response) {
         console.error(e.response.data.error);
       } else {
         alert(e.message);
       }
+      onBackClick();
     } finally {
       setLoading(false);
-      onConfirmClick();
     }
   };
 
   return (
     <Container>
       <BackButton onClick={onBackClick} />
-      <Text>Confirm Transaction</Text>
-      <Text>Summary</Text>
+      <Text sx={{ mb: 1 }} variant="subtitle">
+        Transaction Summary
+      </Text>
+      <Text sx={{ mb: 4 }} variant="regular">
+        Please review the transaction before continuing
+      </Text>
+      <Text variant="summaryTitle">Summary</Text>
+      <Divider />
       <Grid columns={[2]} sx={{ mb: 4 }}>
-        <Text>Withdraw Amount</Text>
-        <Text>
+        <Text variant="form">Withdraw Amount</Text>
+        <Text sx={{ textAlign: "right" }} variant="bold">
           {amount} {currency.toUpperCase()}
         </Text>
-        <Text>Relayer Fee</Text>
-        <Text>
-          -{relayerFee} {currency.toUpperCase()}
+        <Text variant="form">Relayer Fee</Text>
+        <Text sx={{ textAlign: "right" }} variant="bold">
+          -{relayerFee.toString()} {currency.toUpperCase()}
         </Text>
-        <Text>Protocol Fee</Text>
-        <Text>
-          -{GAS_HARDCODE} {currency.toUpperCase()}
+        <Text variant="form">Network Fee</Text>
+        <Text sx={{ textAlign: "right" }} variant="bold">
+          -{GAS_HARDCODE.toString().slice(0, 10)} {currency.toUpperCase()}
         </Text>
-        <div
-          style={{
-            margin: "-8px",
-            height: "1px",
-            gridColumnStart: 1,
-            gridColumnEnd: 3,
-            background: "black",
-          }}
-        ></div>
-        <Text>Total</Text>
-        <Text>
-          {finalWithdrawAmount} {currency.toUpperCase()}
+        <Text variant="form">Protocol Fee</Text>
+        <Text sx={{ textAlign: "right" }} variant="bold">
+          0 CELO
+        </Text>
+        <TableDivider columns={2} />
+        <Text variant="subtitle">Total</Text>
+        <Text sx={{ textAlign: "right" }} variant="bold">
+          {finalWithdrawAmount.toString().slice(0, PRECISION)}{" "}
+          {currency.toUpperCase()}
         </Text>
       </Grid>
       <BottomDrawer>
@@ -159,10 +166,10 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
           <Flex sx={{ justifyContent: "space-between" }}>
             <LabelWithBalance
               label="Total"
-              amount={finalWithdrawAmount.toString()}
+              amount={finalWithdrawAmount.toString().slice(0, PRECISION)}
               currency={currency.toUpperCase()}
             />
-            <Button onClick={handleWithdraw}>Confirm</Button>
+            <Button onClick={handleWithdraw}>Withdraw</Button>
           </Flex>
         )}
       </BottomDrawer>
