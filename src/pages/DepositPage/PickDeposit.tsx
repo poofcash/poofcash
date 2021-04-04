@@ -187,14 +187,15 @@ export const PickDeposit: React.FC<IProps> = ({
     <>
       <Text variant="form">Currency</Text>
       <Select
-        sx={{ mb: 3 }}
         value={selectedCurrency}
         onChange={(e) => setSelectedCurrency(e.target.value)}
       >
         <option value={selectedCurrency}>CELO</option>
       </Select>
 
-      <Text variant="form">Amount</Text>
+      <Text sx={{ mt: 2 }} variant="form">
+        Amount
+      </Text>
       <Select
         value={selectedAmount}
         onChange={(e) => setSelectedAmount(e.target.value)}
@@ -211,21 +212,21 @@ export const PickDeposit: React.FC<IProps> = ({
         ))}
       </Select>
 
-      <Text sx={{ mt: 4 }} variant="subtitle">
+      <Text sx={{ mb: 2, mt: 4 }} variant="form">
         Anonymity Set
       </Text>
-      <Text sx={{ mb: 4 }}>
-        <strong>
+      <Flex sx={{ mb: 4 }}>
+        <Text sx={{ mr: 1 }} variant="largeNumber">
           {(selectedAmount === ""
             ? Object.values(amountToDeposits).flatMap((x) => x).length
             : contractDeposits.length
           ).toLocaleString()}
-        </strong>{" "}
-        total deposits
-      </Text>
+        </Text>
+        <Text variant="regular">equal user deposits</Text>
+      </Flex>
 
       {selectedAmount === "" && (
-        <Grid columns={[3]}>
+        <Grid sx={{ gridTemplateColumns: "auto fit-content auto" }}>
           <Text variant="tableHeader">Deposits</Text>
           <Text variant="tableHeader">Activity</Text>
           <Text sx={{ textAlign: "right" }} variant="tableHeader">
@@ -254,7 +255,7 @@ export const PickDeposit: React.FC<IProps> = ({
         </Grid>
       )}
       {selectedAmount !== "" && (
-        <Grid columns={[2]}>
+        <Grid sx={{ gridTemplateColumns: "fit-content auto" }}>
           <Text variant="tableHeader">Deposit ID</Text>
           <Text sx={{ textAlign: "right" }} variant="tableHeader">
             Time
@@ -267,8 +268,10 @@ export const PickDeposit: React.FC<IProps> = ({
             .slice(0, 5)
             .map((timestamp: number, idx: number) => (
               <React.Fragment key={idx}>
-                <Text>{(contractDeposits.length - idx).toLocaleString()}</Text>
-                <Text sx={{ textAlign: "right" }}>
+                <Text variant="bold">
+                  {(contractDeposits.length - idx).toLocaleString()}
+                </Text>
+                <Text sx={{ textAlign: "right" }} variant="regular">
                   {moment(timestamp * 1000).fromNow()}
                 </Text>
               </React.Fragment>

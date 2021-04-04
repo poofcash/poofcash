@@ -1,6 +1,6 @@
 export const preset = {
   colors: {
-    text: "#000",
+    text: "#333333",
     accent: "#7C71FD",
     background: "#fff",
     primary: "#499EE9",
@@ -93,6 +93,13 @@ export const preset = {
       fontWeight: 500,
       fontSize: 14,
       lineHeight: "20px",
+    },
+    largeNumber: {
+      fontStyle: "normal",
+      fontWeight: 600,
+      fontSize: 24,
+      lineHeight: "20px",
+      color: "#333333",
     },
   },
   variants: {
