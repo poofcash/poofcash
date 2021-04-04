@@ -68,6 +68,7 @@ export const DepositReceipt: React.FC<IProps> = ({
             onClick={() => {
               onDoneClick();
             }}
+            variant="done"
           >
             Done
           </Button>

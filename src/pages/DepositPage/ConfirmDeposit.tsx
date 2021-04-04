@@ -1,5 +1,13 @@
 import React from "react";
-import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
+import {
+  Button,
+  Checkbox,
+  Container,
+  Flex,
+  Grid,
+  Spinner,
+  Text,
+} from "theme-ui";
 import { NoteStringCommitment } from "pages/DepositPage";
 import { DepositState } from "hooks/writeContract";
 import { BackButton } from "components/BackButton";
@@ -30,6 +38,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
   depositState,
   depositCallback,
 }) => {
+  const [confirmed, setConfirmed] = React.useState(false);
   React.useEffect(() => {
     if (depositState === DepositState.DONE) {
       onConfirmClick();
@@ -72,6 +81,13 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         Keep this note safe to withdraw the deposited money later
       </Text>
       <NoteString noteString={noteStringCommitment.noteString} />
+      <Flex
+        sx={{ mt: 4, alignItems: "center" }}
+        onClick={() => setConfirmed(!confirmed)}
+      >
+        <Checkbox checked={confirmed} />
+        <Text sx={{ pt: 1 }}>I backed up the Magic Password</Text>
+      </Flex>
       <BottomDrawer>
         {depositState === DepositState.PENDING ? (
           <Flex sx={{ justifyContent: "flex-end" }}>
@@ -88,8 +104,10 @@ export const ConfirmDeposit: React.FC<IProps> = ({
               onClick={() => {
                 depositCallback();
               }}
+              disabled={!confirmed}
+              variant="primary"
             >
-              Confirm
+              Deposit
             </Button>
           </Flex>
         )}

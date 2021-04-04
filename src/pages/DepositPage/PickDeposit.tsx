@@ -153,20 +153,20 @@ export const PickDeposit: React.FC<IProps> = ({
   };
 
   const connectWalletButton = (
-    <Button variant="primary" onClick={() => setShowConnectWalletModal(true)}>
+    <Button variant="secondary" onClick={() => setShowConnectWalletModal(true)}>
       Connect wallet
     </Button>
   );
 
   const approveButton = (
-    <Button variant="primary" onClick={approveHandler}>
+    <Button variant="secondary" onClick={approveHandler}>
       Approve
     </Button>
   );
 
   const depositButton = (
     <Button
-      variant="primary"
+      variant="secondary"
       onClick={depositHandler}
       disabled={selectedAmount === ""}
     >

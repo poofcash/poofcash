@@ -132,26 +132,25 @@ export const preset = {
   buttons: {
     primary: {
       ":disabled": {
-        color: "#BABABA",
-        bg: "#F1F4F4",
+        color: "#78797A",
       },
-      color: "background",
+      variant: "bold",
       borderRadius: "32px",
-      fontSize: 16,
-      fontWeight: "bold",
-      lineHeight: "20px",
-      bg: "primary",
-    },
-    outline: {
-      variant: "buttons.primary",
-      color: "primary",
-      bg: "background",
-      border: "2px solid #499EE9",
+      height: "48px",
+      color: "#F1F4F4",
+      bg: "#333333",
     },
     secondary: {
+      ":disabled": {
+        color: "#D3D5D6",
+      },
       variant: "buttons.primary",
-      color: "background",
-      bg: "secondary",
+      color: "#333333",
+      bg: "#F1F4F4",
+    },
+    done: {
+      variant: "buttons.secondary",
+      color: "accent",
     },
     switcher: {
       bg: "transparent",
