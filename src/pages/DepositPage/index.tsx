@@ -32,7 +32,8 @@ const DepositPage = () => {
     setNoteStringCommitment,
   ] = React.useState<NoteStringCommitment>(initialNoteStringCommitment);
   const [depositState, txHash, depositCallback] = useDepositCallback(
-    Number(selectedAmount)
+    Number(selectedAmount),
+    noteStringCommitment.commitment
   );
 
   switch (depositStep) {
@@ -76,7 +77,6 @@ const DepositPage = () => {
           }}
           selectedAmount={selectedAmount}
           selectedCurrency={selectedCurrency}
-          noteStringCommitment={noteStringCommitment}
           txHash={txHash}
         />
       );

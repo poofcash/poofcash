@@ -16,10 +16,10 @@ interface IProps {
   selectedCurrency: string;
   noteStringCommitment: NoteStringCommitment;
   depositState: DepositState;
-  depositCallback: (commitment: string) => void;
+  depositCallback: () => void;
 }
 
-const NETWORK_COST = 0.0048;
+export const NETWORK_COST = 0.0048;
 
 export const ConfirmDeposit: React.FC<IProps> = ({
   onBackClick,
@@ -86,7 +86,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
             />
             <Button
               onClick={() => {
-                depositCallback(noteStringCommitment.commitment);
+                depositCallback();
               }}
             >
               Confirm

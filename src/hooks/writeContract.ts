@@ -118,8 +118,9 @@ export function useApproveCallback(
         setApprovalState(ApprovalState.APPROVED);
       })
       .catch((error: Error) => {
-        console.debug("Failed to approve token", error);
-        throw error;
+        console.debug("Failed to approve", error);
+        alert(error.message);
+        setApprovalState(ApprovalState.NOT_APPROVED);
       });
   }, [approvalState, token, tokenContract, amountToApprove, spender]);
 
@@ -127,34 +128,34 @@ export function useApproveCallback(
 }
 
 export function useDepositCallback(
-  amountToDeposit: number
-): [DepositState, string, (commitment: string) => Promise<void>] {
+  amountToDeposit: number,
+  commitment: string
+): [DepositState, string, () => Promise<void>] {
   const [depositState, setDepositState] = React.useState(DepositState.UNKNOWN);
   const [txHash, setTxHash] = React.useState("");
+
+  // Reset deposit state when there is a new commitment
+  React.useEffect(() => setDepositState(DepositState.UNKNOWN), [commitment]);
 
   const tornadoContract = useTornadoTokenContract(
     instances[`netId${CHAIN_ID}`]["celo"].instanceAddress[amountToDeposit],
     true
   );
 
-  const deposit = React.useCallback(
-    async (commitment: string): Promise<void> => {
-      setDepositState(DepositState.PENDING);
-      return tornadoContract
-        ?.deposit(commitment, { gasLimit: 2 * 10 ** 6 }) // TODO hardcoded limit
-        .then((response: TransactionResponse) => {
-          setTxHash(response.hash);
-          setDepositState(DepositState.DONE);
-          console.log(response, response.hash);
-        })
-        .catch((error: Error) => {
-          setDepositState(DepositState.UNKNOWN);
-          console.debug("Failed to deposit token", error);
-          alert(error.toString());
-        });
-    },
-    [tornadoContract, setDepositState, setTxHash]
-  );
+  const deposit = React.useCallback(async (): Promise<void> => {
+    setDepositState(DepositState.PENDING);
+    return tornadoContract
+      ?.deposit(commitment, { gasLimit: 2 * 10 ** 6 }) // TODO hardcoded limit
+      .then((response: TransactionResponse) => {
+        setTxHash(response.hash);
+        setDepositState(DepositState.DONE);
+      })
+      .catch((error: Error) => {
+        setDepositState(DepositState.UNKNOWN);
+        console.debug("Failed to deposit", error);
+        alert(error.message);
+      });
+  }, [tornadoContract, setDepositState, setTxHash, commitment]);
 
   return [depositState, txHash, deposit];
 }

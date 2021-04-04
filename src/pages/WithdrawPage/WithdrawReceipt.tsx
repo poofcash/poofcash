@@ -42,7 +42,7 @@ export const WithdrawReceipt: React.FC<IProps> = ({
       <BottomDrawer>
         <Flex sx={{ justifyContent: "space-between" }}>
           <LabelWithBalance
-            label="Total"
+            label="Withdrew"
             amount={finalWithdrawAmount.toString()}
             currency={currency.toUpperCase()}
           />

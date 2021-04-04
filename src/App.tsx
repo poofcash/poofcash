@@ -5,7 +5,7 @@ import DepositPage from "pages/DepositPage";
 import { IP_URL } from "config";
 import { Button, Container, Flex, Text } from "theme-ui";
 import axios from "axios";
-import { network, valora } from "connectors";
+import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import { NetworkContextName } from "index";
 import { BlockscoutAddressLink } from "components/Links";
@@ -19,6 +19,8 @@ import {
 } from "react-router-dom";
 import { ProfileIcon } from "icons/ProfileIcon";
 import { Logo } from "components/Logo";
+import { useAccountName } from "hooks/accountName";
+import Modal from "react-modal";
 
 type UserLocation = {
   country: string;
@@ -39,10 +41,12 @@ const App = () => {
     NetworkContextName
   );
   const { account } = useWeb3React();
+  const accountName = useAccountName();
   const history = useHistory();
   const location = useLocation();
 
   React.useEffect(() => {
+    Modal.setAppElement("body");
     if (!library) {
       activateNetwork(network);
     }
@@ -55,16 +59,6 @@ const App = () => {
       .then(({ data }) => setUserLocation(data))
       .catch(console.error);
   }, []);
-
-  let accountName = account;
-  if (valora.valoraAccount?.phoneNumber) {
-    accountName = valora.valoraAccount.phoneNumber;
-  } else if (accountName) {
-    accountName =
-      accountName.slice(0, 6) +
-      "..." +
-      accountName.slice(accountName.length - 5, accountName.length - 1);
-  }
 
   return (
     <>
