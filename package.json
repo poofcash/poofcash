@@ -30,7 +30,7 @@
     "axios": "^0.21.1",
     "circomlib": "git+https://github.com/tornadocash/circomlib.git#c372f14d324d57339c88451834bf2824e73bbdbc",
     "moment": "^2.29.1",
-    "poof-token": "^1.0.10",
+    "poof-token": "^1.0.11",
     "react": "^17.0.1",
     "react-copy-to-clipboard": "^5.0.3",
     "react-device-detect": "^1.17.0",
