@@ -39,18 +39,28 @@ export const PickWithdraw: React.FC<IProps> = ({
    */
   return (
     <div>
-      <Text variant="form">Note</Text>
-      <Input name="note" type="text" value={note} onChange={handleChange} />
-      <br />
-      <Text variant="form">Recipient address</Text>
+      <Text variant="form" sx={{ mb: 2 }}>
+        Note
+      </Text>
+      <Input
+        name="note"
+        type="text"
+        value={note}
+        placeholder="Enter note here"
+        onChange={handleChange}
+      />
+      <Text variant="form" sx={{ mt: 4, mb: 2 }}>
+        Recipient address
+      </Text>
       <Input
         name="recipientAddress"
         type="text"
         value={recipient}
         onChange={handleChange}
+        placeholder="Enter wallet address here"
       />
       <BottomDrawer>
-        <Flex sx={{ justifyContent: "space-between" }}>
+        <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
           <LabelWithBalance
             label="Total"
             amount={isValidNote(note) ? amount : ""}

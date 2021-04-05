@@ -13,7 +13,7 @@ export type NoteStringCommitment = {
 
 enum DepositStep {
   PICKER = "PICKER",
-  CONFIRM = "CONFIM",
+  CONFIRM = "CONFIRM",
   RECEIPT = "RECEIPT",
 }
 
