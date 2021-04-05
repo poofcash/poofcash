@@ -85,7 +85,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         sx={{ mt: 4, alignItems: "center" }}
         onClick={() => setConfirmed(!confirmed)}
       >
-        <Checkbox checked={confirmed} />
+        <Checkbox readOnly checked={confirmed} />
         <Text sx={{ pt: 1 }}>I backed up the Magic Password</Text>
       </Flex>
       <BottomDrawer>
