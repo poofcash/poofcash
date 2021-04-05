@@ -134,6 +134,7 @@ export const preset = {
       ":disabled": {
         color: "#78797A",
       },
+      cursor: "pointer",
       variant: "bold",
       borderRadius: "32px",
       height: "48px",
@@ -155,11 +156,12 @@ export const preset = {
     switcher: {
       bg: "transparent",
       borderRadius: 0,
+      borderBottom: "2px solid transparent",
       color: "text",
       ":focus": {
         outline: "none",
       },
-      borderBottom: "2px solid transparent",
+      cursor: "pointer",
       px: 0,
       mr: 3,
     },

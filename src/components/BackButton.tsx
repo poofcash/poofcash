@@ -9,7 +9,7 @@ interface IProps {
 export const BackButton: React.FC<IProps> = ({ onClick }) => {
   return (
     <IconButton
-      sx={{ mb: 3, ml: "-6px" }}
+      sx={{ cursor: "pointer", mb: 3, ml: "-6px" }}
       aria-label="Go back"
       onClick={onClick}
     >

@@ -22,7 +22,10 @@ const IconText: React.FC<{
   text: string;
 }> = ({ onClick, icon, text }) => {
   return (
-    <Flex sx={{ alignItems: "center", my: 4 }} onClick={onClick}>
+    <Flex
+      sx={{ alignItems: "center", cursor: "pointer", my: 4 }}
+      onClick={onClick}
+    >
       <Image sx={{ mr: 2 }} src={icon} />
       {text}
     </Flex>

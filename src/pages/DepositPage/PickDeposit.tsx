@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
 import Modal from "components/Modal";
 import { useApproveCallback, ApprovalState } from "hooks/writeContract";
-import { TokenAmount, CELO } from "@ubeswap/sdk";
+import { TokenAmount, CELO, ChainId } from "@ubeswap/sdk";
 import { instances } from "poof-token";
 import {
   getDeposits,
@@ -285,17 +285,21 @@ export const PickDeposit: React.FC<IProps> = ({
       >
         <h2>Insufficient balance</h2>
         <p>
-          You don't have enough CELO tokens. You need {selectedAmount} CELO. You
-          can get more CELO{" "}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://celo.org/developers/faucet"
-          >
-            here
-          </a>
-          .
+          You don't have enough CELO tokens. You need {selectedAmount} CELO.
         </p>
+        {CHAIN_ID === ChainId.ALFAJORES && (
+          <p>
+            You can get more CELO{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://celo.org/developers/faucet"
+            >
+              here
+            </a>
+            .
+          </p>
+        )}
       </Modal>
 
       <ConnectWallet
