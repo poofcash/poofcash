@@ -45,7 +45,7 @@
     "websnark": "git+https://github.com/tornadocash/websnark.git#2041cfa5fa0b71cd5cca9022a4eeea4afe28c9f7"
   },
   "scripts": {
-    "start": "REACT_APP_CHAIN_ID=42220 react-scripts start",
+    "start": "react-scripts start",
     "start:alfajores": "REACT_APP_CHAIN_ID=44787 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

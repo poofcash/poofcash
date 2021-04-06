@@ -7,7 +7,7 @@ import { WithdrawReceipt } from "pages/WithdrawPage/WithdrawReceipt";
 
 enum WithdrawStep {
   PICKER = "PICKER",
-  CONFIRM = "CONFIM",
+  CONFIRM = "CONFIRM",
   RECEIPT = "RECEIPT",
 }
 

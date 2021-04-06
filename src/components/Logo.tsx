@@ -6,9 +6,7 @@ export const Logo = () => {
   return (
     <Link to="/" style={{ textDecoration: "none", color: "black" }}>
       <Flex sx={{ alignItems: "center" }}>
-        <Text sx={{ ml: 1 }} variant="logo">
-          poof
-        </Text>
+        <Text variant="logo">poof</Text>
       </Flex>
     </Link>
   );

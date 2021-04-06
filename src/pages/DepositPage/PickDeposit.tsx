@@ -154,7 +154,7 @@ export const PickDeposit: React.FC<IProps> = ({
 
   const connectWalletButton = (
     <Button variant="secondary" onClick={() => setShowConnectWalletModal(true)}>
-      Connect wallet
+      Connect Wallet
     </Button>
   );
 
@@ -185,7 +185,9 @@ export const PickDeposit: React.FC<IProps> = ({
 
   return (
     <>
-      <Text variant="form">Currency</Text>
+      <Text variant="form" sx={{ mb: 2 }}>
+        Currency
+      </Text>
       <Select
         value={selectedCurrency}
         onChange={(e) => setSelectedCurrency(e.target.value)}
@@ -193,7 +195,7 @@ export const PickDeposit: React.FC<IProps> = ({
         <option value={selectedCurrency}>CELO</option>
       </Select>
 
-      <Text sx={{ mt: 2 }} variant="form">
+      <Text sx={{ mt: 4, mb: 2 }} variant="form">
         Amount
       </Text>
       <Select
@@ -212,7 +214,7 @@ export const PickDeposit: React.FC<IProps> = ({
         ))}
       </Select>
 
-      <Text sx={{ mb: 2, mt: 4 }} variant="form">
+      <Text sx={{ mb: 2, mt: 6 }} variant="form">
         Anonymity Set
       </Text>
       <Flex sx={{ mb: 4 }}>
@@ -239,7 +241,7 @@ export const PickDeposit: React.FC<IProps> = ({
               return (
                 <React.Fragment key={idx}>
                   <Text variant="bold">{deposits.length.toLocaleString()}</Text>
-                  <Text sx={{ width: "100%" }} variant="regular">
+                  <Text sx={{ width: "100%" }} variant="regularGray">
                     {deposits.length > 0
                       ? moment(
                           deposits[deposits.length - 1].timestamp * 1000
@@ -271,7 +273,7 @@ export const PickDeposit: React.FC<IProps> = ({
                 <Text variant="bold">
                   {(contractDeposits.length - idx).toLocaleString()}
                 </Text>
-                <Text sx={{ textAlign: "right" }} variant="regular">
+                <Text sx={{ textAlign: "right" }} variant="regularGray">
                   {moment(timestamp * 1000).fromNow()}
                 </Text>
               </React.Fragment>

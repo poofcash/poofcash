@@ -26,8 +26,8 @@ const IconText: React.FC<{
       sx={{ alignItems: "center", cursor: "pointer", my: 4 }}
       onClick={onClick}
     >
-      <Image sx={{ mr: 2 }} src={icon} />
-      {text}
+      <Image sx={{ mr: 3 }} src={icon} />
+      <Text variant="regular">{text}</Text>
     </Flex>
   );
 };
@@ -64,7 +64,7 @@ export const ConnectWallet: React.FC<IProps> = ({ isOpen, goBack }) => {
       <Text sx={{ mb: 2 }} variant="title">
         Connect your wallet
       </Text>
-      <Text sx={{ mb: 5 }} variant="regular">
+      <Text sx={{ mb: 5 }} variant="regularGray">
         To deposit cryptocurrency with Poof, you must connect to a wallet with
         funds.
       </Text>
@@ -81,6 +81,7 @@ export const ConnectWallet: React.FC<IProps> = ({ isOpen, goBack }) => {
           <div
             style={{
               border: "1px solid #F1F4F4",
+              background: "",
             }}
           ></div>
         </>

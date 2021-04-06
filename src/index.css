@@ -1,5 +1,23 @@
 @font-face {
-  font-family: "Articulat CF";
-  src: local("Articulat CF"),
-    url(./fonts/Articulat\ CF\ Normal.otf) format("opentype");
+  font-family: "Regular";
+  src: local("Articulat CF"), url(./fonts/Regular.otf) format("opentype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Bold";
+  src: local("Articulat CF"), url(./fonts/Bold.otf) format("opentype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "DemiBold";
+  src: local("Articulat CF"), url(./fonts/DemiBold.otf) format("opentype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Medium";
+  src: local("Articulat CF"), url(./fonts/Medium.otf) format("opentype");
+  font-weight: 500;
 }

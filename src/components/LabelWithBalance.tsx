@@ -14,12 +14,7 @@ export const LabelWithBalance: React.FC<IProps> = ({
 }) => {
   return (
     <span>
-      <Text
-        sx={{
-          fontSize: 2,
-          fontWeight: "bold",
-        }}
-      >
+      <Text sx={{ mb: 2 }} variant="form">
         {label}
       </Text>
       <Text variant="largeNumber">
