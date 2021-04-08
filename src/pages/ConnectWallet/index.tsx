@@ -81,7 +81,6 @@ export const ConnectWallet: React.FC<IProps> = ({ isOpen, goBack }) => {
           <div
             style={{
               border: "1px solid #F1F4F4",
-              background: "",
             }}
           ></div>
         </>
