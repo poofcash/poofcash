@@ -1,0 +1,32 @@
+{
+  "deposit": {
+    "desktop": {
+      "title": "Make a deposit",
+      "subtitle": "Deposit cryptocurrency into poof for secure transactions and anonymous withdrawals later",
+      "connectWallet": {
+        "title": "Connect Wallet",
+        "subtitle": "Connect your wallet to access funds"
+      },
+      "select": {
+        "title": "Select a currency and amount",
+        "subtitle": "Select a currency and amount to begin your deposit"
+      },
+      "review": {
+        "title": "Review your deposit"
+      }
+    }
+  },
+  "withdraw": {
+    "desktop": {
+      "title": "Make a withdrawal",
+      "subtitle": "Withdraw cryptocurrency anonymously with a magic password and wallet address",
+      "specify": {
+        "title": "Make a withdrawal",
+        "subtitle": "Specify a magic password and recipient"
+      },
+      "review": {
+        "title": "Review your withdrawal"
+      }
+    }
+  }
+}

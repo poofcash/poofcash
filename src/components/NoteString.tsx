@@ -12,7 +12,7 @@ export const NoteString: React.FC<IProps> = ({ noteString }) => {
     <Flex>
       <Input
         sx={{
-          background: "#F1F4F4",
+          background: ["#F1F4F4", "white"],
           borderRadius: "6px 0px 0px 6px",
           border: "none",
           maxWidth: "80rem",

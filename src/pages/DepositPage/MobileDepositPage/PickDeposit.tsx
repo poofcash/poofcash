@@ -2,9 +2,8 @@ import React from "react";
 import moment from "moment";
 import { useWeb3React } from "@web3-react/core";
 import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
-import Modal from "components/Modal";
 import { useApproveCallback, ApprovalState } from "hooks/writeContract";
-import { TokenAmount, CELO, ChainId } from "@ubeswap/sdk";
+import { TokenAmount, CELO } from "@ubeswap/sdk";
 import { instances } from "poof-token";
 import {
   getDeposits,
@@ -19,9 +18,11 @@ import { ConnectWallet } from "pages/ConnectWallet";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { TableDivider } from "components/TableDivider";
+import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
+import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 
 interface IProps {
-  onDepositClick: () => void;
+  onDepositClick?: () => void;
   setSelectedAmount: (amount: string) => void;
   selectedAmount: string;
   setSelectedCurrency: (currency: string) => void;
@@ -42,6 +43,7 @@ export const PickDeposit: React.FC<IProps> = ({
 }) => {
   const { account } = useWeb3React();
   const { library: networkLibrary } = useWeb3React(NetworkContextName);
+  const breakpoint = useBreakpoint();
 
   const [accountBalance, setAccountBalance] = React.useState<number>();
   const [
@@ -145,7 +147,7 @@ export const PickDeposit: React.FC<IProps> = ({
         setShowInsufficientBalanceModal(true);
         return;
       }
-      onDepositClick();
+      onDepositClick && onDepositClick();
     } catch (error) {
       console.log("Error occured while making deposit");
       console.error(error);
@@ -281,55 +283,40 @@ export const PickDeposit: React.FC<IProps> = ({
         </Grid>
       )}
 
-      <Modal
-        modalClosed={() => setShowInsufficientBalanceModal(false)}
+      <InsufficientBalanceModal
+        onClose={() => setShowInsufficientBalanceModal(false)}
         show={showInsufficientBalanceModal}
-      >
-        <h2>Insufficient balance</h2>
-        <p>
-          You don't have enough CELO tokens. You need {selectedAmount} CELO.
-        </p>
-        {CHAIN_ID === ChainId.ALFAJORES && (
-          <p>
-            You can get more CELO{" "}
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://celo.org/developers/faucet"
-            >
-              here
-            </a>
-            .
-          </p>
-        )}
-      </Modal>
+        neededAmount={selectedAmount}
+      />
 
       <ConnectWallet
         isOpen={showConnectWalletModal}
         goBack={() => setShowConnectWalletModal(false)}
-      ></ConnectWallet>
+      />
 
-      <BottomDrawer>
-        {loading ? (
-          <Flex sx={{ justifyContent: "flex-end" }}>
-            <Spinner />
-          </Flex>
-        ) : (
-          <Flex
-            sx={{
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <LabelWithBalance
-              label="Total"
-              amount={selectedAmount}
-              currency={selectedCurrency.toUpperCase()}
-            />
-            {button}
-          </Flex>
-        )}
-      </BottomDrawer>
+      {breakpoint === Breakpoint.MOBILE && (
+        <BottomDrawer>
+          {loading ? (
+            <Flex sx={{ justifyContent: "flex-end" }}>
+              <Spinner />
+            </Flex>
+          ) : (
+            <Flex
+              sx={{
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <LabelWithBalance
+                label="Total"
+                amount={selectedAmount}
+                currency={selectedCurrency.toUpperCase()}
+              />
+              {button}
+            </Flex>
+          )}
+        </BottomDrawer>
+      )}
     </>
   );
 };

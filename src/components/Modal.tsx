@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
 import Backdrop from "components/Backdrop";
-import { CloseButton } from "./Button";
 
 interface IProps {
   modalClosed: any;
@@ -30,10 +29,7 @@ const Modal: React.FC<IProps> = ({ modalClosed, show, children }) => {
   return (
     <>
       {show && <Backdrop onClick={modalClosed} />}
-      <StyledModal show={show}>
-        <CloseButton onClick={modalClosed} />
-        {children}
-      </StyledModal>
+      <StyledModal show={show}>{children}</StyledModal>
     </>
   );
 };

@@ -1,21 +1,12 @@
 import React from "react";
-import {
-  Button,
-  Checkbox,
-  Container,
-  Flex,
-  Grid,
-  Spinner,
-  Text,
-} from "theme-ui";
-import { NoteStringCommitment } from "pages/DepositPage";
+import { Button, Checkbox, Container, Flex, Spinner, Text } from "theme-ui";
+import { NoteStringCommitment } from "pages/DepositPage/types";
 import { DepositState } from "hooks/writeContract";
 import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
-import { Divider } from "components/Divider";
-import { TableDivider } from "components/TableDivider";
 import { NoteString } from "components/NoteString";
+import { SummaryTable } from "components/SummaryTable";
 
 interface IProps {
   onBackClick: () => void;
@@ -56,23 +47,23 @@ export const ConfirmDeposit: React.FC<IProps> = ({
       <Text sx={{ mb: 4 }} variant="regular">
         Please review the transaction before continuing
       </Text>
-      <Text variant="summaryTitle">Summary</Text>
-      <Divider />
-      <Grid columns={[2]} sx={{ mb: 4 }}>
-        <Text variant="form">Deposit Amount</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {selectedAmount} {selectedCurrency.toUpperCase()}
-        </Text>
-        <Text variant="form">Network Fee</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {NETWORK_COST} CELO
-        </Text>
-        <TableDivider columns={2} />
-        <Text variant="subtitle">Total</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {totalCost} CELO
-        </Text>
-      </Grid>
+      <SummaryTable
+        title="Summary"
+        lineItems={[
+          {
+            label: "Deposit Amount",
+            value: `${selectedAmount} ${selectedCurrency.toUpperCase()}`,
+          },
+          {
+            label: "Est. Network Fee",
+            value: `${NETWORK_COST} CELO`,
+          },
+        ]}
+        totalItem={{
+          label: "Est. Total",
+          value: `${totalCost} CELO`,
+        }}
+      />
 
       <Text sx={{ mb: 1 }} variant="subtitle">
         Magic Password

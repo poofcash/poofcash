@@ -3,6 +3,7 @@ import { isValidNote, parseNote } from "utils/snarks-functions";
 import { Button, Flex, Input, Text } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
+import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -19,6 +20,8 @@ export const PickWithdraw: React.FC<IProps> = ({
   setRecipient,
   recipient,
 }) => {
+  const breakpoint = useBreakpoint();
+
   const { amount, currency } = parseNote(note);
 
   const handleChange = (event: any) => {
@@ -34,13 +37,10 @@ export const PickWithdraw: React.FC<IProps> = ({
     }
   };
 
-  /**
-   * Do a CELO withdrawal
-   */
   return (
     <div>
       <Text variant="form" sx={{ mb: 2 }}>
-        Note
+        Magic password
       </Text>
       <Input
         name="note"
@@ -59,28 +59,30 @@ export const PickWithdraw: React.FC<IProps> = ({
         onChange={handleChange}
         placeholder="Enter wallet address here"
       />
-      <BottomDrawer>
-        <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
-          <LabelWithBalance
-            label="Total"
-            amount={isValidNote(note) ? amount : ""}
-            currency={isValidNote(note) ? currency.toUpperCase() : "CELO"}
-          />
-          <Button
-            variant="secondary"
-            onClick={() => {
-              if (!isValidNote(note)) {
-                alert("Note is not valid");
-                return;
-              }
-              onWithdrawClick();
-            }}
-            disabled={recipient === "" || note === ""}
-          >
-            Withdraw
-          </Button>
-        </Flex>
-      </BottomDrawer>
+      {breakpoint === Breakpoint.MOBILE && (
+        <BottomDrawer>
+          <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
+            <LabelWithBalance
+              label="Total"
+              amount={isValidNote(note) ? amount : ""}
+              currency={isValidNote(note) ? currency.toUpperCase() : "CELO"}
+            />
+            <Button
+              variant="secondary"
+              onClick={() => {
+                if (!isValidNote(note)) {
+                  alert("Note is not valid");
+                  return;
+                }
+                onWithdrawClick();
+              }}
+              disabled={recipient === "" || note === ""}
+            >
+              Withdraw
+            </Button>
+          </Flex>
+        </BottomDrawer>
+      )}
     </div>
   );
 };

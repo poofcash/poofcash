@@ -1,13 +1,12 @@
 import React from "react";
-import { Box, Button, Container, Flex, Grid, Text } from "theme-ui";
+import { Box, Button, Container, Flex, Text } from "theme-ui";
 import moment from "moment";
 import { BlockscoutTxLink } from "components/Links";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
-import { Divider } from "components/Divider";
 import { useAccountName } from "hooks/accountName";
-import { TableDivider } from "components/TableDivider";
-import { NETWORK_COST } from "pages/DepositPage/ConfirmDeposit";
+import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
+import { SummaryTable } from "components/SummaryTable";
 
 interface IProps {
   onDoneClick: () => void;
@@ -35,27 +34,29 @@ export const DepositReceipt: React.FC<IProps> = ({
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
 
-      <Text variant="summaryTitle">Transaction</Text>
-      <Divider />
-      <Grid columns={[2]} sx={{ mb: 4 }}>
-        <Text variant="form">Time completed</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {moment().format("h:mm a")}
-        </Text>
-        <Text variant="form">Account</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {accountName}
-        </Text>
-        <Text variant="form">Total amount</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {Number(selectedAmount) + NETWORK_COST} CELO
-        </Text>
-        <TableDivider columns={2} />
-        <Text variant="subtitle">Deposit</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {Number(selectedAmount)} CELO
-        </Text>
-      </Grid>
+      <SummaryTable
+        title="Transaction"
+        lineItems={[
+          {
+            label: "Time completed",
+            value: moment().format("h:mm a"),
+          },
+          {
+            label: "Account",
+            value: accountName,
+          },
+          {
+            label: "Est. total amount",
+            value: `${
+              Number(selectedAmount) + NETWORK_COST
+            } ${selectedCurrency.toUpperCase()}`,
+          },
+        ]}
+        totalItem={{
+          label: "Deposit",
+          value: `${Number(selectedAmount)} ${selectedCurrency.toUpperCase()}`,
+        }}
+      />
 
       <BottomDrawer>
         <Flex sx={{ justifyContent: "space-between" }}>

@@ -3,7 +3,7 @@ import axios from "axios";
 import { CHAIN_ID, RELAYER_URL } from "config";
 import { NetworkContextName } from "index";
 import React from "react";
-import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
+import { Button, Container, Flex, Spinner, Text } from "theme-ui";
 import { generateProof, parseNote } from "utils/snarks-functions";
 import { instances } from "poof-token";
 import { getContract } from "hooks/getContract";
@@ -12,8 +12,7 @@ import { calculateFee } from "utils/gas";
 import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
-import { Divider } from "components/Divider";
-import { TableDivider } from "components/TableDivider";
+import { SummaryTable } from "components/SummaryTable";
 
 interface IProps {
   onBackClick: () => void;
@@ -131,32 +130,27 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
       <Text sx={{ mb: 4 }} variant="regular">
         Please review the transaction before continuing
       </Text>
-      <Text variant="summaryTitle">Summary</Text>
-      <Divider />
-      <Grid columns={[2]} sx={{ mb: 4 }}>
-        <Text variant="form">Withdraw Amount</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {amount} {currency.toUpperCase()}
-        </Text>
-        <Text variant="form">Relayer Fee</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          -{relayerFee.toString()} {currency.toUpperCase()}
-        </Text>
-        <Text variant="form">Network Fee</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          -{GAS_HARDCODE.toString().slice(0, 10)} {currency.toUpperCase()}
-        </Text>
-        <Text variant="form">Protocol Fee</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          0 CELO
-        </Text>
-        <TableDivider columns={2} />
-        <Text variant="subtitle">Total</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {finalWithdrawAmount.toString().slice(0, PRECISION)}{" "}
-          {currency.toUpperCase()}
-        </Text>
-      </Grid>
+
+      <SummaryTable
+        title="Summary"
+        lineItems={[
+          {
+            label: "Withdrawal Amount",
+            value: `${amount} ${currency.toUpperCase()}`,
+          },
+          {
+            label: "Relayer Fee",
+            value: `-${relayerFee.toString()} ${currency.toUpperCase()}`,
+          },
+          { label: "Protocol Fee", value: `0 CELO` },
+        ]}
+        totalItem={{
+          label: "Total",
+          value: `${finalWithdrawAmount
+            .toString()
+            .slice(0, PRECISION)} ${currency.toUpperCase()}`,
+        }}
+      />
       <BottomDrawer>
         {loading ? (
           <Flex sx={{ justifyContent: "flex-end" }}>

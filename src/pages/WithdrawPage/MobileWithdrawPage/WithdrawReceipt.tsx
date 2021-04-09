@@ -3,12 +3,14 @@ import { LabelWithBalance } from "components/LabelWithBalance";
 import { BlockscoutTxLink } from "components/Links";
 import moment from "moment";
 import React from "react";
-import { Box, Button, Container, Flex, Grid, Text } from "theme-ui";
+import { Box, Button, Container, Flex, Text } from "theme-ui";
 import { parseNote } from "utils/snarks-functions";
-import { GAS_HARDCODE, PRECISION } from "pages/WithdrawPage/ConfirmWithdraw";
-import { Divider } from "components/Divider";
-import { TableDivider } from "components/TableDivider";
+import {
+  GAS_HARDCODE,
+  PRECISION,
+} from "pages/WithdrawPage/MobileWithdrawPage/ConfirmWithdraw";
 import { shortenAccount } from "hooks/accountName";
+import { SummaryTable } from "components/SummaryTable";
 
 interface IProps {
   onDoneClick: () => void;
@@ -41,28 +43,29 @@ export const WithdrawReceipt: React.FC<IProps> = ({
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
 
-      <Text variant="summaryTitle">Transaction</Text>
-      <Divider />
-      <Grid columns={[2]} sx={{ mb: 4 }}>
-        <Text variant="form">Time completed</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {moment().format("h:mm a")}
-        </Text>
-        <Text variant="form">Recipient</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {shortenAccount(recipient)}
-        </Text>
-        <Text variant="form">Total amount</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {amount} {currency.toUpperCase()}
-        </Text>
-        <TableDivider columns={2} />
-        <Text variant="subtitle">Withdrawal</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {finalWithdrawAmount.toString().slice(0, PRECISION)}{" "}
-          {currency.toUpperCase()}
-        </Text>
-      </Grid>
+      <SummaryTable
+        title="Transaction"
+        lineItems={[
+          {
+            label: "Time completed",
+            value: moment().format("h:mm a"),
+          },
+          {
+            label: "Account",
+            value: shortenAccount(recipient),
+          },
+          {
+            label: "Withdraw amount",
+            value: `${amount} ${currency.toUpperCase()}`,
+          },
+        ]}
+        totalItem={{
+          label: "Est. Withdrawal",
+          value: `${finalWithdrawAmount
+            .toString()
+            .slice(0, PRECISION)} ${currency.toUpperCase()}`,
+        }}
+      />
 
       <BottomDrawer>
         <Flex sx={{ justifyContent: "space-between" }}>

@@ -2,37 +2,15 @@ import React from "react";
 import CompliancePage from "pages/CompliancePage";
 import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
-import { IP_URL } from "config";
-import { Button, Container, Flex, Text } from "theme-ui";
-import axios from "axios";
+import { Container } from "theme-ui";
 import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import { NetworkContextName } from "index";
-import { BlockscoutAddressLink } from "components/Links";
 import { useInitValoraResponse } from "connectors/valora/valoraUtils";
-import {
-  Switch,
-  Route,
-  useHistory,
-  useLocation,
-  Redirect,
-} from "react-router-dom";
-import { ProfileIcon } from "icons/ProfileIcon";
-import { Logo } from "components/Logo";
-import { useAccountName } from "hooks/accountName";
+import { Switch, Route, Redirect } from "react-router-dom";
 import Modal from "react-modal";
-
-type UserLocation = {
-  country: string;
-  region: string;
-  eu: string;
-  timezone: string;
-  city: string;
-  ll: Array<number>;
-  metro: number;
-  area: number;
-  ip: string;
-};
+import { Header } from "components/Header";
+import "i18n/config";
 
 // pass props and State interface to Component class
 const App = () => {
@@ -40,11 +18,6 @@ const App = () => {
   const { activate: activateNetwork, library } = useWeb3React(
     NetworkContextName
   );
-  const { account } = useWeb3React();
-  const accountName = useAccountName();
-  const history = useHistory();
-  const location = useLocation();
-
   React.useEffect(() => {
     Modal.setAppElement("body");
     if (!library) {
@@ -52,96 +25,41 @@ const App = () => {
     }
   }, [library, activateNetwork]);
 
-  const [userLocation, setUserLocation] = React.useState<UserLocation>();
-  React.useEffect(() => {
-    axios
-      .get(IP_URL)
-      .then(({ data }) => setUserLocation(data))
-      .catch(console.error);
-  }, []);
-
   return (
-    <>
-      <Container sx={{ width: "auto" }}>
-        <Container sx={{ pt: 4, px: 3, backgroundColor: "#F1F4F4" }}>
-          <Flex
-            sx={{
-              mb: 2,
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-            }}
-          >
-            <Logo />
-            <Flex sx={{ alignItems: "center", justifyContent: "flex-end" }}>
-              <Flex
-                sx={{
-                  flexDirection: "column",
-                  maxWidth: "50vw",
-                  mr: 2,
-                  textAlign: "right",
-                }}
-              >
-                {account ? (
-                  <BlockscoutAddressLink address={account}>
-                    <Text variant="wallet">{accountName}</Text>
-                  </BlockscoutAddressLink>
-                ) : (
-                  <Text variant="wallet">????...????</Text>
-                )}
-                {userLocation && (
-                  <Text variant="form">
-                    IP: {userLocation.ip}, {userLocation.city},{" "}
-                    {userLocation.country}
-                  </Text>
-                )}
-              </Flex>
-              <ProfileIcon />
-            </Flex>
-          </Flex>
-          <Flex sx={{ width: "fit-content" }}>
-            <Button
-              variant={
-                location.pathname.includes("deposit")
-                  ? "switcherSelected"
-                  : "switcher"
-              }
-              onClick={() => history.push("/deposit")}
-            >
-              Deposit
-            </Button>
-            <Button
-              variant={
-                location.pathname.includes("withdraw")
-                  ? "switcherSelected"
-                  : "switcher"
-              }
-              onClick={() => history.push("/withdraw")}
-            >
-              Withdraw
-            </Button>
-          </Flex>
-        </Container>
-        <Container
-          sx={{ px: 3, py: 4, mb: "64px", maxHeight: "calc(100vh + 64px)" }}
-        >
-          <Switch>
-            <Route exact path="/">
-              <Redirect to="/deposit" />
-            </Route>
-            <Route exact path="/deposit">
-              <DepositPage />
-            </Route>
-            <Route exact path="/withdraw">
-              <WithdrawPage />
-            </Route>
-            <Route exact path="/compliance">
-              <CompliancePage />
-            </Route>
-          </Switch>
-        </Container>
+    <Container
+      sx={{
+        mx: [0, "15%"],
+        my: [0, 4],
+        maxWidth: "100%",
+        width: "auto",
+      }}
+    >
+      <Header />
+      <Container
+        sx={{
+          px: [3, 0],
+          py: [4, 0],
+          mb: "64px",
+          maxHeight: "calc(100vh + 64px)",
+        }}
+      >
+        <Switch>
+          <Route exact path="/">
+            <Redirect to="/deposit" />
+          </Route>
+          <Route exact path="/deposit">
+            <DepositPage />
+          </Route>
+          <Route exact path="/withdraw">
+            <WithdrawPage />
+          </Route>
+          <Route exact path="/compliance">
+            <CompliancePage />
+          </Route>
+        </Switch>
       </Container>
       {/*TODO footer*/}
-    </>
+    </Container>
   );
 };
 

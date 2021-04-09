@@ -1,4 +1,5 @@
 export const preset = {
+  breakpoints: ["1080px", "1080px"],
   colors: {
     text: "#333333",
     accent: "#7C71FD",
@@ -76,8 +77,8 @@ export const preset = {
     },
     subtitle: {
       fontStyle: "DemiBold",
-      fontSize: 20,
-      lineHeight: "24px",
+      fontSize: [20, 18],
+      lineHeight: ["24px", "20px"],
       letterSpacing: "-0.01rem",
       color: "text",
     },
@@ -139,14 +140,16 @@ export const preset = {
     primary: {
       ":disabled": {
         color: "gray",
+        cursor: "auto",
+        bg: "#F1F4F4",
       },
       fontFamily: "Bold",
       fontSize: 18,
       lineHeight: "20px",
       cursor: "pointer",
       variant: "bold",
-      borderRadius: "32px",
-      height: "48px",
+      borderRadius: ["32px", "6px"],
+      height: ["48px", "42px"],
       color: "#F1F4F4",
       bg: "#333333",
     },
@@ -186,6 +189,14 @@ export const preset = {
       variant: "buttons.switcher",
       borderBottom: "3px solid black",
       color: "text",
+    },
+    outline: {
+      bg: "background",
+      border: "2px solid #7C71FD",
+      boxSizing: "border-box",
+      borderRadius: "6px",
+      color: "accent",
+      cursor: "pointer",
     },
   },
   styles: {
