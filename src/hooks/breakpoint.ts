@@ -9,14 +9,19 @@ export enum Breakpoint {
 export const useBreakpoint = () => {
   const { theme } = useThemeUI();
   const [breakpoint, setBreakpoint] = useState(Breakpoint.MOBILE);
+  const desktopBreakpoint = parseInt(theme.breakpoints![1] as string);
 
   useLayoutEffect(() => {
-    const desktopBreakpoint = parseInt(theme.breakpoints![1] as string);
-    if (window.screen.width < desktopBreakpoint) {
-      setBreakpoint(Breakpoint.MOBILE);
-    } else {
-      setBreakpoint(Breakpoint.DESKTOP);
-    }
-  }, [theme.breakpoints]);
+    const listener = () => {
+      if (window.innerWidth < desktopBreakpoint) {
+        setBreakpoint(Breakpoint.MOBILE);
+      } else {
+        setBreakpoint(Breakpoint.DESKTOP);
+      }
+    };
+    window.addEventListener("resize", listener);
+    listener();
+    return () => window.removeEventListener("resize", listener);
+  }, [desktopBreakpoint]);
   return breakpoint;
 };
