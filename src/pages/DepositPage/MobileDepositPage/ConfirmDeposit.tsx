@@ -44,7 +44,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
       <Text sx={{ mb: 1 }} variant="subtitle">
         Transaction Summary
       </Text>
-      <Text sx={{ mb: 4 }} variant="regular">
+      <Text sx={{ mb: 4 }} variant="regularGray">
         Please review the transaction before continuing
       </Text>
       <SummaryTable
@@ -68,7 +68,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
       <Text sx={{ mb: 1 }} variant="subtitle">
         Magic Password
       </Text>
-      <Text sx={{ mb: 3 }} variant="regular">
+      <Text sx={{ mb: 3 }} variant="regularGray">
         Keep this note safe to withdraw the deposited money later
       </Text>
       <NoteString noteString={noteStringCommitment.noteString} />

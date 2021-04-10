@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Container, Flex, Text } from "theme-ui";
+import { Button, Container, Flex, Text } from "theme-ui";
 import moment from "moment";
 import { BlockscoutTxLink } from "components/Links";
 import { BottomDrawer } from "components/BottomDrawer";
@@ -25,7 +25,6 @@ export const DepositReceipt: React.FC<IProps> = ({
 
   return (
     <Container>
-      <Box sx={{ mb: 4, width: "100%", height: "64px", bg: "#EEEEEE" }} />
       <Text sx={{ mb: 1 }} variant="subtitle">
         Alakazam!
       </Text>

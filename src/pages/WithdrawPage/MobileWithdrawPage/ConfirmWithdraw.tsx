@@ -127,7 +127,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
       <Text sx={{ mb: 1 }} variant="subtitle">
         Transaction Summary
       </Text>
-      <Text sx={{ mb: 4 }} variant="regular">
+      <Text sx={{ mb: 4 }} variant="regularGray">
         Please review the transaction before continuing
       </Text>
 

@@ -3,7 +3,7 @@ import { LabelWithBalance } from "components/LabelWithBalance";
 import { BlockscoutTxLink } from "components/Links";
 import moment from "moment";
 import React from "react";
-import { Box, Button, Container, Flex, Text } from "theme-ui";
+import { Button, Container, Flex, Text } from "theme-ui";
 import { parseNote } from "utils/snarks-functions";
 import {
   GAS_HARDCODE,
@@ -34,11 +34,10 @@ export const WithdrawReceipt: React.FC<IProps> = ({
 
   return (
     <Container>
-      <Box sx={{ mb: 4, width: "100%", height: "64px", bg: "#EEEEEE" }} />
       <Text sx={{ mb: 1 }} variant="subtitle">
         Alakazam!
       </Text>
-      <Text sx={{ mb: 4 }} variant="regular">
+      <Text sx={{ mb: 4 }} variant="regularGray">
         Your deposit is complete.{" "}
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
