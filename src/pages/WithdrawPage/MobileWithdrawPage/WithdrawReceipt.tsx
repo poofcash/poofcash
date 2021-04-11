@@ -38,7 +38,7 @@ export const WithdrawReceipt: React.FC<IProps> = ({
         Alakazam!
       </Text>
       <Text sx={{ mb: 4 }} variant="regularGray">
-        Your deposit is complete.{" "}
+        Your withdrawal is complete.{" "}
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
 
