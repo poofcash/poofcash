@@ -1,10 +1,10 @@
 import React from "react";
+import web3 from "web3";
 import { isValidNote, parseNote } from "utils/snarks-functions";
 import { Button, Flex, Input, Text } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
-import web3 from "web3";
 import { useDebounce } from "hooks/debounce";
 
 interface IProps {
@@ -13,6 +13,7 @@ interface IProps {
   note: string;
   setRecipient: (recipient: string) => void;
   recipient: string;
+  loading?: boolean;
 }
 
 export const PickWithdraw: React.FC<IProps> = ({
@@ -21,6 +22,7 @@ export const PickWithdraw: React.FC<IProps> = ({
   note,
   setRecipient,
   recipient,
+  loading,
 }) => {
   const breakpoint = useBreakpoint();
 
@@ -50,6 +52,7 @@ export const PickWithdraw: React.FC<IProps> = ({
         Magic password
       </Text>
       <Input
+        disabled={loading}
         name="note"
         type="text"
         placeholder="Enter note here"
@@ -65,6 +68,7 @@ export const PickWithdraw: React.FC<IProps> = ({
         Recipient address
       </Text>
       <Input
+        disabled={loading}
         name="recipientAddress"
         type="text"
         onChange={debouncedHandleChange}
@@ -90,9 +94,13 @@ export const PickWithdraw: React.FC<IProps> = ({
                   alert("Note is not valid");
                   return;
                 }
+                if (!web3.utils.isAddress(recipient)) {
+                  alert("Recipient address is not valid");
+                  return;
+                }
                 onWithdrawClick();
               }}
-              disabled={recipient === "" || note === ""}
+              disabled={!isValidNote(note) || !web3.utils.isAddress(recipient)}
             >
               Withdraw
             </Button>

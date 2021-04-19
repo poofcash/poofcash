@@ -1,4 +1,5 @@
 import React from "react";
+import web3 from "web3";
 import { PickWithdraw } from "pages/WithdrawPage/MobileWithdrawPage/PickWithdraw";
 import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
 import { GrayBox } from "components/GrayBox";
@@ -169,6 +170,7 @@ export const DoWithdraw: React.FC<IProps> = ({
           {t("withdraw.desktop.subtitle")}
         </Text>
         <PickWithdraw
+          loading={loading}
           onWithdrawClick={onWithdrawClick}
           setNote={setNote}
           note={note}
@@ -186,7 +188,7 @@ export const DoWithdraw: React.FC<IProps> = ({
               variant="primary"
               onClick={handleWithdraw}
               sx={{ width: "100%" }}
-              disabled={recipient === "" || note === ""}
+              disabled={!isValidNote(note) || !web3.utils.isAddress(recipient)}
             >
               Withdraw
             </Button>
