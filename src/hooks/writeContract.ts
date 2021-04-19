@@ -93,7 +93,7 @@ export function useApproveCallback(
     }
 
     setApprovalState(ApprovalState.PENDING);
-    const useExact = true;
+    const useExact = false;
     const estimatedGas = await tokenContract.estimateGas
       .approve(spender, MaxUint256)
       .catch(() => {
