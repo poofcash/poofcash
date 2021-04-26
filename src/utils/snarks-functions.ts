@@ -120,9 +120,15 @@ const generateProof = async ({
   console.log("Generating SNARK proof");
   console.time("Proof time");
 
-  const circuit = await (await fetch("withdraw.json")).json();
+  const circuit = await (
+    await fetch(
+      "https://cloudflare-ipfs.com/ipfs/QmbX8PzkcU1SQwUis3zDWEKsn8Yjgy2vALNeghVM2uh31B"
+    )
+  ).json();
   const provingKey = await (
-    await fetch("withdraw_proving_key.bin")
+    await fetch(
+      "https://cloudflare-ipfs.com/ipfs/QmQwgF8aWJzGSXoe1o3jrEPdcfBysWctB2Uwu7uRebXe2D"
+    )
   ).arrayBuffer();
   // generate proof data
   const proofData = await window.genZKSnarkProofAndWitness(
