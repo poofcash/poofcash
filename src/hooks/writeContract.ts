@@ -7,7 +7,7 @@ import { calculateGasMargin } from "utils/gas";
 import { TransactionResponse } from "@ethersproject/providers";
 import { MaxUint256 } from "@ethersproject/constants";
 import { CHAIN_ID } from "config";
-import { instances } from "poof-token";
+import { instances } from "@poofcash/poof-token";
 
 export enum ApprovalState {
   UNKNOWN = "UNKNOWN",
@@ -145,7 +145,7 @@ export function useDepositCallback(
   const deposit = React.useCallback(async (): Promise<void> => {
     setDepositState(DepositState.PENDING);
     return tornadoContract
-      ?.deposit(commitment, { gasLimit: 2 * 10 ** 6 }) // TODO hardcoded limit
+      ?.deposit(commitment, [], { gasLimit: 2 * 10 ** 6 }) // TODO hardcoded limit
       .then((response: TransactionResponse) => {
         setTxHash(response.hash);
         setDepositState(DepositState.DONE);

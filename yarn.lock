@@ -2021,6 +2021,16 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
+"@poofcash/poof-token@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-token/-/poof-token-1.0.0.tgz#9c5785e08fb776af9d2a18087ab3d702294c677f"
+  integrity sha512-reCNYSveCuKZhy5R0hhPuF7thMVAnPh85Ica57UqE1xyR9dPHgDsb/QHfXhsw/wVtFrUpSmoIy8DrnE1kpNJ4w==
+  dependencies:
+    "@openzeppelin/contracts" "^3.1.0"
+    eth-sig-util "^2.5.3"
+    ethereumjs-util "^7.0.3"
+    web3 "^1.2.11"
+
 "@rebass/forms@^4.0.6":
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/@rebass/forms/-/forms-4.0.6.tgz#19a3af64f855baa65dec65aecadda5cd95a09dd7"
@@ -10634,16 +10644,6 @@ pnp-webpack-plugin@1.6.4:
   integrity sha512-7Wjy+9E3WwLOEL30D+m8TSTF7qJJUJLONBnwQp0518siuMxUQUbgZwssaFX+QKlZkjHZcw/IpZCt/H0srrntSg==
   dependencies:
     ts-pnp "^1.1.6"
-
-poof-token@^1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/poof-token/-/poof-token-1.0.11.tgz#9fa0e7a305ff5d86083d948338146031c2d701c0"
-  integrity sha512-QN2wLEovKuq1HKZQEJsxLCP1MvkqVhq2Qkx2tHnkKpZbfO/YL1ZVQpJDr5/mbGa3+SBEeRsLks95I295p+zFZA==
-  dependencies:
-    "@openzeppelin/contracts" "^3.1.0"
-    eth-sig-util "^2.5.3"
-    ethereumjs-util "^7.0.3"
-    web3 "^1.2.11"
 
 portfinder@^1.0.26:
   version "1.0.28"

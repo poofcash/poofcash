@@ -32,7 +32,7 @@
     "circomlib": "git+https://github.com/tornadocash/circomlib.git#c372f14d324d57339c88451834bf2824e73bbdbc",
     "i18next": "^20.2.1",
     "moment": "^2.29.1",
-    "poof-token": "^1.0.11",
+    "@poofcash/poof-token": "^1.0.0",
     "react": "^17.0.1",
     "react-copy-to-clipboard": "^5.0.3",
     "react-device-detect": "^1.17.0",

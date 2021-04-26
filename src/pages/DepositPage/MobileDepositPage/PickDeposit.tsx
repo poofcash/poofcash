@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
 import { useApproveCallback, ApprovalState } from "hooks/writeContract";
 import { TokenAmount, CELO } from "@ubeswap/sdk";
-import { instances } from "poof-token";
+import { instances } from "@poofcash/poof-token";
 import {
   getDeposits,
   useGetTokenBalance,

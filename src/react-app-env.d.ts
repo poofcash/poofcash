@@ -1,2 +1,2 @@
 /// <reference types="react-scripts" />
-declare module "poof-token";
+declare module "@poofcash/poof-token";

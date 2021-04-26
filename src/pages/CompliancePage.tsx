@@ -4,7 +4,7 @@ import { isValidNote, parseNote, toHex } from "utils/snarks-functions";
 import { Container, Input, Text } from "theme-ui";
 import { useTornadoDeposits, useTornadoWithdraws } from "hooks/readContract";
 import { CHAIN_ID } from "config";
-import { instances } from "poof-token";
+import { instances } from "@poofcash/poof-token";
 import { BlockscoutAddressLink, BlockscoutTxLink } from "components/Links";
 
 type NoteDetail = {

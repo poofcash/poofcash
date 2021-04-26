@@ -5,7 +5,7 @@ import { NetworkContextName } from "index";
 import React from "react";
 import { Button, Container, Flex, Spinner, Text } from "theme-ui";
 import { generateProof, parseNote } from "utils/snarks-functions";
-import { instances } from "poof-token";
+import { instances } from "@poofcash/poof-token";
 import { getContract } from "hooks/getContract";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 import { calculateFee } from "utils/gas";

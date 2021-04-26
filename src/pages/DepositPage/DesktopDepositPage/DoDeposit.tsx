@@ -23,7 +23,7 @@ import {
 import { GrayBox } from "components/GrayBox";
 import { CELO, TokenAmount } from "@ubeswap/sdk";
 import { CHAIN_ID } from "config";
-import { instances } from "poof-token";
+import { instances } from "@poofcash/poof-token";
 import { BigNumber } from "@ethersproject/bignumber";
 import { useGetTokenBalance } from "hooks/readContract";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";

@@ -10,7 +10,7 @@ import { useWeb3React } from "@web3-react/core";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 import { generateProof, isValidNote, parseNote } from "utils/snarks-functions";
 import axios from "axios";
-import { instances } from "poof-token";
+import { instances } from "@poofcash/poof-token";
 import { CHAIN_ID, RELAYER_URL } from "config";
 import { getContract } from "hooks/getContract";
 import { calculateFee } from "utils/gas";
