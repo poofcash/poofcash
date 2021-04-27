@@ -7,6 +7,11 @@
         "type": "address"
       },
       {
+        "internalType": "contract IFeeManager",
+        "name": "_feeManager",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "_denomination",
         "type": "uint256"
@@ -18,7 +23,7 @@
       },
       {
         "internalType": "address",
-        "name": "_operator",
+        "name": "_owner",
         "type": "address"
       },
       {
@@ -54,6 +59,63 @@
       }
     ],
     "name": "Deposit",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "encryptedNote",
+        "type": "bytes"
+      }
+    ],
+    "name": "EncryptedNote",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousVerifier",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newVerifier",
+        "type": "address"
+      }
+    ],
+    "name": "VerifierChanged",
     "type": "event"
   },
   {
@@ -137,11 +199,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_newOperator",
+        "name": "_newOwner",
         "type": "address"
       }
     ],
-    "name": "changeOperator",
+    "name": "changeOwner",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -205,12 +267,32 @@
         "internalType": "bytes32",
         "name": "_commitment",
         "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_encryptedNote",
+        "type": "bytes"
       }
     ],
     "name": "deposit",
     "outputs": [],
     "payable": true,
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "feeManager",
+    "outputs": [
+      {
+        "internalType": "contract IFeeManager",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -392,7 +474,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "operator",
+    "name": "owner",
     "outputs": [
       {
         "internalType": "address",
