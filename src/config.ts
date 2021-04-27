@@ -14,17 +14,10 @@ const RPC_URL: string =
 // Do not allow the user to choose the following amounts
 const AMOUNTS_DISABLED: string[] = [];
 
-const TOKEN_ADDRESS = {
-  alfajores: {
-    celo: "0xf194afdf50b03e69bd7d057c1aa9e10c9954e4c9",
-  },
+const RELAYERS = {
+  mainnet: [],
+  alfajores: ["https://poof-relayer-alfajores.herokuapp.com"],
 };
-
-const RELAYER_URL =
-  CHAIN_ID === ChainId.MAINNET
-    ? "https://poof-relayer-prod.herokuapp.com"
-    : "https://poof-relayer-alfajores.herokuapp.com";
-// const RELAYER_URL = "http://localhost:8000";
 
 const BLOCKSCOUT_URL =
   CHAIN_ID === 42220
@@ -36,9 +29,8 @@ const IP_URL = "https://ip.tornado.cash";
 export {
   CHAIN_ID,
   RPC_URL,
-  TOKEN_ADDRESS,
   NETWORK,
-  RELAYER_URL,
+  RELAYERS,
   AMOUNTS_DISABLED,
   BLOCKSCOUT_URL,
   IP_URL,

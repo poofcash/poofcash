@@ -1,9 +1,10 @@
 import React from "react";
 import axios from "axios";
-import { RELAYER_URL } from "config";
 import { PickWithdraw } from "pages/WithdrawPage/MobileWithdrawPage/PickWithdraw";
 import { ConfirmWithdraw } from "pages/WithdrawPage/MobileWithdrawPage/ConfirmWithdraw";
 import { WithdrawReceipt } from "pages/WithdrawPage/MobileWithdrawPage/WithdrawReceipt";
+import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
+import { NETWORK, RELAYERS } from "config";
 
 enum WithdrawStep {
   PICKER = "PICKER",
@@ -15,17 +16,38 @@ const WithdrawPage = () => {
   const [withdrawStep, setWithdrawStep] = React.useState(WithdrawStep.PICKER);
   const [note, setNote] = React.useState("");
   const [recipient, setRecipient] = React.useState("");
-  const [tornadoServiceFee, setTornadoServiceFee] = React.useState("");
+  const [selectedRelayer, setSelectedRelayer] = React.useState<RelayerOption>();
+  const [relayerOptions, setRelayerOptions] = React.useState<
+    Array<RelayerOption>
+  >([]);
+  const [customRelayer, setCustomRelayer] = React.useState<RelayerOption>();
+  const [usingCustomRelayer, setUsingCustomRelayer] = React.useState<boolean>(
+    false
+  );
   const [txHash, setTxHash] = React.useState("");
 
   React.useEffect(() => {
     const fn = async () => {
-      const relayerStatus = await axios.get(RELAYER_URL + "/status");
-      const { tornadoServiceFee } = relayerStatus.data;
-      setTornadoServiceFee(tornadoServiceFee);
+      const statuses = await Promise.all(
+        RELAYERS[NETWORK].map((relayerUrl: string) => {
+          return axios.get(relayerUrl + "/status");
+        })
+      );
+
+      const relayerOptions = RELAYERS[NETWORK].map(
+        (relayerUrl: string, i: number) => ({
+          url: relayerUrl,
+          relayerFee: statuses[i].data.tornadoServiceFee,
+        })
+      );
+
+      setRelayerOptions(relayerOptions);
+      setSelectedRelayer(relayerOptions[0]);
     };
     fn();
-  }, [setTornadoServiceFee]);
+  }, [setRelayerOptions, setSelectedRelayer]);
+
+  const relayer = usingCustomRelayer ? customRelayer : selectedRelayer;
 
   switch (withdrawStep) {
     case WithdrawStep.PICKER:
@@ -38,6 +60,12 @@ const WithdrawPage = () => {
           note={note}
           setRecipient={setRecipient}
           recipient={recipient}
+          setSelectedRelayer={setSelectedRelayer}
+          relayerOptions={relayerOptions}
+          usingCustomRelayer={usingCustomRelayer}
+          setUsingCustomRelayer={setUsingCustomRelayer}
+          customRelayer={customRelayer}
+          setCustomRelayer={setCustomRelayer}
         />
       );
     case WithdrawStep.CONFIRM:
@@ -47,8 +75,8 @@ const WithdrawPage = () => {
           onConfirmClick={() => setWithdrawStep(WithdrawStep.RECEIPT)}
           note={note}
           recipient={recipient}
-          tornadoServiceFee={tornadoServiceFee}
           setTxHash={setTxHash}
+          selectedRelayer={relayer!}
         />
       );
     case WithdrawStep.RECEIPT:
@@ -61,7 +89,7 @@ const WithdrawPage = () => {
           }}
           note={note}
           txHash={txHash}
-          tornadoServiceFee={tornadoServiceFee}
+          tornadoServiceFee={relayer!.relayerFee}
           recipient={recipient}
         />
       );

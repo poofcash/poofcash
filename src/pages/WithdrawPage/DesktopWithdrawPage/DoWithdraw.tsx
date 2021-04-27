@@ -11,10 +11,11 @@ import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 import { generateProof, isValidNote, parseNote } from "utils/snarks-functions";
 import axios from "axios";
 import { instances } from "@poofcash/poof-token";
-import { CHAIN_ID, RELAYER_URL } from "config";
+import { CHAIN_ID } from "config";
 import { getContract } from "hooks/getContract";
 import { calculateFee } from "utils/gas";
 import { NetworkContextName } from "index";
+import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -22,8 +23,14 @@ interface IProps {
   note: string;
   setRecipient: (recipient: string) => void;
   recipient: string;
-  tornadoServiceFee: string;
   setTxHash: (txHash: string) => void;
+  selectedRelayer?: RelayerOption;
+  setSelectedRelayer: (relayer?: RelayerOption) => void;
+  relayerOptions?: Array<RelayerOption>;
+  usingCustomRelayer: boolean;
+  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
+  customRelayer?: RelayerOption;
+  setCustomRelayer: (relayerOption?: RelayerOption) => void;
 }
 
 export const DoWithdraw: React.FC<IProps> = ({
@@ -32,15 +39,22 @@ export const DoWithdraw: React.FC<IProps> = ({
   note,
   setRecipient,
   recipient,
-  tornadoServiceFee,
   setTxHash,
+  selectedRelayer,
+  setSelectedRelayer,
+  relayerOptions,
+  usingCustomRelayer,
+  setUsingCustomRelayer,
+  customRelayer,
+  setCustomRelayer,
 }) => {
   const { t } = useTranslation();
   const { library: networkLibrary } = useWeb3React(NetworkContextName);
   const { deposit, currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
 
-  const relayerFee = (Number(amount) * Number(tornadoServiceFee)) / 100;
+  const relayerFee =
+    (Number(amount) * Number(selectedRelayer?.relayerFee)) / 100 ?? 0;
 
   const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
 
@@ -49,8 +63,14 @@ export const DoWithdraw: React.FC<IProps> = ({
       console.error("Library is not defined");
       return;
     }
+
+    if (!selectedRelayer) {
+      alert("Relayer is undefined");
+      return;
+    }
+
     setLoading(true);
-    const relayerStatus = await axios.get(RELAYER_URL + "/status");
+    const relayerStatus = await axios.get(selectedRelayer.url + "/status");
     const {
       rewardAccount,
       gasPrices,
@@ -89,7 +109,7 @@ export const DoWithdraw: React.FC<IProps> = ({
       });
 
       console.log("Sending withdraw transaction through relay");
-      const relay = await axios.post(RELAYER_URL + "/relay", {
+      const relay = await axios.post(selectedRelayer.url + "/relay", {
         contract: tornadoAddress,
         proof,
         args,
@@ -98,7 +118,9 @@ export const DoWithdraw: React.FC<IProps> = ({
       let done = false;
       let tries = 10;
       while (!done && tries > 0) {
-        const job = await axios.get(RELAYER_URL + `/v1/jobs/${relay.data.id}`);
+        const job = await axios.get(
+          selectedRelayer.url + `/v1/jobs/${relay.data.id}`
+        );
         if (job.data.txHash) {
           setTxHash(job.data.txHash);
           console.log(
@@ -146,7 +168,7 @@ export const DoWithdraw: React.FC<IProps> = ({
               value: `${amount} ${currency.toUpperCase()}`,
             },
             {
-              label: "Relayer Fee",
+              label: `Relayer Fee - ${selectedRelayer?.relayerFee}%`,
               value: `-${relayerFee.toString()} ${currency.toUpperCase()}`,
             },
             { label: "Protocol Fee", value: `0 CELO` },
@@ -176,6 +198,12 @@ export const DoWithdraw: React.FC<IProps> = ({
           note={note}
           setRecipient={setRecipient}
           recipient={recipient}
+          setSelectedRelayer={setSelectedRelayer}
+          relayerOptions={relayerOptions}
+          usingCustomRelayer={usingCustomRelayer}
+          setUsingCustomRelayer={setUsingCustomRelayer}
+          customRelayer={customRelayer}
+          setCustomRelayer={setCustomRelayer}
         />
       </Container>
       <Container>
@@ -188,7 +216,20 @@ export const DoWithdraw: React.FC<IProps> = ({
               variant="primary"
               onClick={handleWithdraw}
               sx={{ width: "100%" }}
-              disabled={!isValidNote(note) || !web3.utils.isAddress(recipient)}
+              disabled={(() => {
+                if (!isValidNote) {
+                  return true;
+                }
+                if (!web3.utils.isAddress(recipient)) {
+                  return true;
+                }
+                if (usingCustomRelayer) {
+                  if (!customRelayer) {
+                    return true;
+                  }
+                }
+                return false;
+              })()}
             >
               Withdraw
             </Button>

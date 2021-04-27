@@ -16,7 +16,7 @@ interface IProps {
   onDoneClick: () => void;
   note: string;
   txHash: string;
-  tornadoServiceFee: string;
+  tornadoServiceFee: number;
   recipient: string;
 }
 

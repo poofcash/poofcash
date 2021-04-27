@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
-import { CHAIN_ID, RELAYER_URL } from "config";
+import { CHAIN_ID } from "config";
 import { NetworkContextName } from "index";
 import React from "react";
 import { Button, Container, Flex, Spinner, Text } from "theme-ui";
@@ -13,14 +13,15 @@ import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
+import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 
 interface IProps {
   onBackClick: () => void;
   onConfirmClick: () => void;
   note: string;
   recipient: string;
-  tornadoServiceFee: string;
   setTxHash: (txHash: string) => void;
+  selectedRelayer: RelayerOption;
 }
 
 export const PRECISION = 7;
@@ -31,14 +32,14 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
   onConfirmClick,
   note,
   recipient,
-  tornadoServiceFee,
   setTxHash,
+  selectedRelayer,
 }) => {
   const { library: networkLibrary } = useWeb3React(NetworkContextName);
   const { deposit, currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
 
-  const relayerFee = (Number(amount) * Number(tornadoServiceFee)) / 100;
+  const relayerFee = (Number(amount) * selectedRelayer.relayerFee) / 100;
 
   const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
 
@@ -48,7 +49,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
       return;
     }
     setLoading(true);
-    const relayerStatus = await axios.get(RELAYER_URL + "/status");
+    const relayerStatus = await axios.get(selectedRelayer.url + "/status");
     const {
       rewardAccount,
       gasPrices,
@@ -87,7 +88,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
       });
 
       console.log("Sending withdraw transaction through relay");
-      const relay = await axios.post(RELAYER_URL + "/relay", {
+      const relay = await axios.post(selectedRelayer.url + "/relay", {
         contract: tornadoAddress,
         proof,
         args,
@@ -96,7 +97,9 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
       let done = false;
       let tries = 10;
       while (!done && tries > 0) {
-        const job = await axios.get(RELAYER_URL + `/v1/jobs/${relay.data.id}`);
+        const job = await axios.get(
+          selectedRelayer.url + `/v1/jobs/${relay.data.id}`
+        );
         if (job.data.txHash) {
           setTxHash(job.data.txHash);
           console.log(
@@ -139,7 +142,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
             value: `${amount} ${currency.toUpperCase()}`,
           },
           {
-            label: "Relayer Fee",
+            label: `Relayer Fee - ${selectedRelayer?.relayerFee}%`,
             value: `-${relayerFee.toString()} ${currency.toUpperCase()}`,
           },
           { label: "Protocol Fee", value: `0 CELO` },
