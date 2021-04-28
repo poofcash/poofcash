@@ -76,7 +76,7 @@ export const PickWithdraw: React.FC<IProps> = ({
               .then(({ data }) =>
                 setCustomRelayer({
                   url: relayerUrl,
-                  relayerFee: data.tornadoServiceFee,
+                  relayerFee: data.poofServiceFee,
                 })
               )
               .catch((err) =>

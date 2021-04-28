@@ -39,7 +39,7 @@ const DesktopWithdrawPage: React.FC = () => {
       const relayerOptions = RELAYERS[NETWORK].map(
         (relayerUrl: string, i: number) => ({
           url: relayerUrl,
-          relayerFee: statuses[i].data.tornadoServiceFee,
+          relayerFee: statuses[i].data.poofServiceFee,
         })
       );
 
@@ -82,7 +82,7 @@ const DesktopWithdrawPage: React.FC = () => {
           }}
           note={note}
           txHash={txHash}
-          tornadoServiceFee={relayer!.relayerFee}
+          poofServiceFee={relayer!.relayerFee}
           recipient={recipient}
         />
       );

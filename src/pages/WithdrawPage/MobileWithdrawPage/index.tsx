@@ -37,7 +37,7 @@ const WithdrawPage = () => {
       const relayerOptions = RELAYERS[NETWORK].map(
         (relayerUrl: string, i: number) => ({
           url: relayerUrl,
-          relayerFee: statuses[i].data.tornadoServiceFee,
+          relayerFee: statuses[i].data.poofServiceFee,
         })
       );
 
@@ -89,7 +89,7 @@ const WithdrawPage = () => {
           }}
           note={note}
           txHash={txHash}
-          tornadoServiceFee={relayer!.relayerFee}
+          poofServiceFee={relayer!.relayerFee}
           recipient={recipient}
         />
       );

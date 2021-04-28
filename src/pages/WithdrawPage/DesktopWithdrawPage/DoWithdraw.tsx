@@ -74,7 +74,7 @@ export const DoWithdraw: React.FC<IProps> = ({
     const {
       rewardAccount,
       gasPrices,
-      tornadoServiceFee,
+      poofServiceFee,
       celoPrices,
     } = relayerStatus.data;
 
@@ -93,7 +93,7 @@ export const DoWithdraw: React.FC<IProps> = ({
         currency,
         amount,
         celoPrices,
-        tornadoServiceFee,
+        poofServiceFee,
         decimals: 18,
       }); // TODO decimals hardcode
 

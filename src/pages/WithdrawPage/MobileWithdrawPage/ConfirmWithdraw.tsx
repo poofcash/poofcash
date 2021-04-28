@@ -53,7 +53,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
     const {
       rewardAccount,
       gasPrices,
-      tornadoServiceFee,
+      poofServiceFee,
       celoPrices,
     } = relayerStatus.data;
 
@@ -72,7 +72,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
         currency,
         amount,
         celoPrices,
-        tornadoServiceFee,
+        poofServiceFee,
         decimals: 18,
       }); // TODO decimals hardcode
 

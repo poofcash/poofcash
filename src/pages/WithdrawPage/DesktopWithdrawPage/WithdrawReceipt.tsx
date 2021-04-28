@@ -15,7 +15,7 @@ interface IProps {
   onDoneClick: () => void;
   note: string;
   txHash: string;
-  tornadoServiceFee: number;
+  poofServiceFee: number;
   recipient: string;
 }
 
@@ -23,12 +23,12 @@ export const WithdrawReceipt: React.FC<IProps> = ({
   onDoneClick,
   note,
   txHash,
-  tornadoServiceFee,
+  poofServiceFee,
   recipient,
 }) => {
   const { amount, currency } = parseNote(note);
 
-  const relayerFee = (Number(amount) * Number(tornadoServiceFee)) / 100;
+  const relayerFee = (Number(amount) * Number(poofServiceFee)) / 100;
   const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
 
   return (

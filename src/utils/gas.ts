@@ -13,7 +13,7 @@ export function calculateFee({
   amount,
   refund = 0,
   celoPrices,
-  tornadoServiceFee,
+  poofServiceFee,
   decimals,
 }: {
   gasPrices: any;
@@ -21,13 +21,12 @@ export function calculateFee({
   amount: number;
   refund?: number;
   celoPrices: any;
-  tornadoServiceFee: number;
+  poofServiceFee: number;
   decimals: number;
 }) {
   // gas price is in gwei. Convert to CELO
   const gasExpense = gasPrices[1.3] * Math.pow(10, 9) * 5 * Math.pow(10, 5);
-  const serviceFee =
-    amount * (tornadoServiceFee / 100) * Math.pow(10, decimals);
+  const serviceFee = amount * (poofServiceFee / 100) * Math.pow(10, decimals);
   let totalExpense = 0;
   switch (currency) {
     case "celo": {
