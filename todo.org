@@ -2,7 +2,6 @@
 - [ ] Refactor on view logic
 - [ ] Address TODOs
 - [ ] Remove unnecessary consoles
-- [ ] Add CEW?
 * done
 - [X] Fix approve
 - [X] Remove graphql
@@ -16,3 +15,4 @@
 - [X] Anon set
   - [X] Basic: Show # of deposits in contract
   - [X] Advanced: Show current deposits and timestamps
+- [X] Add CEW?
