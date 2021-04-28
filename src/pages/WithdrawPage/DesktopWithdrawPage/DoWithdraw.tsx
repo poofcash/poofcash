@@ -137,6 +137,7 @@ export const DoWithdraw: React.FC<IProps> = ({
       if (e.response) {
         console.error(e.response.data.error);
       } else {
+        console.debug(e);
         alert(e.message);
       }
     } finally {
@@ -169,7 +170,9 @@ export const DoWithdraw: React.FC<IProps> = ({
             },
             {
               label: `Relayer Fee - ${selectedRelayer?.relayerFee}%`,
-              value: `-${relayerFee.toString()} ${currency.toUpperCase()}`,
+              value: `-${relayerFee
+                .toString()
+                .slice(0, PRECISION)} ${currency.toUpperCase()}`,
             },
             { label: "Protocol Fee", value: `0 CELO` },
           ]}
