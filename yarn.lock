@@ -2021,10 +2021,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@poofcash/poof-token@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@poofcash/poof-token/-/poof-token-1.0.0.tgz#9c5785e08fb776af9d2a18087ab3d702294c677f"
-  integrity sha512-reCNYSveCuKZhy5R0hhPuF7thMVAnPh85Ica57UqE1xyR9dPHgDsb/QHfXhsw/wVtFrUpSmoIy8DrnE1kpNJ4w==
+"@poofcash/poof-token@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-token/-/poof-token-1.0.1.tgz#4b5c93531bbc3cbe7c9aa1eb054e51c0d5861419"
+  integrity sha512-+STcTvBUZydxRvE5LCQ0Gqb4ITZM9n1W2ya8/uohoQnsp35geZUjn4Vz5RiCBnVmankDrjZir6o+fvJvg73YIA==
   dependencies:
     "@openzeppelin/contracts" "^3.1.0"
     eth-sig-util "^2.5.3"
