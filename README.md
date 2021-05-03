@@ -39,7 +39,7 @@ Will generate a production build in `build/`
 
 ## Deploying on IPFS
 
-Add the `build/` directory to any IPFS node
+After generating a build, add the `build/` directory to any IPFS node
 
 ## Listing your relayer
 
