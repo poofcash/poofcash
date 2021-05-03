@@ -22,7 +22,7 @@ const WithdrawPage = () => {
   >([]);
   const [customRelayer, setCustomRelayer] = React.useState<RelayerOption>();
   const [usingCustomRelayer, setUsingCustomRelayer] = React.useState<boolean>(
-    false
+    true
   );
   const [txHash, setTxHash] = React.useState("");
 
