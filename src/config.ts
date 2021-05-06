@@ -15,7 +15,7 @@ const RPC_URL: string =
 const AMOUNTS_DISABLED: string[] = [];
 
 const RELAYERS = {
-  mainnet: [],
+  mainnet: ["https://adamaris.crabdance.com"],
   alfajores: ["https://poof-relayer-alfajores.herokuapp.com"],
 };
 
