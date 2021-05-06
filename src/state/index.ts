@@ -1,16 +1,15 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 
 import user from "state/user";
-import { updateVersion } from "state/global";
+import global from "state/global";
 
 const store = configureStore({
   reducer: {
     user,
+    global,
   },
   middleware: [...getDefaultMiddleware({ thunk: false })],
 });
-
-store.dispatch(updateVersion());
 
 export default store;
 

@@ -145,7 +145,7 @@ export function useDepositCallback(
   const deposit = React.useCallback(async (): Promise<void> => {
     setDepositState(DepositState.PENDING);
     return tornadoContract
-      ?.deposit(commitment, [], { gasLimit: 2 * 10 ** 6 }) // TODO hardcoded limit
+      ?.deposit(commitment, [])
       .then((response: TransactionResponse) => {
         setTxHash(response.hash);
         setDepositState(DepositState.DONE);
@@ -153,7 +153,9 @@ export function useDepositCallback(
       .catch((error: Error) => {
         setDepositState(DepositState.UNKNOWN);
         console.debug("Failed to deposit", error);
-        alert(error.message);
+        alert(
+          `${error.toString()}. Sometimes this can happen if you don't have enough CELO and/or cUSD to pay for gas.`
+        );
       });
   }, [tornadoContract, setDepositState, setTxHash, commitment]);
 

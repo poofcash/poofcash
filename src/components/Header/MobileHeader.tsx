@@ -1,12 +1,17 @@
 import React from "react";
-import { useHistory, useLocation } from "react-router-dom";
 import { Button, Container, Flex } from "theme-ui";
 import { Logo } from "components/Logo";
 import { AccountProfile } from "components/AccountProfile";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState } from "state";
+import { Page, setCurrentPage } from "state/global";
 
 export const MobileHeader: React.FC = () => {
-  const history = useHistory();
-  const location = useLocation();
+  const currentPage = useSelector(
+    (state: AppState) => state.global.currentPage
+  );
+  const dispatch = useDispatch();
+
   return (
     <Container sx={{ pt: 4, px: 3, width: "auto", backgroundColor: "#F1F4F4" }}>
       <Flex
@@ -22,21 +27,17 @@ export const MobileHeader: React.FC = () => {
       <Flex sx={{ width: "fit-content" }}>
         <Button
           variant={
-            location.pathname.includes("deposit")
-              ? "switcherSelected"
-              : "switcher"
+            currentPage === Page.DEPOSIT ? "switcherSelected" : "switcher"
           }
-          onClick={() => history.push("/deposit")}
+          onClick={() => dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }))}
         >
           Deposit
         </Button>
         <Button
           variant={
-            location.pathname.includes("withdraw")
-              ? "switcherSelected"
-              : "switcher"
+            currentPage === Page.WITHDRAW ? "switcherSelected" : "switcher"
           }
-          onClick={() => history.push("/withdraw")}
+          onClick={() => dispatch(setCurrentPage({ nextPage: Page.WITHDRAW }))}
         >
           Withdraw
         </Button>

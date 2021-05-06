@@ -7,10 +7,12 @@ import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import { NetworkContextName } from "index";
 import { useInitValoraResponse } from "connectors/valora/valoraUtils";
-import { Switch, Route, Redirect } from "react-router-dom";
 import Modal from "react-modal";
 import { Header } from "components/Header";
 import "i18n/config";
+import { useSelector } from "react-redux";
+import { Page } from "state/global";
+import { AppState } from "state";
 
 // pass props and State interface to Component class
 const App = () => {
@@ -24,6 +26,17 @@ const App = () => {
       activateNetwork(network);
     }
   }, [library, activateNetwork]);
+
+  const currentPage = useSelector(
+    (state: AppState) => state.global.currentPage
+  );
+
+  let page = <DepositPage />;
+  if (currentPage === Page.WITHDRAW) {
+    page = <WithdrawPage />;
+  } else if (currentPage === Page.COMPLIANCE) {
+    page = <CompliancePage />;
+  }
 
   return (
     <Container
@@ -43,20 +56,7 @@ const App = () => {
           maxHeight: "calc(100vh + 64px)",
         }}
       >
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/deposit" />
-          </Route>
-          <Route exact path="/deposit">
-            <DepositPage />
-          </Route>
-          <Route exact path="/withdraw">
-            <WithdrawPage />
-          </Route>
-          <Route exact path="/compliance">
-            <CompliancePage />
-          </Route>
-        </Switch>
+        {page}
       </Container>
       {/*TODO footer*/}
     </Container>

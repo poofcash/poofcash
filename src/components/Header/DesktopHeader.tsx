@@ -1,11 +1,14 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button, Container, Flex, Text } from "theme-ui";
 import { Logo } from "components/Logo";
 import { AccountProfile } from "components/AccountProfile";
 import styled from "@emotion/styled";
 import { useWeb3React } from "@web3-react/core";
 import { ConnectWallet } from "pages/ConnectWallet";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState } from "state";
+import { Page, setCurrentPage } from "state/global";
 
 const StyledLink = styled(Link)({
   height: "fit-content",
@@ -13,8 +16,12 @@ const StyledLink = styled(Link)({
 });
 
 export const DesktopHeader: React.FC = () => {
-  const location = useLocation();
+  const currentPage = useSelector(
+    (state: AppState) => state.global.currentPage
+  );
+  const dispatch = useDispatch();
   const { account } = useWeb3React();
+
   const [showConnectWalletModal, setShowConnectWalletModal] = React.useState(
     false
   );
@@ -34,12 +41,15 @@ export const DesktopHeader: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <StyledLink to={"/deposit"}>
+            <StyledLink
+              to=""
+              onClick={() =>
+                dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }))
+              }
+            >
               <Text
                 sx={{
-                  color: location.pathname.includes("deposit")
-                    ? "accent"
-                    : "text",
+                  color: currentPage === Page.DEPOSIT ? "accent" : "text",
                   mr: 2,
                 }}
                 variant="subtitle"
@@ -47,12 +57,15 @@ export const DesktopHeader: React.FC = () => {
                 Deposit
               </Text>
             </StyledLink>
-            <StyledLink to={"/withdraw"}>
+            <StyledLink
+              to=""
+              onClick={() =>
+                dispatch(setCurrentPage({ nextPage: Page.WITHDRAW }))
+              }
+            >
               <Text
                 sx={{
-                  color: location.pathname.includes("withdraw")
-                    ? "accent"
-                    : "text",
+                  color: currentPage === Page.WITHDRAW ? "accent" : "text",
                   mr: 4,
                 }}
                 variant="subtitle"
