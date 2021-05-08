@@ -28,5 +28,15 @@
         "title": "Review your withdrawal"
       }
     }
+  },
+  "connectWallet": {
+    "selectWallet": {
+      "title": "Connect your wallet",
+      "description": "To deposit cryptocurrency with Poof, you must connect to a wallet with funds."
+    },
+    "selectIndex": {
+      "title": "Select Ledger account index",
+      "description": "Select the Ledger account index you want to connect"
+    }
   }
 }

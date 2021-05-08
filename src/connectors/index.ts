@@ -1,8 +1,7 @@
 import { Web3Provider } from "@ethersproject/providers";
 import { InjectedConnector } from "@ubeswap/injected-connector";
-import { LedgerConnector } from "./ledger/LedgerConnector";
-import { NetworkConnector } from "./NetworkConnector";
-import { ValoraConnector } from "./valora/ValoraConnector";
+import { NetworkConnector } from "connectors/NetworkConnector";
+import { ValoraConnector } from "connectors/valora/ValoraConnector";
 import { CHAIN_ID } from "config";
 
 export const network = new NetworkConnector({
@@ -18,8 +17,6 @@ export function getNetworkLibrary(): Web3Provider {
 export const injected = new InjectedConnector({
   supportedChainIds: [CHAIN_ID],
 });
-
-export const ledger = new LedgerConnector();
 
 export const valora = new ValoraConnector({
   defaultChainId: CHAIN_ID,

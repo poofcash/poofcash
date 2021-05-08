@@ -1,57 +1,34 @@
 import React from "react";
-import { Text, Flex, Image } from "@theme-ui/components";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-import { NETWORK } from "config";
-import { requestValoraAuth } from "connectors/valora/valoraUtils";
-import { injected, ledger, valora } from "connectors";
 import Modal from "react-modal";
-import { BackButton } from "components/BackButton";
-import Valora from "images/valora.png";
-import Ledger from "images/ledger.png";
-import CEW from "images/cew.png";
+import { SelectWallet } from "pages/ConnectWallet/SelectWallet";
+import { SelectIndex } from "pages/ConnectWallet/SelectIndex";
 
 interface IProps {
   isOpen: boolean;
   goBack: () => void;
 }
 
-const IconText: React.FC<{
-  onClick: () => void;
-  icon: string;
-  text: string;
-}> = ({ onClick, icon, text }) => {
-  return (
-    <Flex
-      sx={{ alignItems: "center", cursor: "pointer", my: 4 }}
-      onClick={onClick}
-    >
-      <Image sx={{ mr: 3 }} src={icon} />
-      <Text variant="regular">{text}</Text>
-    </Flex>
-  );
-};
+enum Mode {
+  SELECT_WALLET = "SELECT_WALLET",
+  SELECT_INDEX = "SELECT_INDEX",
+}
 
 export const ConnectWallet: React.FC<IProps> = ({ isOpen, goBack }) => {
-  const { activate } = useWeb3React();
-  const connectLedgerWallet = async () => {
-    await activate(ledger, undefined, true).catch(alert);
-  };
+  const [mode, setMode] = React.useState(Mode.SELECT_WALLET);
 
-  const connectCeloExtensionWallet = async () => {
-    await activate(injected, undefined, true).catch((e) => {
-      if (e instanceof UnsupportedChainIdError) {
-        alert(
-          `Unexpected chain. Are you sure your wallet is on the ${NETWORK} network?`
-        );
-      }
-    });
-  };
-
-  const connectValoraWallet = async () => {
-    const resp = await requestValoraAuth();
-    valora.setSavedValoraAccount(resp);
-    activate(valora, undefined, true).catch(alert);
-  };
+  let content;
+  if (mode === Mode.SELECT_WALLET) {
+    content = (
+      <SelectWallet
+        goBack={goBack}
+        selectIndex={() => setMode(Mode.SELECT_INDEX)}
+      />
+    );
+  } else if (mode === Mode.SELECT_INDEX) {
+    content = (
+      <SelectIndex goBack={() => setMode(Mode.SELECT_WALLET)} onDone={goBack} />
+    );
+  }
 
   return (
     <Modal
@@ -59,48 +36,7 @@ export const ConnectWallet: React.FC<IProps> = ({ isOpen, goBack }) => {
       onRequestClose={goBack}
       style={{ content: { top: 0, left: 0, width: "100%", height: "100%" } }}
     >
-      <BackButton onClick={goBack} />
-      <Text sx={{ mb: 2 }} variant="title">
-        Connect your wallet
-      </Text>
-      <Text sx={{ mb: 5 }} variant="regularGray">
-        To deposit cryptocurrency with Poof, you must connect to a wallet with
-        funds.
-      </Text>
-      <IconText
-        onClick={() => {
-          connectValoraWallet();
-          goBack();
-        }}
-        icon={Valora}
-        text="Valora"
-      />
-      <div
-        style={{
-          border: "1px solid #F1F4F4",
-        }}
-      ></div>
-      <IconText
-        onClick={() => {
-          connectLedgerWallet();
-          goBack();
-        }}
-        icon={Ledger}
-        text="Ledger"
-      />
-      <div
-        style={{
-          border: "1px solid #F1F4F4",
-        }}
-      ></div>
-      <IconText
-        onClick={() => {
-          connectCeloExtensionWallet();
-          goBack();
-        }}
-        icon={CEW}
-        text="Celo Extension Wallet"
-      />
+      {content}
     </Modal>
   );
 };
