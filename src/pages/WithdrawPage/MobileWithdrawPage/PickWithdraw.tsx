@@ -148,7 +148,7 @@ export const PickWithdraw: React.FC<IProps> = ({
         name="relayer"
         onChange={debouncedHandleChange}
       >
-        {relayerOptions && (
+        {relayerOptions && relayerOptions.length > 0 && (
           <>
             {relayerOptions.map((relayerOption, i) => (
               <option key={i} value={relayerOption.url}>
