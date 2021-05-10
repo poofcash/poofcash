@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -27,6 +26,7 @@ import { instances } from "@poofcash/poof-token";
 import { BigNumber } from "@ethersproject/bignumber";
 import { useGetTokenBalance } from "hooks/readContract";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
+import { useContractKit } from "@celo-tools/use-contractkit";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -48,7 +48,7 @@ export const DoDeposit: React.FC<IProps> = ({
   depositState,
 }) => {
   const { t } = useTranslation();
-  const { account } = useWeb3React();
+  const { address } = useContractKit();
 
   const [confirmed, setConfirmed] = React.useState(false);
   const [
@@ -76,16 +76,16 @@ export const DoDeposit: React.FC<IProps> = ({
     ),
     tornadoAddress
   );
-  const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], account);
+  const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], address);
   React.useEffect(() => {
-    if (account) {
+    if (address) {
       getAccountBalance()
         .then((tokenAmount) => setAccountBalance(Number(tokenAmount.toExact())))
         .catch(console.error);
     }
-  }, [getAccountBalance, account]);
+  }, [getAccountBalance, address]);
   const approveHandler = async () => {
-    if (!account) {
+    if (!address) {
       return;
     }
     if (!accountBalance) {
@@ -110,7 +110,7 @@ export const DoDeposit: React.FC<IProps> = ({
       variant="primary"
       onClick={approveHandler}
       sx={{ width: "100%" }}
-      disabled={!account || selectedAmount === "" || !confirmed}
+      disabled={!address || selectedAmount === "" || !confirmed}
     >
       Approve
     </Button>
@@ -121,14 +121,14 @@ export const DoDeposit: React.FC<IProps> = ({
       variant="primary"
       onClick={onDepositClick}
       sx={{ width: "100%" }}
-      disabled={!account || selectedAmount === "" || !confirmed}
+      disabled={!address || selectedAmount === "" || !confirmed}
     >
       Deposit
     </Button>
   );
 
   let button = depositButton;
-  if (account) {
+  if (address) {
     if (approvalState === ApprovalState.NOT_APPROVED) {
       button = approveButton;
     }
@@ -147,7 +147,7 @@ export const DoDeposit: React.FC<IProps> = ({
 
   const totalCost = Number(selectedAmount) + Number(NETWORK_COST);
 
-  if (account && selectedAmount === "") {
+  if (address && selectedAmount === "") {
     boxContent = (
       <>
         <Text sx={{ mb: 4 }} variant="subtitle">
@@ -158,7 +158,7 @@ export const DoDeposit: React.FC<IProps> = ({
         </Text>
       </>
     );
-  } else if (account) {
+  } else if (address) {
     boxContent = (
       <>
         <Text sx={{ mb: 4 }} variant="subtitle">

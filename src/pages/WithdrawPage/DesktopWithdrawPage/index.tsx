@@ -24,7 +24,7 @@ const DesktopWithdrawPage: React.FC = () => {
   >([]);
   const [customRelayer, setCustomRelayer] = React.useState<RelayerOption>();
   const [usingCustomRelayer, setUsingCustomRelayer] = React.useState<boolean>(
-    true
+    false
   );
   const [txHash, setTxHash] = React.useState("");
 

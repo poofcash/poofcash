@@ -1,6 +1,5 @@
 import React from "react";
 import moment from "moment";
-import { useWeb3React } from "@web3-react/core";
 import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
 import { useApproveCallback, ApprovalState } from "hooks/writeContract";
 import { TokenAmount, CELO } from "@ubeswap/sdk";
@@ -13,13 +12,12 @@ import {
 import { BigNumber } from "@ethersproject/bignumber";
 import { Button, Text, Spinner } from "@theme-ui/components";
 import { Flex, Grid, Select } from "theme-ui";
-import { NetworkContextName } from "index";
-import { ConnectWallet } from "pages/ConnectWallet";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { TableDivider } from "components/TableDivider";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
+import { useContractKit } from "@celo-tools/use-contractkit";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -41,8 +39,7 @@ export const PickDeposit: React.FC<IProps> = ({
   selectedCurrency,
   setSelectedCurrency,
 }) => {
-  const { account } = useWeb3React();
-  const { library: networkLibrary } = useWeb3React(NetworkContextName);
+  const { connect, address, kit } = useContractKit();
   const breakpoint = useBreakpoint();
 
   const [accountBalance, setAccountBalance] = React.useState<number>();
@@ -51,9 +48,6 @@ export const PickDeposit: React.FC<IProps> = ({
     showInsufficientBalanceModal,
     setShowInsufficientBalanceModal,
   ] = React.useState(false);
-  const [showConnectWalletModal, setShowConnectWalletModal] = React.useState(
-    false
-  );
 
   const tornadoAddress = React.useMemo(
     () =>
@@ -83,14 +77,14 @@ export const PickDeposit: React.FC<IProps> = ({
     tornadoAddress
   );
 
-  const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], account);
+  const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], address);
   React.useEffect(() => {
-    if (account) {
+    if (address) {
       getAccountBalance()
         .then((tokenAmount) => setAccountBalance(Number(tokenAmount.toExact())))
         .catch(console.error);
     }
-  }, [getAccountBalance, account]);
+  }, [getAccountBalance, address]);
 
   const getContractBalance = useGetTokenBalance(CELO[CHAIN_ID], tornadoAddress);
   React.useEffect(() => {
@@ -116,22 +110,19 @@ export const PickDeposit: React.FC<IProps> = ({
           instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress[
             depositAmounts[i]
           ];
-        res[depositAmounts[i]] = await getDeposits(
-          networkLibrary,
-          tornadoAddress
-        );
+        res[depositAmounts[i]] = await getDeposits(kit, tornadoAddress);
       }
       return res;
     };
     fn().then((res) => setAmountToDeposits(res));
-  }, [networkLibrary, selectedCurrency, depositAmounts]);
+  }, [kit, selectedCurrency, depositAmounts]);
 
   const loading =
     approvalState === ApprovalState.PENDING ||
     approvalState === ApprovalState.WAITING_CONFIRMATIONS;
 
   const approveHandler = async () => {
-    if (!account) {
+    if (!address) {
       return;
     }
     if (!accountBalance) {
@@ -147,7 +138,7 @@ export const PickDeposit: React.FC<IProps> = ({
   };
 
   const depositHandler = async () => {
-    if (!account) {
+    if (!address) {
       return;
     }
     try {
@@ -167,7 +158,7 @@ export const PickDeposit: React.FC<IProps> = ({
   };
 
   const connectWalletButton = (
-    <Button variant="secondary" onClick={() => setShowConnectWalletModal(true)}>
+    <Button variant="secondary" onClick={connect}>
       Connect Wallet
     </Button>
   );
@@ -189,7 +180,7 @@ export const PickDeposit: React.FC<IProps> = ({
   );
 
   let button = connectWalletButton;
-  if (account) {
+  if (address) {
     if (approvalState === ApprovalState.NOT_APPROVED) {
       button = approveButton;
     } else {
@@ -250,7 +241,7 @@ export const PickDeposit: React.FC<IProps> = ({
               : contractDeposits.length
             ).toLocaleString()}
           </Text>
-          <Text variant="regular">equal user deposits</Text>
+          <Text variant="regular">total deposits</Text>
         </Flex>
       </Flex>
 
@@ -312,11 +303,6 @@ export const PickDeposit: React.FC<IProps> = ({
         onClose={() => setShowInsufficientBalanceModal(false)}
         show={showInsufficientBalanceModal}
         neededAmount={selectedAmount}
-      />
-
-      <ConnectWallet
-        isOpen={showConnectWalletModal}
-        goBack={() => setShowConnectWalletModal(false)}
       />
 
       {breakpoint === Breakpoint.MOBILE && (

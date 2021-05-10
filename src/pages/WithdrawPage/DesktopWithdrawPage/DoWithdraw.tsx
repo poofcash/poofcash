@@ -16,6 +16,7 @@ import { getContract } from "hooks/getContract";
 import { calculateFee } from "utils/gas";
 import { NetworkContextName } from "index";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
+import { useContractKit } from "@celo-tools/use-contractkit";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -49,6 +50,7 @@ export const DoWithdraw: React.FC<IProps> = ({
   setCustomRelayer,
 }) => {
   const { t } = useTranslation();
+  const { kit } = useContractKit();
   const { library: networkLibrary } = useWeb3React(NetworkContextName);
   const { deposit, currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
@@ -82,11 +84,7 @@ export const DoWithdraw: React.FC<IProps> = ({
       const refund: string = "0";
       const tornadoAddress =
         instances[`netId${CHAIN_ID}`][currency].instanceAddress[amount];
-      const tornado = getContract(
-        tornadoAddress,
-        ERC20_TORNADO_ABI,
-        networkLibrary
-      );
+      const tornado = getContract(kit, ERC20_TORNADO_ABI, tornadoAddress);
 
       const fee = calculateFee({
         gasPrices,

@@ -4,11 +4,11 @@ import { Button, Container, Flex, Text } from "theme-ui";
 import { Logo } from "components/Logo";
 import { AccountProfile } from "components/AccountProfile";
 import styled from "@emotion/styled";
-import { useWeb3React } from "@web3-react/core";
 import { ConnectWallet } from "pages/ConnectWallet";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "state";
 import { Page, setCurrentPage } from "state/global";
+import { useContractKit } from "@celo-tools/use-contractkit";
 
 const StyledLink = styled(Link)({
   height: "fit-content",
@@ -20,11 +20,11 @@ export const DesktopHeader: React.FC = () => {
     (state: AppState) => state.global.currentPage
   );
   const dispatch = useDispatch();
-  const { account } = useWeb3React();
-
   const [showConnectWalletModal, setShowConnectWalletModal] = React.useState(
     false
   );
+
+  const { connect, address } = useContractKit();
   return (
     <>
       <Container sx={{ width: "auto" }}>
@@ -73,13 +73,10 @@ export const DesktopHeader: React.FC = () => {
                 Withdraw
               </Text>
             </StyledLink>
-            {account ? (
+            {address ? (
               <AccountProfile />
             ) : (
-              <Button
-                variant="outline"
-                onClick={() => setShowConnectWalletModal(true)}
-              >
+              <Button variant="outline" onClick={connect}>
                 Connect Wallet
               </Button>
             )}

@@ -9,6 +9,14 @@ import { ThemeProvider } from "theme-ui";
 import { BrowserRouter } from "react-router-dom";
 import store from "state";
 import "index.css";
+import {
+  Alfajores,
+  ContractKitProvider,
+  Mainnet,
+} from "@celo-tools/use-contractkit";
+import "@celo-tools/use-contractkit/lib/styles.css";
+import { ChainId } from "@ubeswap/sdk";
+import { CHAIN_ID } from "config";
 
 declare global {
   interface Window {
@@ -34,7 +42,17 @@ ReactDOM.render(
         <Provider store={store}>
           <ThemeProvider theme={theme}>
             <BrowserRouter>
-              <App />
+              <ContractKitProvider
+                dappName="Poof.cash"
+                dappDescription="Decentralized, private transactions for Celo"
+                dappUrl={window.location.href.slice(
+                  0,
+                  window.location.href.length - 1
+                )}
+                networks={[CHAIN_ID === ChainId.MAINNET ? Mainnet : Alfajores]}
+              >
+                <App />
+              </ContractKitProvider>
             </BrowserRouter>
           </ThemeProvider>
         </Provider>

@@ -1,3 +1,4 @@
+import { Contract } from "web3-eth-contract";
 import merkleTree from "lib/MerkleTree";
 const randomBytes = require("crypto").randomBytes;
 const circomlib = require("circomlib");
@@ -6,8 +7,6 @@ const assert = require("assert");
 const websnarkUtils = require("websnark/src/utils");
 const rbigint = (nbytes: number) => bigInt.leBuff2int(randomBytes(nbytes));
 const MERKLE_TREE_HEIGHT = 20;
-const COMMITMENT_IDX = 0;
-const LEAF_INDEX_IDX = 1;
 
 // Compute pedersen hash
 const pedersenHash = (data: object) =>
@@ -151,25 +150,33 @@ const generateProof = async ({
   return { proof, args };
 };
 
-async function generateMerkleProof(deposit: any, tornado: any) {
+async function generateMerkleProof(deposit: any, tornado: Contract) {
   // Get all deposit events from smart contract and assemble merkle tree from them
   console.log("Getting current state from tornado contract");
-  const depositFilter = await tornado.filters.Deposit();
-  const events = await tornado.queryFilter(depositFilter, 0, "latest");
+  const events = await tornado.getPastEvents("Deposit", {
+    fromBlock: 0,
+    toBlock: "latest",
+  });
   const leaves = events
-    .sort((a: any, b: any) => a.args[LEAF_INDEX_IDX] - b.args[LEAF_INDEX_IDX]) // Sort events in chronological order
-    .map((e: any) => e.args[COMMITMENT_IDX]);
+    .sort(
+      (a: any, b: any) => a.returnValues.leafIndex - b.returnValues.leafIndex
+    ) // Sort events in chronological order
+    .map((e: any) => e.returnValues.commitment);
   const tree = new merkleTree(MERKLE_TREE_HEIGHT, leaves);
 
   // Find current commitment in the tree
   const depositEvent = events.find(
-    (event: any) => event.args[COMMITMENT_IDX] === toHex(deposit.commitment)
+    (event: any) => event.returnValues.commitment === toHex(deposit.commitment)
   );
-  const leafIndex = depositEvent ? depositEvent.args[LEAF_INDEX_IDX] : -1;
+  const leafIndex = depositEvent ? depositEvent.returnValues.leafIndex : -1;
 
   // Validate that our data is correct
-  const isValidRoot = await tornado.isKnownRoot(toHex(await tree.root()));
-  const isSpent = await tornado.isSpent(toHex(deposit.nullifierHash));
+  const isValidRoot = await tornado.methods
+    .isKnownRoot(toHex(await tree.root()))
+    .call();
+  const isSpent = await tornado.methods
+    .isSpent(toHex(deposit.nullifierHash))
+    .call();
   assert(isValidRoot === true, "Merkle tree is corrupted");
   assert(isSpent === false, "The note is already spent");
   assert(leafIndex >= 0, "The deposit is not found in the tree");

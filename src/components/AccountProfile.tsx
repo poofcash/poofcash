@@ -1,5 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
-import { useAccountName } from "hooks/accountName";
 import React from "react";
 import { Flex } from "theme-ui";
 import { BlockscoutAddressLink } from "components/Links";
@@ -7,6 +5,8 @@ import { Text } from "theme-ui";
 import axios from "axios";
 import { IP_URL } from "config";
 import { ProfileIcon } from "icons/ProfileIcon";
+import { useContractKit } from "@celo-tools/use-contractkit";
+import { shortenAccount } from "hooks/accountName";
 
 type UserLocation = {
   country: string;
@@ -21,8 +21,7 @@ type UserLocation = {
 };
 
 export const AccountProfile: React.FC = () => {
-  const { account } = useWeb3React();
-  const accountName = useAccountName();
+  const { address, destroy } = useContractKit();
 
   const [userLocation, setUserLocation] = React.useState<UserLocation>();
   React.useEffect(() => {
@@ -42,13 +41,28 @@ export const AccountProfile: React.FC = () => {
           textAlign: "right",
         }}
       >
-        {account ? (
-          <BlockscoutAddressLink address={account}>
-            <Text variant="wallet">{accountName}</Text>
-          </BlockscoutAddressLink>
-        ) : (
-          <Text variant="wallet">????...????</Text>
-        )}
+        <Flex
+          sx={{
+            alignItems: "baseline",
+            justifyContent: address ? "space-between" : "flex-end",
+          }}
+        >
+          {address ? (
+            <BlockscoutAddressLink address={address}>
+              <Text variant="wallet">{shortenAccount(address)}</Text>
+            </BlockscoutAddressLink>
+          ) : (
+            <Text variant="wallet">????...????</Text>
+          )}
+          {address && (
+            <>
+              <Text>/</Text>
+              <Text sx={{ cursor: "pointer" }} onClick={destroy} variant="form">
+                Disconnect
+              </Text>
+            </>
+          )}
+        </Flex>
         {userLocation && (
           <Text variant="form">
             IP: {userLocation.ip}, {userLocation.city}, {userLocation.country}

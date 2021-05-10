@@ -1,13 +1,12 @@
 import React from "react";
 import { TokenAmount } from "@ubeswap/sdk";
 import { useGetTokenAllowance } from "./readContract";
-import { useActiveWeb3React } from "./web3";
-import { useTokenContract, useTornadoTokenContract } from "./getContract";
-import { calculateGasMargin } from "utils/gas";
-import { TransactionResponse } from "@ethersproject/providers";
+import { getTokenContract, getTornadoContract } from "./getContract";
 import { MaxUint256 } from "@ethersproject/constants";
 import { CHAIN_ID } from "config";
 import { instances } from "@poofcash/poof-token";
+import { useContractKit } from "@celo-tools/use-contractkit";
+import { toWei } from "web3-utils";
 
 export enum ApprovalState {
   UNKNOWN = "UNKNOWN",
@@ -27,9 +26,9 @@ export function useApproveCallback(
   amountToApprove: TokenAmount,
   spender?: string
 ): [ApprovalState, () => Promise<void>] {
-  const { account } = useActiveWeb3React();
+  const { address, performActions } = useContractKit();
   const token = amountToApprove.token;
-  const getCurrentAllowance = useGetTokenAllowance(token, account, spender);
+  const getCurrentAllowance = useGetTokenAllowance(token, address, spender);
   const [approvalState, setApprovalState] = React.useState(
     ApprovalState.UNKNOWN
   );
@@ -37,7 +36,7 @@ export function useApproveCallback(
 
   // TODO, this is kind of fragile
   React.useEffect(() => {
-    if (account && Number(amountToApprove.toExact()) > 0) {
+    if (address && Number(amountToApprove.toExact()) > 0) {
       const asyncSetCurrentAllowance = async () => {
         try {
           const currentAllowance = await getCurrentAllowance();
@@ -48,7 +47,7 @@ export function useApproveCallback(
       };
       asyncSetCurrentAllowance();
     }
-  }, [account, approvalState, getCurrentAllowance, amountToApprove]);
+  }, [address, approvalState, getCurrentAllowance, amountToApprove]);
 
   // check the current approval status
   React.useEffect(() => {
@@ -64,8 +63,6 @@ export function useApproveCallback(
     }
   }, [approvalState, amountToApprove, allowance]);
 
-  const tokenContract = useTokenContract(token.address);
-
   const approve = React.useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
       console.error("approve was called unnecessarily");
@@ -74,11 +71,6 @@ export function useApproveCallback(
 
     if (!token) {
       console.error("no token");
-      return;
-    }
-
-    if (!tokenContract) {
-      console.error("tokenContract is null");
       return;
     }
 
@@ -94,35 +86,39 @@ export function useApproveCallback(
 
     setApprovalState(ApprovalState.PENDING);
     const useExact = false;
-    const estimatedGas = await tokenContract.estimateGas
-      .approve(spender, MaxUint256)
-      .catch(() => {
-        // general fallback for tokens who restrict approval amounts
-        return tokenContract.estimateGas.approve(
-          spender,
-          amountToApprove.raw.toString()
-        );
-      });
+    // const estimatedGas = await tokenContract.estimateGas
+    //   .approve(spender, MaxUint256)
+    //   .catch(() => {
+    //     // general fallback for tokens who restrict approval amounts return tokenContract.estimateGas.approve(
+    //       spender,
+    //       amountToApprove.raw.toString()
+    //     );
+    //   });
 
-    tokenContract
-      .approve(
-        spender,
-        useExact ? amountToApprove.raw.toString() : MaxUint256,
-        {
-          gasLimit: calculateGasMargin(estimatedGas),
-        }
-      )
-      .then(async (response: TransactionResponse) => {
-        setApprovalState(ApprovalState.WAITING_CONFIRMATIONS);
-        await response.wait(1); // Wait for 1 confirmation
-        setApprovalState(ApprovalState.APPROVED);
-      })
-      .catch((error: Error) => {
-        console.debug("Failed to approve", error);
-        alert(error.message);
-        setApprovalState(ApprovalState.NOT_APPROVED);
+    try {
+      await performActions(async (kit) => {
+        const tokenContract = getTokenContract(kit, token.address);
+        await tokenContract.methods
+          .approve(
+            spender,
+            useExact ? amountToApprove.raw.toString() : MaxUint256
+            //    {
+            //      gasLimit: calculateGasMargin(estimatedGas),
+            //    }
+          )
+          .send({
+            from: kit.defaultAccount,
+            gasLimit: 2000000,
+            gasPrice: toWei("0.13", "gwei"),
+          });
       });
-  }, [approvalState, token, tokenContract, amountToApprove, spender]);
+      setApprovalState(ApprovalState.APPROVED);
+    } catch (error) {
+      console.debug("Failed to approve", error);
+      alert(error.message);
+      setApprovalState(ApprovalState.NOT_APPROVED);
+    }
+  }, [approvalState, token, amountToApprove, spender, performActions]);
 
   return [approvalState, approve];
 }
@@ -133,31 +129,36 @@ export function useDepositCallback(
 ): [DepositState, string, () => Promise<void>] {
   const [depositState, setDepositState] = React.useState(DepositState.UNKNOWN);
   const [txHash, setTxHash] = React.useState("");
+  const { performActions, address } = useContractKit();
 
   // Reset deposit state when there is a new commitment
   React.useEffect(() => setDepositState(DepositState.UNKNOWN), [commitment]);
 
-  const tornadoContract = useTornadoTokenContract(
-    instances[`netId${CHAIN_ID}`]["celo"].instanceAddress[amountToDeposit],
-    true
-  );
-
   const deposit = React.useCallback(async (): Promise<void> => {
     setDepositState(DepositState.PENDING);
-    return tornadoContract
-      ?.deposit(commitment, [])
-      .then((response: TransactionResponse) => {
-        setTxHash(response.hash);
-        setDepositState(DepositState.DONE);
-      })
-      .catch((error: Error) => {
-        setDepositState(DepositState.UNKNOWN);
-        console.debug("Failed to deposit", error);
-        alert(
-          `${error.toString()}. Sometimes this can happen if you don't have enough CELO and/or cUSD to pay for gas.`
+    try {
+      await performActions(async (kit) => {
+        const tornadoContract = getTornadoContract(
+          kit,
+          instances[`netId${CHAIN_ID}`]["celo"].instanceAddress[amountToDeposit]
         );
+        console.log(address);
+        const tx = await tornadoContract.methods.deposit(commitment, []).send({
+          from: address,
+          gasLimit: 2000000,
+          gasPrice: toWei("0.13", "gwei"),
+        });
+        setTxHash(tx.transactionHash);
       });
-  }, [tornadoContract, setDepositState, setTxHash, commitment]);
+    } catch (error) {
+      setDepositState(DepositState.UNKNOWN);
+      console.error("Failed to deposit", error);
+      alert(
+        `${error.toString()}. Sometimes this can happen if you don't have enough CELO and/or cUSD to pay for gas.`
+      );
+    }
+    setDepositState(DepositState.DONE);
+  }, [performActions, amountToDeposit, address, commitment]);
 
   return [depositState, txHash, deposit];
 }
