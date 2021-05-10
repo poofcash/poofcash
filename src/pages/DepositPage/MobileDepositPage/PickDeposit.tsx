@@ -46,6 +46,7 @@ export const PickDeposit: React.FC<IProps> = ({
   const breakpoint = useBreakpoint();
 
   const [accountBalance, setAccountBalance] = React.useState<number>();
+  const [contractBalance, setContractBalance] = React.useState(0);
   const [
     showInsufficientBalanceModal,
     setShowInsufficientBalanceModal,
@@ -90,6 +91,17 @@ export const PickDeposit: React.FC<IProps> = ({
         .catch(console.error);
     }
   }, [getAccountBalance, account]);
+
+  const getContractBalance = useGetTokenBalance(CELO[CHAIN_ID], tornadoAddress);
+  React.useEffect(() => {
+    if (tornadoAddress) {
+      getContractBalance()
+        .then((tokenAmount) =>
+          setContractBalance(Number(tokenAmount.toExact()))
+        )
+        .catch(console.error);
+    }
+  }, [getContractBalance, tornadoAddress]);
 
   const contractDeposits = useTornadoDeposits(tornadoAddress);
   const [
@@ -220,13 +232,26 @@ export const PickDeposit: React.FC<IProps> = ({
         Anonymity Set
       </Text>
       <Flex sx={{ mb: 4 }}>
-        <Text sx={{ mr: 1 }} variant="largeNumber">
-          {(selectedAmount === ""
-            ? Object.values(amountToDeposits).flatMap((x) => x).length
-            : contractDeposits.length
-          ).toLocaleString()}
-        </Text>
-        <Text variant="regular">equal user deposits</Text>
+        {selectedAmount !== "" && (
+          <>
+            <Flex>
+              <Text sx={{ mr: 1 }} variant="largeNumber">
+                {(contractBalance / Number(selectedAmount)).toLocaleString()}
+              </Text>
+              <Text variant="regular">active deposits</Text>
+            </Flex>
+            <Text mx={4}>/</Text>
+          </>
+        )}
+        <Flex>
+          <Text sx={{ mr: 1 }} variant="largeNumber">
+            {(selectedAmount === ""
+              ? Object.values(amountToDeposits).flatMap((x) => x).length
+              : contractDeposits.length
+            ).toLocaleString()}
+          </Text>
+          <Text variant="regular">equal user deposits</Text>
+        </Flex>
       </Flex>
 
       {selectedAmount === "" && (
