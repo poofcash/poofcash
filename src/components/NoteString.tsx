@@ -2,12 +2,15 @@ import { ClipboardIcon } from "icons/ClipboardIcon";
 import React from "react";
 import { Flex, Input, Text } from "theme-ui";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { downloadFile } from "utils/file";
+import { parseNote } from "utils/snarks-functions";
 
 interface IProps {
   noteString: string;
 }
 
 export const NoteString: React.FC<IProps> = ({ noteString }) => {
+  const { amount, currency } = parseNote(noteString);
   return (
     <Flex>
       <Input
@@ -21,7 +24,13 @@ export const NoteString: React.FC<IProps> = ({ noteString }) => {
         value={noteString}
       />
       <CopyToClipboard
-        onCopy={() => alert("Copied to clipboard.")}
+        onCopy={() => {
+          alert("Copied to clipboard.");
+          downloadFile(
+            `${amount.replace(".", "_")} ${currency} Poof note`,
+            noteString
+          );
+        }}
         text={noteString}
       >
         <Flex

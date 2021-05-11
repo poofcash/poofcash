@@ -46,7 +46,7 @@ export const isValidNote = (noteString: string) => {
 };
 
 /**
- * Parses Tornado.cash note
+ * Parses Poof.cash note
  * @param noteString the note
  */
 const parseNote = (noteString: string) => {
