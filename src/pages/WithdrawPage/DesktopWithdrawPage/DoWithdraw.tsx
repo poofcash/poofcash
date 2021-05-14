@@ -199,6 +199,7 @@ export const DoWithdraw: React.FC<IProps> = ({
           note={note}
           setRecipient={setRecipient}
           recipient={recipient}
+          selectedRelayer={selectedRelayer}
           setSelectedRelayer={setSelectedRelayer}
           relayerOptions={relayerOptions}
           usingCustomRelayer={usingCustomRelayer}

@@ -17,6 +17,7 @@ interface IProps {
   setRecipient: (recipient: string) => void;
   recipient: string;
   loading?: boolean;
+  selectedRelayer?: RelayerOption;
   setSelectedRelayer: (relayer?: RelayerOption) => void;
   relayerOptions?: Array<RelayerOption>;
   usingCustomRelayer: boolean;
@@ -32,6 +33,7 @@ export const PickWithdraw: React.FC<IProps> = ({
   setRecipient,
   recipient,
   loading,
+  selectedRelayer,
   setSelectedRelayer,
   relayerOptions,
   usingCustomRelayer,
@@ -146,9 +148,10 @@ export const PickWithdraw: React.FC<IProps> = ({
       <Select
         disabled={loading}
         name="relayer"
+        value={usingCustomRelayer ? "custom" : selectedRelayer?.url ?? "custom"}
         onChange={debouncedHandleChange}
       >
-        {relayerOptions && relayerOptions.length > 0 && (
+        {relayerOptions && (
           <>
             {relayerOptions.map((relayerOption, i) => (
               <option key={i} value={relayerOption.url}>

@@ -30,21 +30,31 @@ const DesktopWithdrawPage: React.FC = () => {
 
   React.useEffect(() => {
     const fn = async () => {
-      const statuses = await Promise.all(
-        RELAYERS[NETWORK].map((relayerUrl: string) => {
-          return axios.get(relayerUrl + "/status");
-        })
-      );
+      const statuses = (
+        await Promise.all(
+          RELAYERS[NETWORK].map((relayerUrl: string) => {
+            return axios.get(relayerUrl + "/status").catch((e) => e);
+          })
+        )
+      ).filter((result) => {
+        if (result instanceof Error) {
+          console.error(result);
+          return false;
+        }
+        return true;
+      });
 
-      const relayerOptions = RELAYERS[NETWORK].map(
-        (relayerUrl: string, i: number) => ({
-          url: relayerUrl,
-          relayerFee: statuses[i].data.poofServiceFee,
-        })
-      );
+      const relayerOptions = statuses.map((status) => ({
+        url: status.config.url.split("/status")[0],
+        relayerFee: status.data.poofServiceFee,
+      }));
 
       setRelayerOptions(relayerOptions);
-      setSelectedRelayer(relayerOptions[0]);
+      if (relayerOptions.length > 0) {
+        setSelectedRelayer(relayerOptions[0]);
+      } else {
+        setUsingCustomRelayer(true);
+      }
     };
     fn();
   }, [setRelayerOptions, setSelectedRelayer]);
