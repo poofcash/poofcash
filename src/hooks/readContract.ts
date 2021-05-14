@@ -2,8 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Token, TokenAmount } from "@ubeswap/sdk";
 import { getContract, getTokenContract } from "hooks/getContract";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
-import { ContractKit } from "@celo/contractkit";
 import { useContractKit } from "@celo-tools/use-contractkit";
+import { CHAIN_ID } from "config";
+import { instances } from "@poofcash/poof-token";
+import { Contract } from "web3-eth-contract";
+import React from "react";
 
 export function useGetTokenAllowance(
   token?: Token,
@@ -55,18 +58,49 @@ export function useGetTokenBalance(
   return getTokenBalance;
 }
 
-export const getDeposits = async (kit: ContractKit, tornadoAddress: string) => {
-  const tornado = getContract(kit, ERC20_TORNADO_ABI, tornadoAddress);
-  try {
-    const events = await tornado.getPastEvents("Deposit");
-    const blockPromises = events.map(({ blockNumber }) => {
-      return kit.connection.getBlock(blockNumber);
+type AmountToDeposits = {
+  [depositAmount: string]: Array<any>;
+};
+
+export const useAmountToDeposits = (selectedCurrency: string) => {
+  const { kit } = useContractKit();
+  const tornados: [string, Contract][] = useMemo(() => {
+    return Object.entries(
+      instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress
+    ).map(([depositAmount, tornadoAddress]) => {
+      return [
+        depositAmount,
+        getContract(kit, ERC20_TORNADO_ABI, tornadoAddress as string),
+      ];
     });
-    return await Promise.all(blockPromises);
-  } catch (e) {
-    console.error(e);
-    return [];
-  }
+  }, [kit, selectedCurrency]);
+
+  const [
+    amountToDeposits,
+    setAmountToDeposits,
+  ] = React.useState<AmountToDeposits>({});
+
+  useEffect(() => {
+    const fn = async () => {
+      const res: AmountToDeposits = {};
+      for (let i = 0; i < tornados.length; i++) {
+        const [depositAmount, tornado] = tornados[i];
+        const events = await tornado.getPastEvents("Deposit", {
+          fromBlock: 0,
+          toBlock: "latest",
+        });
+        const blockPromises = events.map(({ blockNumber }) => {
+          return kit.connection.getBlock(blockNumber);
+        });
+        const blocks = await Promise.all(blockPromises);
+        res[depositAmount] = blocks;
+      }
+      return res;
+    };
+    fn().then(setAmountToDeposits);
+  }, [tornados, kit, amountToDeposits]);
+
+  return amountToDeposits;
 };
 
 // Returns a list of the latest deposits

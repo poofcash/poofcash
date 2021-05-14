@@ -5,7 +5,7 @@ import { useApproveCallback, ApprovalState } from "hooks/writeContract";
 import { TokenAmount, CELO } from "@ubeswap/sdk";
 import { instances } from "@poofcash/poof-token";
 import {
-  getDeposits,
+  useAmountToDeposits,
   useGetTokenBalance,
   useTornadoDeposits,
 } from "hooks/readContract";
@@ -27,10 +27,6 @@ interface IProps {
   selectedCurrency: string;
 }
 
-type AmountToDeposits = {
-  [depositAmount: string]: Array<any>;
-};
-
 // pass props and State interface to Component class
 export const PickDeposit: React.FC<IProps> = ({
   onDepositClick,
@@ -39,7 +35,7 @@ export const PickDeposit: React.FC<IProps> = ({
   selectedCurrency,
   setSelectedCurrency,
 }) => {
-  const { connect, address, kit } = useContractKit();
+  const { connect, address } = useContractKit();
   const breakpoint = useBreakpoint();
 
   const [accountBalance, setAccountBalance] = React.useState<number>();
@@ -55,13 +51,6 @@ export const PickDeposit: React.FC<IProps> = ({
         selectedAmount
       ],
     [selectedCurrency, selectedAmount]
-  );
-  const depositAmounts = React.useMemo(
-    () =>
-      Object.keys(
-        instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress
-      ).sort(),
-    [selectedCurrency]
   );
 
   const [approvalState, approveCallback] = useApproveCallback(
@@ -98,24 +87,14 @@ export const PickDeposit: React.FC<IProps> = ({
   }, [getContractBalance, tornadoAddress]);
 
   const contractDeposits = useTornadoDeposits(tornadoAddress);
-  const [
-    amountToDeposits,
-    setAmountToDeposits,
-  ] = React.useState<AmountToDeposits>({});
-  React.useEffect(() => {
-    const fn = async () => {
-      const res: AmountToDeposits = {};
-      for (let i = 0; i < depositAmounts.length; i++) {
-        const tornadoAddress =
-          instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress[
-            depositAmounts[i]
-          ];
-        res[depositAmounts[i]] = await getDeposits(kit, tornadoAddress);
-      }
-      return res;
-    };
-    fn().then((res) => setAmountToDeposits(res));
-  }, [kit, selectedCurrency, depositAmounts]);
+  const amountToDeposits = useAmountToDeposits(selectedCurrency);
+  const depositAmounts = React.useMemo(
+    () =>
+      Object.keys(
+        instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress
+      ).sort(),
+    [selectedCurrency]
+  );
 
   const loading =
     approvalState === ApprovalState.PENDING ||
@@ -220,7 +199,7 @@ export const PickDeposit: React.FC<IProps> = ({
       </Select>
 
       <Text sx={{ mb: 2, mt: 6 }} variant="form">
-        Anonymity Set
+        Deposit Set
       </Text>
       <Flex sx={{ mb: 4 }}>
         {selectedAmount !== "" && (
