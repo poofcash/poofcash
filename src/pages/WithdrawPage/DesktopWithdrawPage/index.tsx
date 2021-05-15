@@ -59,7 +59,10 @@ const DesktopWithdrawPage: React.FC = () => {
     fn();
   }, [setRelayerOptions, setSelectedRelayer]);
 
-  const relayer = usingCustomRelayer ? customRelayer : selectedRelayer;
+  const relayer = React.useMemo(
+    () => (usingCustomRelayer ? customRelayer : selectedRelayer),
+    [customRelayer, selectedRelayer, usingCustomRelayer]
+  );
 
   switch (depositStep) {
     case WithdrawStep.DO:
