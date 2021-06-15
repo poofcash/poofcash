@@ -51,6 +51,12 @@ export const preset = {
       fontSize: [12],
       lineHeight: "16px",
     },
+    account: {
+      fontFamily: "DemiBold",
+      color: "primary",
+      fontSize: [12],
+      lineHeight: "16px",
+    },
     regular: {
       fontFamily: "Regular",
       fontSize: [18],

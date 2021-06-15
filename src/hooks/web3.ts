@@ -1,17 +1,11 @@
-import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
-import { Web3Provider } from "@ethersproject/providers";
-import { ChainId } from "@ubeswap/sdk";
-import { useWeb3React } from "@web3-react/core";
-import { NetworkContextName } from "index";
-import { CHAIN_ID } from "config";
+import { useContractKit } from "@celo-tools/use-contractkit";
+import React from "react";
 
-export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & {
-  chainId: ChainId;
-} {
-  const context = useWeb3React<Web3Provider>();
-  const contextNetwork = useWeb3React<Web3Provider>(NetworkContextName);
-  return {
-    ...(context.active ? context : contextNetwork),
-    chainId: CHAIN_ID,
-  };
+export function useLatestBlockNumber() {
+  const { kit } = useContractKit();
+  const [latestBlock, setLatestBlock] = React.useState(0);
+  React.useEffect(() => {
+    kit.web3.eth.getBlockNumber().then(setLatestBlock);
+  }, [kit, setLatestBlock]);
+  return latestBlock;
 }

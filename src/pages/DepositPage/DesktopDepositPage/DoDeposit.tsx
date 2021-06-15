@@ -20,13 +20,12 @@ import {
   useApproveCallback,
 } from "hooks/writeContract";
 import { GrayBox } from "components/GrayBox";
-import { CELO, TokenAmount } from "@ubeswap/sdk";
+import { CELO } from "@ubeswap/sdk";
 import { CHAIN_ID } from "config";
-import { instances } from "@poofcash/poof-token";
-import { BigNumber } from "@ethersproject/bignumber";
 import { useGetTokenBalance } from "hooks/readContract";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 import { useContractKit } from "@celo-tools/use-contractkit";
+import { toBN } from "web3-utils";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -56,25 +55,13 @@ export const DoDeposit: React.FC<IProps> = ({
     setShowInsufficientBalanceModal,
   ] = React.useState(false);
 
-  const tornadoAddress = React.useMemo(
-    () =>
-      instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress[
-        selectedAmount
-      ],
-    [selectedCurrency, selectedAmount]
-  );
   const [accountBalance, setAccountBalance] = React.useState<number>();
   const [approvalState, approveCallback] = useApproveCallback(
-    new TokenAmount(
-      CELO[CHAIN_ID],
-      // Only supports up to 2 decimal places
-      selectedAmount !== ""
-        ? BigNumber.from(100 * Number(selectedAmount))
-            .mul(BigNumber.from(10).pow(16))
-            .toString()
-        : "0"
-    ),
-    tornadoAddress
+    CELO[CHAIN_ID].address,
+    // Only supports up to 2 decimal places
+    selectedAmount !== ""
+      ? toBN(100 * Number(selectedAmount)).mul(toBN(10).pow(toBN(16)))
+      : toBN("0")
   );
   const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], address);
   React.useEffect(() => {

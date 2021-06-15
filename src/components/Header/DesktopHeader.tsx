@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button, Container, Flex, Text } from "theme-ui";
+import { Container, Flex, Text } from "theme-ui";
 import { Logo } from "components/Logo";
 import { AccountProfile } from "components/AccountProfile";
 import styled from "@emotion/styled";
@@ -8,7 +8,6 @@ import { ConnectWallet } from "pages/ConnectWallet";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "state";
 import { Page, setCurrentPage } from "state/global";
-import { useContractKit } from "@celo-tools/use-contractkit";
 
 const StyledLink = styled(Link)({
   height: "fit-content",
@@ -24,7 +23,6 @@ export const DesktopHeader: React.FC = () => {
     false
   );
 
-  const { connect, address } = useContractKit();
   return (
     <>
       <Container sx={{ width: "auto" }}>
@@ -66,20 +64,44 @@ export const DesktopHeader: React.FC = () => {
               <Text
                 sx={{
                   color: currentPage === Page.WITHDRAW ? "accent" : "text",
-                  mr: 4,
+                  mr: 2,
                 }}
                 variant="subtitle"
               >
                 Withdraw
               </Text>
             </StyledLink>
-            {address ? (
-              <AccountProfile />
-            ) : (
-              <Button variant="outline" onClick={connect}>
-                Connect Wallet
-              </Button>
-            )}
+            <StyledLink
+              to=""
+              onClick={() => dispatch(setCurrentPage({ nextPage: Page.MINE }))}
+            >
+              <Text
+                sx={{
+                  color: currentPage === Page.MINE ? "accent" : "text",
+                  mr: 2,
+                }}
+                variant="subtitle"
+              >
+                Mine
+              </Text>
+            </StyledLink>
+            <StyledLink
+              to=""
+              onClick={() =>
+                dispatch(setCurrentPage({ nextPage: Page.REDEEM }))
+              }
+            >
+              <Text
+                sx={{
+                  color: currentPage === Page.REDEEM ? "accent" : "text",
+                  mr: 4,
+                }}
+                variant="subtitle"
+              >
+                Redeem
+              </Text>
+            </StyledLink>
+            <AccountProfile />
           </Flex>
         </Flex>
       </Container>

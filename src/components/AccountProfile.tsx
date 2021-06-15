@@ -2,34 +2,17 @@ import React from "react";
 import { Flex } from "theme-ui";
 import { BlockscoutAddressLink } from "components/Links";
 import { Text } from "theme-ui";
-import axios from "axios";
-import { IP_URL } from "config";
-import { ProfileIcon } from "icons/ProfileIcon";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { shortenAccount } from "hooks/accountName";
-
-type UserLocation = {
-  country: string;
-  region: string;
-  eu: string;
-  timezone: string;
-  city: string;
-  ll: Array<number>;
-  metro: number;
-  area: number;
-  ip: string;
-};
+import { useDispatch, useSelector } from "react-redux";
+import { AppState } from "state";
+import { setAccount } from "state/user";
+import { Page, setCurrentPage } from "state/global";
 
 export const AccountProfile: React.FC = () => {
-  const { address, destroy } = useContractKit();
-
-  const [userLocation, setUserLocation] = React.useState<UserLocation>();
-  React.useEffect(() => {
-    axios
-      .get(IP_URL)
-      .then(({ data }) => setUserLocation(data))
-      .catch(console.error);
-  }, []);
+  const { address, destroy, connect } = useContractKit();
+  const poofAccount = useSelector((state: AppState) => state.user.poofAccount);
+  const dispatch = useDispatch();
 
   return (
     <Flex sx={{ alignItems: "center", justifyContent: "flex-end" }}>
@@ -49,27 +32,78 @@ export const AccountProfile: React.FC = () => {
         >
           {address ? (
             <BlockscoutAddressLink address={address}>
-              <Text variant="wallet">{shortenAccount(address)}</Text>
+              <Text variant="wallet" mr={2}>
+                {shortenAccount(address)}
+              </Text>
             </BlockscoutAddressLink>
           ) : (
-            <Text variant="wallet">????...????</Text>
+            <Text variant="wallet" mr={2}>
+              0x????...????
+            </Text>
           )}
-          {address && (
+          {address ? (
             <>
-              <Text>/</Text>
-              <Text sx={{ cursor: "pointer" }} onClick={destroy} variant="form">
+              <Text
+                sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
+                onClick={destroy}
+                variant="form"
+              >
                 Disconnect
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text
+                sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
+                onClick={connect}
+                variant="form"
+              >
+                Connect
               </Text>
             </>
           )}
         </Flex>
-        {userLocation && (
-          <Text variant="form">
-            IP: {userLocation.ip}, {userLocation.city}, {userLocation.country}
-          </Text>
-        )}
+
+        <Flex
+          sx={{
+            alignItems: "baseline",
+            justifyContent: address ? "space-between" : "flex-end",
+          }}
+        >
+          {poofAccount?.address ? (
+            <Text variant="account" mr={2}>
+              {shortenAccount(poofAccount?.address)}
+            </Text>
+          ) : (
+            <Text variant="account" mr={2}>
+              ????...????
+            </Text>
+          )}
+          {poofAccount?.address ? (
+            <>
+              <Text
+                sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
+                onClick={() => dispatch(setAccount({ poofAccount: undefined }))}
+                variant="form"
+              >
+                Logout
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text
+                sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
+                onClick={() =>
+                  dispatch(setCurrentPage({ nextPage: Page.SETUP }))
+                }
+                variant="form"
+              >
+                Login
+              </Text>
+            </>
+          )}
+        </Flex>
       </Flex>
-      <ProfileIcon />
     </Flex>
   );
 };

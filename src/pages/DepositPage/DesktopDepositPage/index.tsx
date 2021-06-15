@@ -29,8 +29,7 @@ const DesktopDepositPage: React.FC = () => {
   }, [selectedCurrency, selectedAmount]);
 
   const [depositState, txHash, depositCallback] = useDepositCallback(
-    Number(selectedAmount),
-    noteStringCommitment.commitment
+    noteStringCommitment.noteString
   );
   React.useEffect(() => {
     if (depositState === DepositState.DONE) {

@@ -4,7 +4,7 @@ import { valora } from "connectors";
 export const shortenAccount = (account: string) => {
   return (
     account.slice(0, 6) +
-    "..." +
+    ".." +
     account.slice(account.length - 5, account.length)
   );
 };

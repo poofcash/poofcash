@@ -1,4 +1,14 @@
 {
+  "setup": {
+    "create": {
+      "title": "Create an account",
+      "subtitle": "Save this private key to manage your anonymity points"
+    },
+    "login": {
+      "title": "Login",
+      "subtitle": "Enter your previously backed up private key"
+    }
+  },
   "deposit": {
     "desktop": {
       "title": "Make a deposit",
@@ -26,6 +36,32 @@
       },
       "review": {
         "title": "Review your withdrawal"
+      }
+    }
+  },
+  "mine": {
+    "desktop": {
+      "title": "Mine AP",
+      "subtitle": "Enter your magic password to privately claim AP for your deposit.",
+      "specify": {
+        "title": "Mine AP",
+        "subtitle": "Specify the withdrawn magic password"
+      },
+      "review": {
+        "title": "Review your mineable balance"
+      }
+    }
+  },
+  "redeem": {
+    "desktop": {
+      "title": "Redeem POOF with AP",
+      "subtitle": "Enter the amount of AP you'd like to convert to POOF",
+      "specify": {
+        "title": "Redeem POOF",
+        "subtitle": "Enter the amount of AP you'd like to convert to POOF"
+      },
+      "review": {
+        "title": "Review your redemption"
       }
     }
   },

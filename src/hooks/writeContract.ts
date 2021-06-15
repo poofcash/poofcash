@@ -1,12 +1,10 @@
 import React from "react";
-import { TokenAmount } from "@ubeswap/sdk";
-import { useGetTokenAllowance } from "./readContract";
-import { getTokenContract, getTornadoContract } from "./getContract";
 import { MaxUint256 } from "@ethersproject/constants";
-import { CHAIN_ID } from "config";
-import { instances } from "@poofcash/poof-token";
 import { useContractKit } from "@celo-tools/use-contractkit";
-import { toWei } from "web3-utils";
+import { toWei, toBN } from "web3-utils";
+import BN from "bn.js";
+import { PoofKitV2 } from "@poofcash/poof-kit";
+import { Address } from "@celo/base";
 
 export enum ApprovalState {
   UNKNOWN = "UNKNOWN",
@@ -23,39 +21,48 @@ export enum DepositState {
 }
 
 export function useApproveCallback(
-  amountToApprove: TokenAmount,
-  spender?: string
+  tokenAddress: Address,
+  amountToApprove: BN
 ): [ApprovalState, () => Promise<void>] {
   const { address, performActions } = useContractKit();
-  const token = amountToApprove.token;
-  const getCurrentAllowance = useGetTokenAllowance(token, address, spender);
+  const { kit } = useContractKit();
   const [approvalState, setApprovalState] = React.useState(
     ApprovalState.UNKNOWN
   );
-  const [allowance, setAllowance] = React.useState<TokenAmount | undefined>();
+  const [allowance, setAllowance] = React.useState<BN | undefined>();
 
   // TODO, this is kind of fragile
   React.useEffect(() => {
-    if (address && Number(amountToApprove.toExact()) > 0) {
+    if (address && amountToApprove.gt(toBN(0))) {
       const asyncSetCurrentAllowance = async () => {
+        if (!kit.defaultAccount) {
+          console.warn("Account not set");
+          return;
+        }
         try {
-          const currentAllowance = await getCurrentAllowance();
-          setAllowance(currentAllowance);
+          const poofKit = new PoofKitV2(kit);
+          const currentAllowance = toBN(
+            await poofKit.allowance(tokenAddress, kit.defaultAccount)
+          );
+          if (!allowance || !currentAllowance.eq(allowance)) {
+            setAllowance(currentAllowance);
+          }
         } catch (e) {
           console.error(e);
         }
       };
       asyncSetCurrentAllowance();
     }
-  }, [address, approvalState, getCurrentAllowance, amountToApprove]);
+  }, [address, approvalState, amountToApprove, kit, tokenAddress, allowance]);
 
   // check the current approval status
+  // This keeps getting called. One of the deps is unstable.
   React.useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
       return;
     }
     if (allowance && amountToApprove) {
-      if (allowance.lessThan(amountToApprove)) {
+      if (allowance.lt(amountToApprove)) {
         setApprovalState(ApprovalState.NOT_APPROVED);
       } else {
         setApprovalState(ApprovalState.APPROVED);
@@ -69,18 +76,8 @@ export function useApproveCallback(
       return;
     }
 
-    if (!token) {
-      console.error("no token");
-      return;
-    }
-
     if (!amountToApprove) {
       console.error("missing amount to approve");
-      return;
-    }
-
-    if (!spender) {
-      console.error("no spender");
       return;
     }
 
@@ -97,58 +94,49 @@ export function useApproveCallback(
 
     try {
       await performActions(async (kit) => {
-        const tokenContract = getTokenContract(kit, token.address);
-        await tokenContract.methods
-          .approve(
-            spender,
-            useExact ? amountToApprove.raw.toString() : MaxUint256
-            //    {
-            //      gasLimit: calculateGasMargin(estimatedGas),
-            //    }
-          )
-          .send({
-            from: kit.defaultAccount,
-            gasLimit: 2000000,
-            gasPrice: toWei("0.13", "gwei"),
-          });
+        const poofKit = new PoofKitV2(kit);
+        const approveTxo = poofKit.approve(
+          tokenAddress,
+          useExact ? amountToApprove.toString() : MaxUint256.toString()
+        );
+        await kit.sendTransactionObject(approveTxo, {
+          from: kit.defaultAccount,
+          gasPrice: toWei("0.1", "gwei"),
+        });
+        setApprovalState(ApprovalState.APPROVED);
+        setAllowance(toBN(MaxUint256.toString()));
       });
-      setApprovalState(ApprovalState.APPROVED);
     } catch (error) {
       console.debug("Failed to approve", error);
       alert(error.message);
       setApprovalState(ApprovalState.NOT_APPROVED);
     }
-  }, [approvalState, token, amountToApprove, spender, performActions]);
+  }, [approvalState, tokenAddress, amountToApprove, performActions]);
 
   return [approvalState, approve];
 }
 
 export function useDepositCallback(
-  amountToDeposit: number,
-  commitment: string
+  noteString: string
 ): [DepositState, string, () => Promise<void>] {
   const [depositState, setDepositState] = React.useState(DepositState.UNKNOWN);
   const [txHash, setTxHash] = React.useState("");
   const { performActions, address } = useContractKit();
 
   // Reset deposit state when there is a new commitment
-  React.useEffect(() => setDepositState(DepositState.UNKNOWN), [commitment]);
+  React.useEffect(() => setDepositState(DepositState.UNKNOWN), [noteString]);
 
   const deposit = React.useCallback(async (): Promise<void> => {
     setDepositState(DepositState.PENDING);
     try {
       await performActions(async (kit) => {
-        const tornadoContract = getTornadoContract(
-          kit,
-          instances[`netId${CHAIN_ID}`]["celo"].instanceAddress[amountToDeposit]
-        );
-        console.log(address);
-        const tx = await tornadoContract.methods.deposit(commitment, []).send({
+        const poofKit = new PoofKitV2(kit);
+        const depositTxo = poofKit.depositNote(noteString);
+        const tx = await kit.sendTransactionObject(depositTxo, {
           from: address,
-          gasLimit: 2000000,
-          gasPrice: toWei("0.13", "gwei"),
+          gasPrice: toWei("0.1", "gwei"),
         });
-        setTxHash(tx.transactionHash);
+        setTxHash(await tx.getHash());
       });
     } catch (error) {
       setDepositState(DepositState.UNKNOWN);
@@ -158,7 +146,7 @@ export function useDepositCallback(
       );
     }
     setDepositState(DepositState.DONE);
-  }, [performActions, amountToDeposit, address, commitment]);
+  }, [performActions, noteString, address]);
 
   return [depositState, txHash, deposit];
 }

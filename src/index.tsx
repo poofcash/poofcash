@@ -17,11 +17,12 @@ import {
 import "@celo-tools/use-contractkit/lib/styles.css";
 import { ChainId } from "@ubeswap/sdk";
 import { CHAIN_ID } from "config";
+import { PasswordPrompt } from "hooks/poofAccount";
+import { PoofKitGlobal } from "hooks/poofUtils";
 
 declare global {
   interface Window {
-    // TODO no-any
-    genZKSnarkProofAndWitness: any;
+    groth16: any;
   }
 }
 
@@ -51,7 +52,11 @@ ReactDOM.render(
                 )}
                 networks={[CHAIN_ID === ChainId.MAINNET ? Mainnet : Alfajores]}
               >
-                <App />
+                <PasswordPrompt.Provider>
+                  <PoofKitGlobal.Provider>
+                    <App />
+                  </PoofKitGlobal.Provider>
+                </PasswordPrompt.Provider>
               </ContractKitProvider>
             </BrowserRouter>
           </ThemeProvider>

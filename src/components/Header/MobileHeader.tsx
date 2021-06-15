@@ -41,6 +41,20 @@ export const MobileHeader: React.FC = () => {
         >
           Withdraw
         </Button>
+        <Button
+          variant={currentPage === Page.MINE ? "switcherSelected" : "switcher"}
+          onClick={() => dispatch(setCurrentPage({ nextPage: Page.MINE }))}
+        >
+          Mine
+        </Button>
+        <Button
+          variant={
+            currentPage === Page.REDEEM ? "switcherSelected" : "switcher"
+          }
+          onClick={() => dispatch(setCurrentPage({ nextPage: Page.REDEEM }))}
+        >
+          Redeem
+        </Button>
       </Flex>
     </Container>
   );

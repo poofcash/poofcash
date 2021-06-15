@@ -4,41 +4,32 @@ import { BlockscoutTxLink } from "components/Links";
 import moment from "moment";
 import React from "react";
 import { Button, Container, Flex, Text } from "theme-ui";
-import { parseNote } from "utils/snarks-functions";
-import {
-  GAS_HARDCODE,
-  PRECISION,
-} from "pages/WithdrawPage/MobileWithdrawPage/ConfirmWithdraw";
+import { PRECISION } from "pages/RedeemPage/MobileRedeemPage/ConfirmRedeem";
 import { shortenAccount } from "hooks/accountName";
 import { SummaryTable } from "components/SummaryTable";
 
 interface IProps {
   onDoneClick: () => void;
-  note: string;
+  amount: string;
+  poofAmount: string;
   txHash: string;
-  poofServiceFee: number;
   recipient: string;
 }
 
-export const WithdrawReceipt: React.FC<IProps> = ({
+export const RedeemReceipt: React.FC<IProps> = ({
   onDoneClick,
-  note,
+  amount,
+  poofAmount,
   txHash,
-  poofServiceFee,
   recipient,
 }) => {
-  const { amount, currency } = parseNote(note);
-
-  const relayerFee = (Number(amount) * Number(poofServiceFee)) / 100;
-  const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
-
   return (
     <Container>
       <Text sx={{ mb: 1 }} variant="subtitle">
         Alakazam!
       </Text>
       <Text sx={{ mb: 4 }} variant="regularGray">
-        Your withdrawal is complete.{" "}
+        Your redemption is complete.{" "}
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
 
@@ -54,24 +45,22 @@ export const WithdrawReceipt: React.FC<IProps> = ({
             value: shortenAccount(recipient),
           },
           {
-            label: "Withdraw amount",
-            value: `${amount} ${currency.toUpperCase()}`,
+            label: "AP used",
+            value: `${amount} AP`,
           },
         ]}
         totalItem={{
-          label: "Est. Withdrawal",
-          value: `${finalWithdrawAmount
-            .toString()
-            .slice(0, PRECISION)} ${currency.toUpperCase()}`,
+          label: "Est. Redemption",
+          value: `${poofAmount.toString().slice(0, PRECISION)} POOF`,
         }}
       />
 
       <BottomDrawer>
         <Flex sx={{ justifyContent: "space-between" }}>
           <LabelWithBalance
-            label="Withdrew"
-            amount={finalWithdrawAmount}
-            currency={currency.toUpperCase()}
+            label="Redeemed"
+            amount={poofAmount}
+            currency="POOF"
           />
           <Button
             onClick={() => {

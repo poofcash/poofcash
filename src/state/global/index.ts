@@ -2,8 +2,11 @@ import { createReducer, createAction } from "@reduxjs/toolkit";
 
 // Typings
 export enum Page {
+  SETUP = "SETUP",
   DEPOSIT = "DEPOSIT",
   WITHDRAW = "WITHDRAW",
+  MINE = "MINE",
+  REDEEM = "REDEEM",
   COMPLIANCE = "COMPLIANCE",
 }
 
@@ -12,7 +15,7 @@ interface GlobalState {
 }
 
 const initialState: GlobalState = {
-  currentPage: Page.DEPOSIT,
+  currentPage: Page.SETUP,
 };
 
 // Actions

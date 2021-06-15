@@ -6,17 +6,10 @@ import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
 import { GAS_HARDCODE, PRECISION } from "../MobileWithdrawPage/ConfirmWithdraw";
-import { useWeb3React } from "@web3-react/core";
-import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
-import { generateProof, isValidNote, parseNote } from "utils/snarks-functions";
-import axios from "axios";
-import { instances } from "@poofcash/poof-token";
-import { CHAIN_ID } from "config";
-import { getContract } from "hooks/getContract";
-import { calculateFee } from "utils/gas";
-import { NetworkContextName } from "index";
+import { isValidNote, parseNote } from "utils/snarks-functions";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
-import { useContractKit } from "@celo-tools/use-contractkit";
+import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitLoading } from "components/PoofKitLoading";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -50,10 +43,13 @@ export const DoWithdraw: React.FC<IProps> = ({
   setCustomRelayer,
 }) => {
   const { t } = useTranslation();
-  const { kit } = useContractKit();
-  const { library: networkLibrary } = useWeb3React(NetworkContextName);
-  const { deposit, currency, amount } = parseNote(note);
+  const { currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
+  const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
+
+  if (poofKitLoading) {
+    return <PoofKitLoading />;
+  }
 
   const relayerFee =
     (Number(amount) * Number(selectedRelayer?.relayerFee)) / 100 ?? 0;
@@ -61,75 +57,25 @@ export const DoWithdraw: React.FC<IProps> = ({
   const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
 
   const handleWithdraw = async () => {
-    if (!networkLibrary) {
-      console.error("Library is not defined");
-      return;
-    }
-
     if (!selectedRelayer) {
       alert("Relayer is undefined");
       return;
     }
 
+    if (poofKitLoading) {
+      alert("Poof kit is still loading");
+      return;
+    }
+
     setLoading(true);
-    const relayerStatus = await axios.get(selectedRelayer.url + "/status");
-    const {
-      rewardAccount,
-      gasPrices,
-      poofServiceFee,
-      celoPrices,
-    } = relayerStatus.data;
-
     try {
-      const refund: string = "0";
-      const tornadoAddress =
-        instances[`netId${CHAIN_ID}`][currency].instanceAddress[amount];
-      const tornado = getContract(kit, ERC20_TORNADO_ABI, tornadoAddress);
-
-      const fee = calculateFee({
-        gasPrices,
-        currency,
-        amount,
-        celoPrices,
-        poofServiceFee,
-        decimals: 18,
-      }); // TODO decimals hardcode
-
-      // generate the proof
-      console.log("Generating proof.");
-      let { proof, args } = await generateProof({
-        deposit,
+      const txHash = await poofKit.withdrawNote(
+        note,
+        "0",
         recipient,
-        rewardAccount,
-        refund,
-        fee,
-        tornado,
-      });
-
-      console.log("Sending withdraw transaction through relay");
-      const relay = await axios.post(selectedRelayer.url + "/relay", {
-        contract: tornadoAddress,
-        proof,
-        args,
-      });
-
-      let done = false;
-      let tries = 10;
-      while (!done && tries > 0) {
-        const job = await axios.get(
-          selectedRelayer.url + `/v1/jobs/${relay.data.id}`
-        );
-        if (job.data.txHash) {
-          setTxHash(job.data.txHash);
-          console.log(
-            `Transaction submitted through the relay. The transaction hash is ${job.data.txHash}`
-          );
-          done = true;
-        } else {
-          tries -= 1;
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-      }
+        selectedRelayer.url
+      );
+      setTxHash(txHash);
       onWithdrawClick();
     } catch (e) {
       if (e.response) {
@@ -219,7 +165,7 @@ export const DoWithdraw: React.FC<IProps> = ({
               onClick={handleWithdraw}
               sx={{ width: "100%" }}
               disabled={(() => {
-                if (!isValidNote) {
+                if (!isValidNote(note)) {
                   return true;
                 }
                 if (!web3.utils.isAddress(recipient)) {

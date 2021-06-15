@@ -28,8 +28,7 @@ const MobileDepositPage = () => {
     setNoteStringCommitment,
   ] = React.useState<NoteStringCommitment>(initialNoteStringCommitment);
   const [depositState, txHash, depositCallback] = useDepositCallback(
-    Number(selectedAmount),
-    noteStringCommitment.commitment
+    noteStringCommitment.noteString
   );
 
   switch (depositStep) {
