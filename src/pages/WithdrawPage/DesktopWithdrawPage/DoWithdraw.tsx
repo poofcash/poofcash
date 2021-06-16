@@ -9,7 +9,6 @@ import { GAS_HARDCODE, PRECISION } from "../MobileWithdrawPage/ConfirmWithdraw";
 import { isValidNote, parseNote } from "utils/snarks-functions";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { PoofKitGlobal } from "hooks/poofUtils";
-import { PoofKitLoading } from "components/PoofKitLoading";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -46,10 +45,6 @@ export const DoWithdraw: React.FC<IProps> = ({
   const { currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
-
-  if (poofKitLoading) {
-    return <PoofKitLoading />;
-  }
 
   const relayerFee =
     (Number(amount) * Number(selectedRelayer?.relayerFee)) / 100 ?? 0;

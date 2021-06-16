@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitLoading } from "components/PoofKitLoading";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -80,8 +81,13 @@ export const PickRedeem: React.FC<IProps> = ({
     }
   }, 200);
   const dispatch = useDispatch();
-  const { poofKit } = PoofKitGlobal.useContainer();
+  const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
   const { poofAccount, actWithPoofAccount } = usePoofAccount();
+
+  if (poofKitLoading) {
+    return <PoofKitLoading />;
+  }
+
   const unlockPoofAccount = async () => {
     actWithPoofAccount(
       (privateKey) => {

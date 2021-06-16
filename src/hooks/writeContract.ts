@@ -1,4 +1,5 @@
 import React from "react";
+import { ContractKit } from "@celo/contractkit";
 import { MaxUint256 } from "@ethersproject/constants";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { toWei, toBN } from "web3-utils";
@@ -35,25 +36,19 @@ export function useApproveCallback(
   React.useEffect(() => {
     if (address && amountToApprove.gt(toBN(0))) {
       const asyncSetCurrentAllowance = async () => {
-        if (!kit.defaultAccount) {
-          console.warn("Account not set");
-          return;
-        }
         try {
           const poofKit = new PoofKitV2(kit);
           const currentAllowance = toBN(
-            await poofKit.allowance(tokenAddress, kit.defaultAccount)
+            await poofKit.allowance(tokenAddress, address)
           );
-          if (!allowance || !currentAllowance.eq(allowance)) {
-            setAllowance(currentAllowance);
-          }
+          setAllowance(currentAllowance);
         } catch (e) {
           console.error(e);
         }
       };
       asyncSetCurrentAllowance();
     }
-  }, [address, approvalState, amountToApprove, kit, tokenAddress, allowance]);
+  }, [address, approvalState, amountToApprove, kit, tokenAddress]);
 
   // check the current approval status
   // This keeps getting called. One of the deps is unstable.
@@ -82,27 +77,20 @@ export function useApproveCallback(
     }
 
     setApprovalState(ApprovalState.PENDING);
-    const useExact = false;
-    // const estimatedGas = await tokenContract.estimateGas
-    //   .approve(spender, MaxUint256)
-    //   .catch(() => {
-    //     // general fallback for tokens who restrict approval amounts return tokenContract.estimateGas.approve(
-    //       spender,
-    //       amountToApprove.raw.toString()
-    //     );
-    //   });
+    const useExact = true;
 
     try {
-      await performActions(async (kit) => {
+      await performActions(async (kit: ContractKit) => {
         const poofKit = new PoofKitV2(kit);
         const approveTxo = poofKit.approve(
           tokenAddress,
           useExact ? amountToApprove.toString() : MaxUint256.toString()
         );
-        await kit.sendTransactionObject(approveTxo, {
-          from: kit.defaultAccount,
+        const tx = await kit.sendTransactionObject(approveTxo, {
+          from: address,
           gasPrice: toWei("0.1", "gwei"),
         });
+        await tx.waitReceipt();
         setApprovalState(ApprovalState.APPROVED);
         setAllowance(toBN(MaxUint256.toString()));
       });
@@ -111,7 +99,7 @@ export function useApproveCallback(
       alert(error.message);
       setApprovalState(ApprovalState.NOT_APPROVED);
     }
-  }, [approvalState, tokenAddress, amountToApprove, performActions]);
+  }, [approvalState, tokenAddress, amountToApprove, performActions, address]);
 
   return [approvalState, approve];
 }

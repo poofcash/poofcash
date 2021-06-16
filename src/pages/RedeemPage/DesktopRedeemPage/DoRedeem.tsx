@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
 import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/poofUtils";
-import { PoofKitLoading } from "components/PoofKitLoading";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
@@ -53,10 +52,6 @@ export const DoRedeem: React.FC<IProps> = ({
   const { poofAccount, actWithPoofAccount } = usePoofAccount();
   const dispatch = useDispatch();
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
-
-  if (poofKitLoading) {
-    return <PoofKitLoading />;
-  }
 
   const unlockPoofAccount = async () => {
     actWithPoofAccount(
@@ -166,6 +161,9 @@ export const DoRedeem: React.FC<IProps> = ({
           onClick={handleRedeem}
           sx={{ width: "100%" }}
           disabled={(() => {
+            if (poofKitLoading) {
+              return true;
+            }
             if (amount === "" || recipient === "") {
               return true;
             }

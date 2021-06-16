@@ -24,7 +24,7 @@ export const MineReceipt: React.FC<IProps> = ({
         Alakazam!
       </Text>
       <Text sx={{ mb: 4 }} variant="regularGray">
-        Your withdrawal is complete.{" "}
+        Your AP has been mined.{" "}
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
 

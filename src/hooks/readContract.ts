@@ -8,30 +8,6 @@ import { instances } from "@poofcash/poof-token";
 import { Contract } from "web3-eth-contract";
 import React from "react";
 
-export function useGetTokenAllowance(
-  token?: Token,
-  owner?: string | null,
-  spender?: string
-): () => Promise<TokenAmount | undefined> {
-  const { kit } = useContractKit();
-  const erc20 = getTokenContract(kit, token?.address);
-
-  const getTokenAllowance = async () => {
-    if (!erc20) {
-      console.log("ERC20 contract is null");
-      return;
-    }
-    const allowance = await erc20.methods.allowance(owner, spender).call();
-    if (!token) {
-      console.warn("No token specified in `getTokenAllowance`");
-      return;
-    }
-    return new TokenAmount(token, allowance.toString());
-  };
-
-  return getTokenAllowance;
-}
-
 export function useGetTokenBalance(
   token: Token,
   owner?: string | null
@@ -98,7 +74,7 @@ export const useAmountToDeposits = (selectedCurrency: string) => {
       return res;
     };
     fn().then(setAmountToDeposits);
-  }, [tornados, kit, amountToDeposits]);
+  }, [tornados, kit]);
 
   return amountToDeposits;
 };

@@ -16,7 +16,7 @@ const AMOUNTS_DISABLED: string[] = [];
 
 const RELAYERS = {
   mainnet: ["https://adamaris.now.im"],
-  alfajores: ["https://poof-relayer-alfajores.herokuapp.com"],
+  alfajores: ["https://relayer-test.poof.cash"],
 };
 
 const BLOCKSCOUT_URL =

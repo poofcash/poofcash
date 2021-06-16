@@ -62,6 +62,7 @@ const usePasswordPrompt = () => {
             type="password"
             onChange={(e) => setPassword(e.target.value)}
             autoFocus
+            autoComplete="off"
           />
           <Flex sx={{ justifyContent: "flex-end" }}>
             <Button

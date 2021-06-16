@@ -10,6 +10,8 @@ import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { usePoofAccount } from "hooks/poofAccount";
+import { PoofKitLoading } from "components/PoofKitLoading";
+import { PoofKitGlobal } from "hooks/poofUtils";
 
 interface IProps {
   onMineClick: () => void;
@@ -70,6 +72,12 @@ export const PickMine: React.FC<IProps> = ({
   }, 200);
   const { poofAccount } = usePoofAccount();
   const dispatch = useDispatch();
+
+  const { poofKitLoading } = PoofKitGlobal.useContainer();
+
+  if (poofKitLoading) {
+    return <PoofKitLoading />;
+  }
 
   let button = (
     <Button

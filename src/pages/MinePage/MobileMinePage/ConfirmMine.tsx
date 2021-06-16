@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Container, Flex, Spinner, Text } from "theme-ui";
-import { parseNote } from "utils/snarks-functions";
 import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
@@ -31,12 +30,7 @@ export const ConfirmMine: React.FC<IProps> = ({
   selectedRelayer,
 }) => {
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
-  const { currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
-
-  const relayerFee = (Number(amount) * selectedRelayer.relayerFee) / 100;
-
-  const finalMineAmount = Number(amount) - relayerFee - GAS_HARDCODE;
 
   const { actWithPoofAccount } = usePoofAccount();
 
@@ -70,7 +64,7 @@ export const ConfirmMine: React.FC<IProps> = ({
             } else {
               console.debug(e);
               alert(
-                `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once every hour, so try again later.`
+                `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once every few minutes, so try again later.`
               );
             }
           })
@@ -118,8 +112,8 @@ export const ConfirmMine: React.FC<IProps> = ({
           <Flex sx={{ justifyContent: "space-between" }}>
             <LabelWithBalance
               label="Total"
-              amount={finalMineAmount.toString().slice(0, PRECISION)}
-              currency={currency.toUpperCase()}
+              amount={estimatedAp}
+              currency="AP"
             />
             <Button onClick={handleMine}>Mine</Button>
           </Flex>

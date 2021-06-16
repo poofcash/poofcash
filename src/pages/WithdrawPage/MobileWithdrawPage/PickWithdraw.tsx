@@ -9,6 +9,8 @@ import { useDebounce } from "hooks/debounce";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { isValidHttpUrl } from "utils/url.utils";
 import axios from "axios";
+import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitLoading } from "components/PoofKitLoading";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -73,6 +75,11 @@ export const PickWithdraw: React.FC<IProps> = ({
       setCustomRelayerError("Invalid custom relayer url format");
     }
   }, 200);
+
+  const { poofKitLoading } = PoofKitGlobal.useContainer();
+  if (poofKitLoading) {
+    return <PoofKitLoading />;
+  }
 
   return (
     <div>
@@ -189,6 +196,9 @@ export const PickWithdraw: React.FC<IProps> = ({
                 onWithdrawClick();
               }}
               disabled={(() => {
+                if (poofKitLoading) {
+                  return true;
+                }
                 if (!isValidNote) {
                   return true;
                 }

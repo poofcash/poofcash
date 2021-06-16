@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
 import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/poofUtils";
-import { PoofKitLoading } from "components/PoofKitLoading";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
@@ -49,10 +48,6 @@ export const DoMine: React.FC<IProps> = ({
 
   const { poofAccount, actWithPoofAccount } = usePoofAccount();
 
-  if (poofKitLoading) {
-    return <PoofKitLoading />;
-  }
-
   const handleMine = async () => {
     if (!selectedRelayer) {
       alert("Relayer is undefined");
@@ -79,7 +74,7 @@ export const DoMine: React.FC<IProps> = ({
             } else {
               console.debug(e);
               alert(
-                `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once every hour, so try again later.`
+                `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once few minutes, so try again later.`
               );
             }
           })
@@ -142,6 +137,9 @@ export const DoMine: React.FC<IProps> = ({
         onClick={handleMine}
         sx={{ width: "100%" }}
         disabled={(() => {
+          if (poofKitLoading) {
+            return true;
+          }
           if (!noteIsValid) {
             return true;
           }

@@ -16,7 +16,7 @@ export const LabelWithBalance: React.FC<IProps> = ({
 }) => {
   let amountLabel =
     amount !== "" ? amount.toLocaleString().slice(0, PRECISION) : 0;
-  if (Number(amount) < 1e-2) {
+  if (Number(amount) > 0 && Number(amount) < 1e-2) {
     amountLabel = "<0.01";
   }
   return (
