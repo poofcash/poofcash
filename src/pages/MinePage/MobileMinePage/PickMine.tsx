@@ -121,6 +121,7 @@ export const PickMine: React.FC<IProps> = ({
         Magic password{" "}
       </Text>
       <Input
+        mb={4}
         disabled={loading}
         name="note"
         type="text"
@@ -130,9 +131,12 @@ export const PickMine: React.FC<IProps> = ({
         pattern="/poof-(?<currency>\w+)-(?<amount>[\d.]+)-(?<netId>\d+)-0x(?<note>[0-9a-fA-F]{124})/g"
       />
       {note !== "" && !noteIsValid && (
-        <Text sx={{ mt: 2, color: "red" }} variant="form">
-          Invalid note, please try again.
-        </Text>
+        <>
+          <Text sx={{ mt: 2, color: "red" }} variant="form">
+            Invalid note, please try again.
+          </Text>
+          <br />
+        </>
       )}
 
       <Text variant="form" sx={{ mt: 4, mb: 2 }}>

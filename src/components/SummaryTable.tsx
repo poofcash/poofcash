@@ -22,6 +22,7 @@ export const SummaryTable: React.FC<IProps> = ({
   return (
     <>
       <Text variant="summaryTitle">{title}</Text>
+      <br />
       <Divider />
       <Grid columns={[2]} sx={{ mb: 4 }}>
         {lineItems.map(({ label, value }, idx) => {

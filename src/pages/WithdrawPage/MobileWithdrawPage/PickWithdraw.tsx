@@ -87,6 +87,7 @@ export const PickWithdraw: React.FC<IProps> = ({
         Magic password
       </Text>
       <Input
+        mb={2}
         disabled={loading}
         name="note"
         type="text"
@@ -96,15 +97,19 @@ export const PickWithdraw: React.FC<IProps> = ({
         pattern="/poof-(?<currency>\w+)-(?<amount>[\d.]+)-(?<netId>\d+)-0x(?<note>[0-9a-fA-F]{124})/g"
       />
       {note !== "" && !validNote && (
-        <Text sx={{ mt: 2, color: "red" }} variant="form">
-          Invalid note, please try again.
-        </Text>
+        <>
+          <Text sx={{ mt: 2, color: "red" }} variant="form">
+            Invalid note, please try again.
+          </Text>
+          <br />
+        </>
       )}
 
       <Text variant="form" sx={{ mt: 4, mb: 2 }}>
         Recipient address
       </Text>
       <Input
+        mb={2}
         disabled={loading}
         name="recipientAddress"
         type="text"
@@ -113,15 +118,19 @@ export const PickWithdraw: React.FC<IProps> = ({
         placeholder="Enter wallet address here"
       />
       {recipient !== "" && !validRecipient && (
-        <Text sx={{ mt: 2, color: "red" }} variant="form">
-          Invalid address, please try again.
-        </Text>
+        <>
+          <Text sx={{ mt: 2, color: "red" }} variant="form">
+            Invalid address, please try again.
+          </Text>
+          <br />
+        </>
       )}
 
       <Text variant="form" sx={{ mt: 4, mb: 2 }}>
         Relayer
       </Text>
       <Select
+        mb={2}
         disabled={loading}
         name="relayer"
         value={usingCustomRelayer ? "custom" : selectedRelayer?.url ?? "custom"}

@@ -1,8 +1,6 @@
 import React from "react";
-import { NETWORK, RELAYERS } from "config";
 import { DoWithdraw } from "pages/WithdrawPage/DesktopWithdrawPage/DoWithdraw";
 import { WithdrawReceipt } from "pages/WithdrawPage/DesktopWithdrawPage/WithdrawReceipt";
-import axios from "axios";
 
 enum WithdrawStep {
   DO = "DO",
@@ -14,56 +12,38 @@ export type RelayerOption = {
   relayerFee: number;
 };
 
-const DesktopWithdrawPage: React.FC = () => {
+interface IProps {
+  setNote: (note: string) => void;
+  note: string;
+  setRecipient: (recipient: string) => void;
+  recipient: string;
+  setTxHash: (txHash: string) => void;
+  selectedRelayer?: RelayerOption;
+  setSelectedRelayer: (relayer?: RelayerOption) => void;
+  relayerOptions?: Array<RelayerOption>;
+  usingCustomRelayer: boolean;
+  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
+  customRelayer?: RelayerOption;
+  setCustomRelayer: (relayerOption?: RelayerOption) => void;
+  txHash: string;
+}
+
+const DesktopWithdrawPage: React.FC<IProps> = ({
+  setNote,
+  note,
+  setRecipient,
+  recipient,
+  setTxHash,
+  selectedRelayer,
+  setSelectedRelayer,
+  relayerOptions,
+  usingCustomRelayer,
+  setUsingCustomRelayer,
+  customRelayer,
+  setCustomRelayer,
+  txHash,
+}) => {
   const [depositStep, setWithdrawStep] = React.useState(WithdrawStep.DO);
-  const [note, setNote] = React.useState("");
-  const [recipient, setRecipient] = React.useState("");
-  const [selectedRelayer, setSelectedRelayer] = React.useState<RelayerOption>();
-  const [relayerOptions, setRelayerOptions] = React.useState<
-    Array<RelayerOption>
-  >([]);
-  const [customRelayer, setCustomRelayer] = React.useState<RelayerOption>();
-  const [usingCustomRelayer, setUsingCustomRelayer] = React.useState<boolean>(
-    false
-  );
-  const [txHash, setTxHash] = React.useState("");
-
-  React.useEffect(() => {
-    const fn = async () => {
-      const statuses = (
-        await Promise.all(
-          RELAYERS[NETWORK].map((relayerUrl: string) => {
-            return axios.get(relayerUrl + "/status").catch((e) => e);
-          })
-        )
-      ).filter((result) => {
-        if (result instanceof Error) {
-          console.error(result);
-          return false;
-        }
-        return true;
-      });
-
-      const relayerOptions = statuses.map((status) => ({
-        url: status.config.url.split("/status")[0],
-        relayerFee: status.data.poofServiceFee,
-      }));
-
-      setRelayerOptions(relayerOptions);
-      if (relayerOptions.length > 0) {
-        setSelectedRelayer(relayerOptions[0]);
-      } else {
-        setUsingCustomRelayer(true);
-      }
-    };
-    fn();
-  }, [setRelayerOptions, setSelectedRelayer]);
-
-  const relayer = React.useMemo(
-    () => (usingCustomRelayer ? customRelayer : selectedRelayer),
-    [customRelayer, selectedRelayer, usingCustomRelayer]
-  );
-
   switch (depositStep) {
     case WithdrawStep.DO:
       return (
@@ -76,7 +56,7 @@ const DesktopWithdrawPage: React.FC = () => {
           setRecipient={setRecipient}
           recipient={recipient}
           setTxHash={setTxHash}
-          selectedRelayer={relayer}
+          selectedRelayer={selectedRelayer}
           setSelectedRelayer={setSelectedRelayer}
           relayerOptions={relayerOptions}
           usingCustomRelayer={usingCustomRelayer}
@@ -95,7 +75,7 @@ const DesktopWithdrawPage: React.FC = () => {
           }}
           note={note}
           txHash={txHash}
-          poofServiceFee={relayer!.relayerFee}
+          poofServiceFee={selectedRelayer!.relayerFee}
           recipient={recipient}
         />
       );

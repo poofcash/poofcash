@@ -18,15 +18,25 @@ export const initialNoteStringCommitment = {
   commitment: "",
 };
 
+interface IProps {
+  setSelectedAmount: (amount: string) => void;
+  selectedAmount: string;
+  setSelectedCurrency: (currency: string) => void;
+  selectedCurrency: string;
+  setNoteStringCommitment: (noteStringCommitment: NoteStringCommitment) => void;
+  noteStringCommitment: NoteStringCommitment;
+}
+
 // pass props and State interface to Component class
-const MobileDepositPage = () => {
+const MobileDepositPage: React.FC<IProps> = ({
+  setSelectedAmount,
+  selectedAmount,
+  setSelectedCurrency,
+  selectedCurrency,
+  setNoteStringCommitment,
+  noteStringCommitment,
+}) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
-  const [selectedAmount, setSelectedAmount] = React.useState("");
-  const [selectedCurrency, setSelectedCurrency] = React.useState("celo");
-  const [
-    noteStringCommitment,
-    setNoteStringCommitment,
-  ] = React.useState<NoteStringCommitment>(initialNoteStringCommitment);
   const [depositState, txHash, depositCallback] = useDepositCallback(
     noteStringCommitment.noteString
   );

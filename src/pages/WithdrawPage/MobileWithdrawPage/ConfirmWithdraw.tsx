@@ -78,12 +78,15 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
   return (
     <Container>
       <BackButton onClick={onBackClick} />
+      <br />
       <Text sx={{ mb: 1 }} variant="subtitle">
         Transaction Summary
       </Text>
+      <br />
       <Text sx={{ mb: 4 }} variant="regularGray">
         Please review the transaction before continuing
       </Text>
+      <br />
 
       <SummaryTable
         title="Summary"

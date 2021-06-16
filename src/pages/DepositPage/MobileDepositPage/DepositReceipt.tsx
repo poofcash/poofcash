@@ -4,9 +4,10 @@ import moment from "moment";
 import { BlockscoutTxLink } from "components/Links";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
-import { useAccountName } from "hooks/accountName";
+import { shortenAccount } from "hooks/accountName";
 import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
 import { SummaryTable } from "components/SummaryTable";
+import { useContractKit } from "@celo-tools/use-contractkit";
 
 interface IProps {
   onDoneClick: () => void;
@@ -21,17 +22,19 @@ export const DepositReceipt: React.FC<IProps> = ({
   selectedCurrency,
   txHash,
 }) => {
-  const accountName = useAccountName();
+  const { address } = useContractKit();
 
   return (
     <Container>
       <Text sx={{ mb: 1 }} variant="subtitle">
         Alakazam!
       </Text>
+      <br />
       <Text sx={{ mb: 4 }} variant="regular">
         Your deposit is complete.{" "}
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
+      <br />
 
       <SummaryTable
         title="Transaction"
@@ -42,7 +45,7 @@ export const DepositReceipt: React.FC<IProps> = ({
           },
           {
             label: "Account",
-            value: accountName,
+            value: shortenAccount(address),
           },
           {
             label: "Est. total amount",

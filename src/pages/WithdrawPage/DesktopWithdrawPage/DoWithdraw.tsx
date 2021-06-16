@@ -89,6 +89,7 @@ export const DoWithdraw: React.FC<IProps> = ({
       <Text sx={{ mb: 4 }} variant="subtitle">
         {t("withdraw.desktop.specify.title")}
       </Text>
+      <br />
       <Text variant="regularGray">
         {t("withdraw.desktop.specify.subtitle")}
       </Text>
@@ -97,9 +98,8 @@ export const DoWithdraw: React.FC<IProps> = ({
   if (isValidNote(note)) {
     boxContent = (
       <>
-        <Text sx={{ mb: 4 }} variant="subtitle">
-          {t("withdraw.desktop.review.title")}
-        </Text>
+        <Text variant="subtitle">{t("withdraw.desktop.review.title")}</Text>
+        <br />
         <SummaryTable
           title="Summary"
           lineItems={[
@@ -130,9 +130,8 @@ export const DoWithdraw: React.FC<IProps> = ({
     <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
       <Container>
         <Text variant="title">{t("withdraw.desktop.title")}</Text>
-        <Text sx={{ mb: 4 }} variant="regularGray">
-          {t("withdraw.desktop.subtitle")}
-        </Text>
+        <br />
+        <Text variant="regularGray">{t("withdraw.desktop.subtitle")}</Text>
         <PickWithdraw
           loading={loading}
           onWithdrawClick={onWithdrawClick}

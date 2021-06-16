@@ -91,6 +91,7 @@ export const DoMine: React.FC<IProps> = ({
       <Text sx={{ mb: 4 }} variant="subtitle">
         {t("mine.desktop.specify.title")}
       </Text>
+      <br />
       <Text variant="regularGray">{t("mine.desktop.specify.subtitle")}</Text>
     </>
   );
@@ -100,6 +101,7 @@ export const DoMine: React.FC<IProps> = ({
         <Text sx={{ mb: 4 }} variant="subtitle">
           {t("mine.desktop.review.title")}
         </Text>
+        <br />
         <SummaryTable
           title="Summary"
           lineItems={[
@@ -160,9 +162,11 @@ export const DoMine: React.FC<IProps> = ({
     <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
       <Container>
         <Text variant="title">{t("mine.desktop.title")}</Text>
+        <br />
         <Text sx={{ mb: 4 }} variant="regularGray">
           {t("mine.desktop.subtitle")}
         </Text>
+        <br />
         <PickMine
           loading={loading}
           onMineClick={onMineClick}

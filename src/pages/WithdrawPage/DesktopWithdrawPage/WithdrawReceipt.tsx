@@ -36,15 +36,18 @@ export const WithdrawReceipt: React.FC<IProps> = ({
       <Text sx={{ mb: 1 }} variant="title">
         Alakazam!
       </Text>
+      <br />
       <Text sx={{ mb: 4 }} variant="regularGray">
         Your withdrawal is complete.{" "}
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
+      <br />
 
       <GrayBox>
         <Text sx={{ mb: 3 }} variant="subtitle">
           Receipt
         </Text>
+        <br />
         <SummaryTable
           title="Transaction"
           lineItems={[

@@ -9,6 +9,7 @@ import { PoofKitGlobal } from "hooks/poofUtils";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
+import { humanFriendlyNumber } from "components/LabelWithBalance";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -105,6 +106,7 @@ export const DoRedeem: React.FC<IProps> = ({
       <Text sx={{ mb: 4 }} variant="subtitle">
         {t("redeem.desktop.specify.title")}
       </Text>
+      <br />
       <Text variant="regularGray">{t("redeem.desktop.specify.subtitle")}</Text>
     </>
   );
@@ -114,6 +116,7 @@ export const DoRedeem: React.FC<IProps> = ({
         <Text sx={{ mb: 4 }} variant="subtitle">
           {t("redeem.desktop.review.title")}
         </Text>
+        <br />
         <SummaryTable
           title="Summary"
           lineItems={[
@@ -128,7 +131,7 @@ export const DoRedeem: React.FC<IProps> = ({
           ]}
           totalItem={{
             label: "Total",
-            value: `${poofAmount} POOF`,
+            value: `${humanFriendlyNumber(poofAmount)} POOF`,
           }}
         />
       </>
@@ -188,9 +191,11 @@ export const DoRedeem: React.FC<IProps> = ({
     <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
       <Container>
         <Text variant="title">{t("redeem.desktop.title")}</Text>
+        <br />
         <Text sx={{ mb: 4 }} variant="regularGray">
           {t("redeem.desktop.subtitle")}
         </Text>
+        <br />
         <PickRedeem
           loading={loading}
           onRedeemClick={onRedeemClick}

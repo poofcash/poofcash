@@ -28,10 +28,12 @@ export const RedeemReceipt: React.FC<IProps> = ({
       <Text sx={{ mb: 1 }} variant="subtitle">
         Alakazam!
       </Text>
+      <br />
       <Text sx={{ mb: 4 }} variant="regularGray">
         Your redemption is complete.{" "}
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
+      <br />
 
       <SummaryTable
         title="Transaction"

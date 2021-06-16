@@ -2,32 +2,33 @@ import React from "react";
 import { NoteStringCommitment } from "pages/DepositPage/types";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import { CHAIN_ID } from "config";
-import { initialNoteStringCommitment } from "pages/DepositPage/MobileDepositPage";
-import { DepositState, useDepositCallback } from "hooks/writeContract";
 import { DoDeposit } from "pages/DepositPage/DesktopDepositPage/DoDeposit";
 import { DepositReceipt } from "pages/DepositPage/DesktopDepositPage/DepositReceipt";
+import { DepositState, useDepositCallback } from "hooks/writeContract";
 
 enum DepositStep {
   DO = "DO",
   RECEIPT = "RECEIPT",
 }
 
-const DesktopDepositPage: React.FC = () => {
+interface IProps {
+  setSelectedAmount: (amount: string) => void;
+  selectedAmount: string;
+  setSelectedCurrency: (currency: string) => void;
+  selectedCurrency: string;
+  setNoteStringCommitment: (noteStringCommitment: NoteStringCommitment) => void;
+  noteStringCommitment: NoteStringCommitment;
+}
+
+const DesktopDepositPage: React.FC<IProps> = ({
+  setSelectedAmount,
+  selectedAmount,
+  setSelectedCurrency,
+  selectedCurrency,
+  setNoteStringCommitment,
+  noteStringCommitment,
+}) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.DO);
-
-  const [selectedAmount, setSelectedAmount] = React.useState("");
-  const [selectedCurrency, setSelectedCurrency] = React.useState("celo");
-  const [
-    noteStringCommitment,
-    setNoteStringCommitment,
-  ] = React.useState<NoteStringCommitment>(initialNoteStringCommitment);
-
-  React.useEffect(() => {
-    setNoteStringCommitment(
-      getNoteStringAndCommitment(selectedCurrency, selectedAmount, CHAIN_ID)
-    );
-  }, [selectedCurrency, selectedAmount]);
-
   const [depositState, txHash, depositCallback] = useDepositCallback(
     noteStringCommitment.noteString
   );

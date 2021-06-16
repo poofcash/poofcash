@@ -54,9 +54,11 @@ const usePasswordPrompt = () => {
           <Text variant="title" sx={{ mb: 2 }}>
             Enter account password
           </Text>
+          <br />
           <Text variant="regularGray" sx={{ mb: 2 }}>
             {subtitle}
           </Text>
+          <br />
           <Input
             sx={{ mb: 2 }}
             type="password"

@@ -27,6 +27,7 @@ export const DepositReceipt: React.FC<IProps> = ({
       <Text sx={{ mb: 1 }} variant="title">
         Alakazam!
       </Text>
+      <br />
       <Text sx={{ mb: 4 }} variant="regularGray">
         Your deposit is complete.{" "}
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
@@ -36,6 +37,7 @@ export const DepositReceipt: React.FC<IProps> = ({
         <Text sx={{ mb: 3 }} variant="subtitle">
           Receipt
         </Text>
+        <br />
         <SummaryTable
           title="Transaction"
           lineItems={[

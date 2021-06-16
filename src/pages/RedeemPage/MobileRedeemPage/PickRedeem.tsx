@@ -151,6 +151,7 @@ export const PickRedeem: React.FC<IProps> = ({
         AP Amount (max: {maxRedeemAmount || 0} AP)
       </Text>
       <Input
+        mb={2}
         disabled={loading}
         name="ap"
         type="number"
@@ -162,15 +163,19 @@ export const PickRedeem: React.FC<IProps> = ({
         step="1"
       />
       {amount !== "" && Number(amount) > Number(maxRedeemAmount) && (
-        <Text sx={{ mt: 2, color: "red" }} variant="form">
-          Amount exceeds maximum: {maxRedeemAmount || 0} AP
-        </Text>
+        <>
+          <Text sx={{ mt: 2, color: "red" }} variant="form">
+            Amount exceeds maximum: {maxRedeemAmount || 0} AP
+          </Text>
+          <br />
+        </>
       )}
 
       <Text variant="form" sx={{ mt: 4, mb: 2 }}>
         Recipient address
       </Text>
       <Input
+        mb={2}
         disabled={loading}
         name="recipientAddress"
         type="text"
@@ -179,15 +184,19 @@ export const PickRedeem: React.FC<IProps> = ({
         placeholder="Enter wallet address here"
       />
       {recipient !== "" && !validRecipient && (
-        <Text sx={{ mt: 2, color: "red" }} variant="form">
-          Invalid address, please try again.
-        </Text>
+        <>
+          <Text sx={{ mt: 2, color: "red" }} variant="form">
+            Invalid address, please try again.
+          </Text>
+          <br />
+        </>
       )}
 
       <Text variant="form" sx={{ mt: 4, mb: 2 }}>
         Relayer
       </Text>
       <Select
+        mb={2}
         disabled={loading}
         name="relayer"
         value={usingCustomRelayer ? "custom" : selectedRelayer?.url ?? "custom"}

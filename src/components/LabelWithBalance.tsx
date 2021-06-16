@@ -9,21 +9,26 @@ interface IProps {
 
 const PRECISION = 2 + 2;
 
+export const humanFriendlyNumber = (v: number | string) => {
+  let res = v !== "" ? v.toLocaleString().slice(0, PRECISION) : 0;
+  if (Number(v) > 0 && Number(v) < 1e-2) {
+    res = "<0.01";
+  }
+  return res;
+};
+
 export const LabelWithBalance: React.FC<IProps> = ({
   label,
   amount,
   currency,
 }) => {
-  let amountLabel =
-    amount !== "" ? amount.toLocaleString().slice(0, PRECISION) : 0;
-  if (Number(amount) > 0 && Number(amount) < 1e-2) {
-    amountLabel = "<0.01";
-  }
+  const amountLabel = humanFriendlyNumber(amount);
   return (
     <span>
       <Text sx={{ mb: 2 }} variant="form">
         {label}
       </Text>
+      <br />
       <Text variant="largeNumber">
         {amountLabel} {currency}
       </Text>

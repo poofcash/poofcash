@@ -126,6 +126,7 @@ export const DoDeposit: React.FC<IProps> = ({
       <Text sx={{ mb: 4 }} variant="subtitle">
         {t("deposit.desktop.connectWallet.title")}
       </Text>
+      <br />
       <Text variant="regularGray">
         {t("deposit.desktop.connectWallet.subtitle")}
       </Text>
@@ -140,6 +141,7 @@ export const DoDeposit: React.FC<IProps> = ({
         <Text sx={{ mb: 4 }} variant="subtitle">
           {t("deposit.desktop.select.title")}
         </Text>
+        <br />
         <Text variant="regularGray">
           {t("deposit.desktop.select.subtitle")}
         </Text>
@@ -151,6 +153,7 @@ export const DoDeposit: React.FC<IProps> = ({
         <Text sx={{ mb: 4 }} variant="subtitle">
           {t("deposit.desktop.review.title")}
         </Text>
+        <br />
         <SummaryTable
           title="Summary"
           lineItems={[
@@ -171,9 +174,11 @@ export const DoDeposit: React.FC<IProps> = ({
         <Text sx={{ mt: 6, mb: 1 }} variant="subtitle">
           Magic Password
         </Text>
+        <br />
         <Text sx={{ mb: 3 }} variant="regularGray">
           Keep this note safe to withdraw the deposited money later
         </Text>
+        <br />
         <NoteString noteString={noteStringCommitment.noteString} />
         <Flex
           sx={{ mt: 4, alignItems: "center" }}
@@ -191,9 +196,11 @@ export const DoDeposit: React.FC<IProps> = ({
       <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
         <Container>
           <Text variant="title">{t("deposit.desktop.title")}</Text>
+          <br />
           <Text sx={{ mb: 4 }} variant="regularGray">
             {t("deposit.desktop.subtitle")}
           </Text>
+          <br />
           <PickDeposit
             selectedAmount={selectedAmount}
             setSelectedAmount={setSelectedAmount}

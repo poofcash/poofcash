@@ -23,10 +23,12 @@ export const MineReceipt: React.FC<IProps> = ({
       <Text sx={{ mb: 1 }} variant="subtitle">
         Alakazam!
       </Text>
+      <br />
       <Text sx={{ mb: 4 }} variant="regularGray">
         Your AP has been mined.{" "}
         <BlockscoutTxLink tx={txHash}>View transaction</BlockscoutTxLink>.
       </Text>
+      <br />
 
       <SummaryTable
         title="Transaction"
