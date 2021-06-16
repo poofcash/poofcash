@@ -196,14 +196,6 @@ export const preset = {
       borderBottom: "3px solid black",
       color: "text",
     },
-    outline: {
-      bg: "background",
-      border: "2px solid #7C71FD",
-      boxSizing: "border-box",
-      borderRadius: "6px",
-      color: "accent",
-      cursor: "pointer",
-    },
   },
   styles: {
     root: {
