@@ -1,19 +1,13 @@
 import React from "react";
-import moment from "moment";
 import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
 import { useApproveCallback, ApprovalState } from "hooks/writeContract";
 import { CELO } from "@ubeswap/sdk";
 import { instances } from "@poofcash/poof-token";
-import {
-  useAmountToDeposits,
-  useGetTokenBalance,
-  useTornadoDeposits,
-} from "hooks/readContract";
+import { useGetTokenBalance } from "hooks/readContract";
 import { Button, Text, Spinner } from "@theme-ui/components";
-import { Flex, Grid, Select } from "theme-ui";
+import { Flex, Select } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
-import { TableDivider } from "components/TableDivider";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 import { useContractKit } from "@celo-tools/use-contractkit";
@@ -81,8 +75,6 @@ export const PickDeposit: React.FC<IProps> = ({
     }
   }, [getContractBalance, tornadoAddress]);
 
-  const contractDeposits = useTornadoDeposits(tornadoAddress);
-  const amountToDeposits = useAmountToDeposits(selectedCurrency);
   const depositAmounts = React.useMemo(
     () =>
       Object.keys(
@@ -168,6 +160,7 @@ export const PickDeposit: React.FC<IProps> = ({
         Currency
       </Text>
       <Select
+        mb={4}
         value={selectedCurrency}
         onChange={(e) => setSelectedCurrency(e.target.value)}
       >
@@ -178,6 +171,7 @@ export const PickDeposit: React.FC<IProps> = ({
         Amount
       </Text>
       <Select
+        mb={4}
         value={selectedAmount}
         onChange={(e) => setSelectedAmount(e.target.value)}
       >
@@ -193,84 +187,13 @@ export const PickDeposit: React.FC<IProps> = ({
         ))}
       </Select>
 
-      <Text sx={{ mb: 2, mt: 6 }} variant="form">
-        Deposit Set
-      </Text>
-      <Flex sx={{ mb: 4 }}>
-        {selectedAmount !== "" && (
-          <>
-            <Flex>
-              <Text sx={{ mr: 1 }} variant="largeNumber">
-                {(contractBalance / Number(selectedAmount)).toLocaleString()}
-              </Text>
-              <Text variant="regular">active deposits</Text>
-            </Flex>
-            <Text mx={4}>/</Text>
-          </>
-        )}
+      {selectedAmount !== "" && (
         <Flex>
           <Text sx={{ mr: 1 }} variant="largeNumber">
-            {(selectedAmount === ""
-              ? Object.values(amountToDeposits).flatMap((x) => x).length
-              : contractDeposits.length
-            ).toLocaleString()}
+            {(contractBalance / Number(selectedAmount)).toLocaleString()}
           </Text>
-          <Text variant="regular">total deposits</Text>
+          <Text variant="regular">active deposits</Text>
         </Flex>
-      </Flex>
-
-      {selectedAmount === "" && (
-        <Grid sx={{ gridTemplateColumns: "auto fit-content auto" }}>
-          <Text variant="tableHeader">Deposits</Text>
-          <Text variant="tableHeader">Activity</Text>
-          <Text sx={{ textAlign: "right" }} variant="tableHeader">
-            Amount
-          </Text>
-          <TableDivider columns={3} />
-          {Object.entries(amountToDeposits)
-            .sort((a, b) => Number(a[0]) - Number(b[0]))
-            .map(([amount, deposits], idx) => {
-              return (
-                <React.Fragment key={idx}>
-                  <Text variant="bold">{deposits.length.toLocaleString()}</Text>
-                  <Text sx={{ width: "100%" }} variant="regularGray">
-                    {deposits.length > 0
-                      ? moment(
-                          deposits[deposits.length - 1].timestamp * 1000
-                        ).fromNow()
-                      : "--"}
-                  </Text>
-                  <Text sx={{ textAlign: "right" }} variant="bold">
-                    {amount}
-                  </Text>
-                </React.Fragment>
-              );
-            })}
-        </Grid>
-      )}
-      {selectedAmount !== "" && (
-        <Grid sx={{ gridTemplateColumns: "fit-content auto" }}>
-          <Text variant="tableHeader">Deposit ID</Text>
-          <Text sx={{ textAlign: "right" }} variant="tableHeader">
-            Time
-          </Text>
-          <TableDivider columns={2} />
-          {contractDeposits
-            .map((deposit: any) => deposit.timestamp)
-            .sort()
-            .reverse()
-            .slice(0, 5)
-            .map((timestamp: number, idx: number) => (
-              <React.Fragment key={idx}>
-                <Text variant="bold">
-                  {(contractDeposits.length - idx).toLocaleString()}
-                </Text>
-                <Text sx={{ textAlign: "right" }} variant="regularGray">
-                  {moment(timestamp * 1000).fromNow()}
-                </Text>
-              </React.Fragment>
-            ))}
-        </Grid>
       )}
 
       <InsufficientBalanceModal
