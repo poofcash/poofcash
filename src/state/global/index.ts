@@ -7,7 +7,9 @@ export enum Page {
   WITHDRAW = "WITHDRAW",
   MINE = "MINE",
   REDEEM = "REDEEM",
+  EXCHANGE = "EXCHANGE",
   COMPLIANCE = "COMPLIANCE",
+  AIRDROP = "AIRDROP",
 }
 
 interface GlobalState {

@@ -54,7 +54,7 @@ export const ConfirmRedeem: React.FC<IProps> = ({
     actWithPoofAccount(
       (privateKey) => {
         poofKit
-          .swap(privateKey, amount, recipient, selectedRelayer.url)
+          ?.swap(privateKey, amount, recipient, selectedRelayer.url)
           .then((txHash) => {
             setTxHash(txHash);
             onConfirmClick();

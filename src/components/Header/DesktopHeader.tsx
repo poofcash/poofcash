@@ -48,13 +48,14 @@ export const DesktopHeader: React.FC = () => {
               <Text
                 sx={{
                   color: currentPage === Page.DEPOSIT ? "accent" : "text",
-                  mr: 2,
+                  mx: 1,
                 }}
                 variant="subtitle"
               >
                 Deposit
               </Text>
             </StyledLink>
+            <Text>/</Text>
             <StyledLink
               to=""
               onClick={() =>
@@ -64,13 +65,14 @@ export const DesktopHeader: React.FC = () => {
               <Text
                 sx={{
                   color: currentPage === Page.WITHDRAW ? "accent" : "text",
-                  mr: 2,
+                  mx: 1,
                 }}
                 variant="subtitle"
               >
                 Withdraw
               </Text>
             </StyledLink>
+            <Text>/</Text>
             <StyledLink
               to=""
               onClick={() => dispatch(setCurrentPage({ nextPage: Page.MINE }))}
@@ -78,13 +80,14 @@ export const DesktopHeader: React.FC = () => {
               <Text
                 sx={{
                   color: currentPage === Page.MINE ? "accent" : "text",
-                  mr: 2,
+                  mx: 1,
                 }}
                 variant="subtitle"
               >
                 Mine
               </Text>
             </StyledLink>
+            <Text>/</Text>
             <StyledLink
               to=""
               onClick={() =>
@@ -94,11 +97,46 @@ export const DesktopHeader: React.FC = () => {
               <Text
                 sx={{
                   color: currentPage === Page.REDEEM ? "accent" : "text",
-                  mr: 4,
+                  mx: 1,
                 }}
                 variant="subtitle"
               >
                 Redeem
+              </Text>
+            </StyledLink>
+            <Text>/</Text>
+            <StyledLink
+              to=""
+              onClick={() =>
+                dispatch(setCurrentPage({ nextPage: Page.COMPLIANCE }))
+              }
+            >
+              <Text
+                sx={{
+                  color: currentPage === Page.COMPLIANCE ? "accent" : "text",
+                  mx: 1,
+                }}
+                variant="subtitle"
+              >
+                Report
+              </Text>
+            </StyledLink>
+            <Text>/</Text>
+            <StyledLink
+              to=""
+              onClick={() =>
+                dispatch(setCurrentPage({ nextPage: Page.AIRDROP }))
+              }
+            >
+              <Text
+                sx={{
+                  color: currentPage === Page.AIRDROP ? "accent" : "text",
+                  ml: 1,
+                  mr: 4,
+                }}
+                variant="subtitle"
+              >
+                Airdrop
               </Text>
             </StyledLink>
             <AccountProfile />

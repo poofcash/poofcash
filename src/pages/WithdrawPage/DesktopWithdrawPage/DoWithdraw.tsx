@@ -64,7 +64,7 @@ export const DoWithdraw: React.FC<IProps> = ({
 
     setLoading(true);
     try {
-      const txHash = await poofKit.withdrawNote(
+      const txHash = await poofKit?.withdrawNote(
         note,
         "0",
         recipient,

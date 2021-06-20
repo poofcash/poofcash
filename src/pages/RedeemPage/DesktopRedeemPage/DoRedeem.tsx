@@ -58,7 +58,7 @@ export const DoRedeem: React.FC<IProps> = ({
     actWithPoofAccount(
       (privateKey) => {
         poofKit
-          .apBalance(privateKey)
+          ?.apBalance(privateKey)
           .then((apBalance) => setMaxRedeemAmount(apBalance.toString()))
           .catch(console.error);
       },
@@ -80,7 +80,7 @@ export const DoRedeem: React.FC<IProps> = ({
     actWithPoofAccount(
       (privateKey) => {
         poofKit
-          .swap(privateKey, amount, recipient, selectedRelayer.url)
+          ?.swap(privateKey, amount, recipient, selectedRelayer.url)
           .then((txHash) => {
             setTxHash(txHash);
             onRedeemClick();

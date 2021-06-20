@@ -17,7 +17,7 @@ const MinePage: React.FC = () => {
   const { poofKit } = PoofKitGlobal.useContainer();
   React.useEffect(() => {
     if (noteIsValid) {
-      poofKit.noteInfo(note).then(setNoteInfo);
+      poofKit?.noteInfo(note).then(setNoteInfo);
     }
   }, [noteIsValid, note, poofKit]);
 

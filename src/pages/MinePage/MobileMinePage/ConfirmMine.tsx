@@ -53,7 +53,7 @@ export const ConfirmMine: React.FC<IProps> = ({
     actWithPoofAccount(
       (privateKey) => {
         poofKit
-          .reward(privateKey, note, selectedRelayer.url)
+          ?.reward(privateKey, note, selectedRelayer.url)
           .then((txHash) => {
             setTxHash(txHash);
             onConfirmClick();

@@ -92,7 +92,7 @@ export const PickRedeem: React.FC<IProps> = ({
     actWithPoofAccount(
       (privateKey) => {
         poofKit
-          .apBalance(privateKey)
+          ?.apBalance(privateKey)
           .then(
             (apBalance) =>
               setMaxRedeemAmount && setMaxRedeemAmount(apBalance.toString())

@@ -125,7 +125,7 @@ export const PickMine: React.FC<IProps> = ({
         disabled={loading}
         name="note"
         type="text"
-        placeholder="Enter note here"
+        placeholder="Enter magic password here"
         onChange={(e) => setNote(e.target.value)}
         value={note}
         pattern="/poof-(?<currency>\w+)-(?<amount>[\d.]+)-(?<netId>\d+)-0x(?<note>[0-9a-fA-F]{124})/g"

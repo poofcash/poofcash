@@ -57,17 +57,21 @@ const CompliancePage = () => {
    */
   return (
     <div>
-      <Text sx={{ mb: 2 }} variant="regular">
-        Maintaining financial privacy is essential to preserving our freedoms.
-        However, it should not come at the cost of non-compliance. With
-        Poof.cash, you can always provide cryptographically verified proof of
-        transactional history using the Celo address you used to deposit or
-        withdraw funds. This might be necessary to show the origin of assets
-        held in your withdrawal address. To generate a compliance report, please
-        enter your Poof.cash Note below.
+      <Text variant="title">Report</Text>
+      <br />
+      <Text sx={{ mb: 2 }} variant="regularGray">
+        Enter your magic password to generate a report on its related deposit
+        and withdrawal events.
       </Text>
-      <Text variant="form">Note</Text>
-      <Input name="note" type="text" value={note} onChange={handleChange} />
+      <br />
+      <Text variant="form">Magic password</Text>
+      <Input
+        name="note"
+        type="text"
+        value={note}
+        onChange={handleChange}
+        placeholder="Enter magic password here"
+      />
       {note && !noteIsValid && <Text>Note is invalid.</Text>}
       <br />
       {note && noteIsValid && (
