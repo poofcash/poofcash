@@ -16,6 +16,7 @@ import { PasswordPrompt } from "hooks/poofAccount";
 import MinePage from "pages/MinePage";
 import RedeemPage from "pages/RedeemPage";
 import { SetupAccount } from "pages/SetupAccount";
+import AirdropPage from "pages/AirdropPage";
 
 // pass props and State interface to Component class
 const App = () => {
@@ -54,6 +55,8 @@ const App = () => {
     page = <RedeemPage />;
   } else if (currentPage === Page.SETUP) {
     page = <SetupAccount />;
+  } else if (currentPage === Page.AIRDROP) {
+    page = <AirdropPage />;
   }
 
   return (

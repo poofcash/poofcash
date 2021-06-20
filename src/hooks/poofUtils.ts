@@ -9,7 +9,7 @@ export const usePoofAmount = (amount: number | string) => {
   const [poofAmount, setPoofAmount] = React.useState<string | undefined>();
   React.useEffect(() => {
     poofKit
-      ?.ap2Poof(Number(amount))
+      .ap2Poof(Number(amount))
       .then((poofAmount) => setPoofAmount(fromWei(poofAmount)))
       .catch(console.error);
   });
@@ -20,24 +20,22 @@ export const usePoofAmount = (amount: number | string) => {
 };
 
 const usePoofKit = () => {
-  const { getConnectedKit } = useContractKit();
+  const { kit } = useContractKit();
   const [initializing, setInitializing] = React.useState(true);
-  const [poofKit, setPoofKit] = React.useState<PoofKitV2>();
+  const poofKit = new PoofKitV2(kit);
   // Recursively try to initialize
-  const tryInit = React.useCallback(async () => {
-    try {
-      const poofKit = new PoofKitV2(await getConnectedKit());
-      await poofKit.initialize(window.groth16);
-      setPoofKit(poofKit);
-      setInitializing(false);
-    } catch (e) {
-      console.error("Failed to init PoofKit:", e);
-      await tryInit();
-    }
-  }, [getConnectedKit]);
+  const tryInit = () => {
+    return poofKit
+      .initialize(window.groth16)
+      .then(() => setInitializing(false))
+      .catch((e) => {
+        console.error("Failed to init PoofKit:", e);
+        tryInit();
+      });
+  };
   React.useEffect(() => {
     tryInit();
-  }, [tryInit]);
+  });
   return { poofKit, poofKitLoading: initializing };
 };
 

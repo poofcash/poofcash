@@ -2310,13 +2310,13 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@poofcash/poof-kit@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.3.tgz#a5bfbda0139ba3ee290d455f4bfbf79c7ede798c"
-  integrity sha512-xlBmGyY7hSthuv/KSRjvMPzchIOxcuK1GafRNUkG20VkFSeV46kQE650hoi/C5ykgLmsOp2c7EYOGw5bL/uqPg==
+"@poofcash/poof-kit@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.4.tgz#8e4dd38c059955ad5fcfb14350e51bbdf63ff34b"
+  integrity sha512-Xt5IEQM/ILnpVN67cWTuoXwgXJk/7NFt1p7eB3yAOREF6hqBejpGnQCUJstyUK3yXTA2qnZFaOqdPUiEeSCdfw==
   dependencies:
     "@celo/contractkit" "^1.1.0"
-    "@poofcash/poof-token" "^1.0.6"
+    "@poofcash/poof-token" "^1.0.7"
     "@types/bn.js" "^5.1.0"
     "@types/decimal.js" "^7.4.0"
     "@types/eth-sig-util" "^2.1.0"
@@ -2334,10 +2334,10 @@
     websnark "git+https://github.com/poofcash/websnark.git#a0226866cc9d9d9f7195ffe439709d25e69ca680"
     yargs "^17.0.1"
 
-"@poofcash/poof-token@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@poofcash/poof-token/-/poof-token-1.0.6.tgz#8ffe56a266e5d3d23dc4fedc350ec04d53141452"
-  integrity sha512-kJBabPvwyMcaptk+oRWOp1fLGN391ADXV8MR2J72p8SdwQ/FcjOQuW6d96aZUK5VKMaqnCvxHHhhoHzn8BC/0g==
+"@poofcash/poof-token@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-token/-/poof-token-1.0.7.tgz#15fc572d6a84abf2d7fb80ebbabd3ec447ef2bd7"
+  integrity sha512-AmyAbZf/kZweZOh7+N9iwK96RtJoFiUntQ+IHhM0sIz61gJQo32mKnT1jE2xNeF2AAtUnfwi+P2SE41wo7V+4w==
   dependencies:
     "@nomspace/nomspace" "^1.0.3"
     "@openzeppelin/contracts" "^4.1.0"

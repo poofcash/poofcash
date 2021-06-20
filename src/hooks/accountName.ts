@@ -1,5 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
-import { valora } from "connectors";
+import { useContractKit } from "@celo-tools/use-contractkit";
 
 export const shortenAccount = (account: string) => {
   return (
@@ -10,11 +9,6 @@ export const shortenAccount = (account: string) => {
 };
 
 export const useAccountName = () => {
-  const { account } = useWeb3React();
-  if (valora.valoraAccount?.phoneNumber) {
-    return valora.valoraAccount.phoneNumber;
-  } else if (account) {
-    return shortenAccount(account);
-  }
-  return account;
+  const { address } = useContractKit();
+  return shortenAccount(address);
 };

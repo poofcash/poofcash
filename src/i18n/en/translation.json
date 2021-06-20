@@ -74,5 +74,9 @@
       "title": "Select Ledger account index",
       "description": "Select the Ledger account index you want to connect"
     }
+  },
+  "airdrop": {
+    "title": "Airdrop",
+    "subtitle": "If your wallet address was used to deposit into Poof, lock CELO for voting, or deposit into Tornado, you may have receieved a vPOOF airdrop. vPOOF can be exchanged for POOF at a 1:1 rate."
   }
 }

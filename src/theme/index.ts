@@ -106,6 +106,12 @@ export const preset = {
       lineHeight: "20px",
       color: "#333333",
     },
+    reallyBigNumber: {
+      fontFamily: "DemiBold",
+      fontSize: 32,
+      lineHeight: "20px",
+      color: "#333333",
+    },
   },
   variants: {
     avatar: {
