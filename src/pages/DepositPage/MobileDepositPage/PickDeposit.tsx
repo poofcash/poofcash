@@ -2,7 +2,7 @@ import React from "react";
 import { AMOUNTS_DISABLED, CHAIN_ID } from "config";
 import { useApproveCallback, ApprovalState } from "hooks/writeContract";
 import { CELO } from "@ubeswap/sdk";
-import { instances } from "@poofcash/poof-token";
+import { poofTokenConfig } from "@poofcash/poof-kit";
 import { useGetTokenBalance } from "hooks/readContract";
 import { Button, Text, Spinner } from "@theme-ui/components";
 import { Flex, Select } from "theme-ui";
@@ -41,9 +41,8 @@ export const PickDeposit: React.FC<IProps> = ({
 
   const tornadoAddress = React.useMemo(
     () =>
-      instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress[
-        selectedAmount
-      ],
+      poofTokenConfig.instances[`netId${CHAIN_ID}`][selectedCurrency]
+        .instanceAddress[selectedAmount],
     [selectedCurrency, selectedAmount]
   );
 
@@ -78,7 +77,8 @@ export const PickDeposit: React.FC<IProps> = ({
   const depositAmounts = React.useMemo(
     () =>
       Object.keys(
-        instances[`netId${CHAIN_ID}`][selectedCurrency].instanceAddress
+        poofTokenConfig.instances[`netId${CHAIN_ID}`][selectedCurrency]
+          .instanceAddress
       ).sort(),
     [selectedCurrency]
   );

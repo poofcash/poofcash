@@ -1,11 +1,9 @@
 import React from "react";
-import moment from "moment";
 import { isValidNote, parseNote, toHex } from "utils/snarks-functions";
 import { Container, Input, Text } from "theme-ui";
-import { useTornadoDeposits, useTornadoWithdraws } from "hooks/readContract";
-import { CHAIN_ID } from "config";
-import { instances } from "@poofcash/poof-token";
-import { BlockscoutAddressLink, BlockscoutTxLink } from "components/Links";
+import { BlockscoutTxLink } from "components/Links";
+import { PoofKitGlobal } from "hooks/poofUtils";
+import { EventData } from "web3-eth-contract";
 
 type NoteDetail = {
   commitment?: string;
@@ -18,13 +16,24 @@ const CompliancePage = () => {
     commitment: "",
     nullifierHash: "",
   });
-  const [tornadoAddress, setTornadoAddress] = React.useState();
-  // Used in the txn filters
-  const deposits = useTornadoDeposits(tornadoAddress, noteDetail.commitment);
-  const [withdrawBlocks, withdrawEvents] = useTornadoWithdraws(
-    tornadoAddress,
-    noteDetail.nullifierHash
-  );
+  const { poofKit } = PoofKitGlobal.useContainer();
+  const [depositBlock, setDepositBlock] = React.useState<EventData>();
+  const [withdrawBlock, setWithdrawBlock] = React.useState<EventData>();
+
+  React.useEffect(() => {
+    if (isValidNote(note)) {
+      const { deposit } = parseNote(note);
+      setNoteDetail({
+        commitment: toHex(deposit.commitment),
+        nullifierHash: toHex(deposit.nullifierHash),
+      });
+
+      poofKit.noteInfo(note).then(({ depositBlock, withdrawBlock }) => {
+        setDepositBlock(depositBlock);
+        setWithdrawBlock(withdrawBlock);
+      });
+    }
+  }, [poofKit, note]);
 
   const handleChange = (event: any) => {
     // Handle change of input fields
@@ -39,22 +48,6 @@ const CompliancePage = () => {
 
   const noteIsValid = isValidNote(note);
 
-  React.useEffect(() => {
-    if (noteIsValid) {
-      const { deposit, currency, amount } = parseNote(note);
-      setNoteDetail({
-        commitment: toHex(deposit.commitment),
-        nullifierHash: toHex(deposit.nullifierHash),
-      });
-      setTornadoAddress(
-        instances[`netId${CHAIN_ID}`][currency].instanceAddress[amount]
-      );
-    }
-  }, [note, noteIsValid]);
-
-  /**
-   * Do a CELO withdrawal
-   */
   return (
     <div>
       <Text variant="title">Report</Text>
@@ -77,55 +70,29 @@ const CompliancePage = () => {
       {note && noteIsValid && (
         <Container sx={{ textAlign: "left", width: "100%" }}>
           <h3>Deposit details</h3>
-          {deposits.length === 1 ? (
+          {depositBlock ? (
             <>
               <Text>
-                <strong>Date</strong>:{" "}
-                {moment(deposits[0].timestamp * 1000).format(
-                  "MMMM Do YYYY, h:mm:ss a"
-                )}
-              </Text>
-              <Text>
                 <strong>Transaction</strong>:{" "}
-                <BlockscoutTxLink tx={deposits[0].transactions[0]?.hash}>
-                  {deposits[0].transactions[0]?.hash}
+                <BlockscoutTxLink tx={depositBlock.transactionHash}>
+                  {depositBlock.transactionHash}
                 </BlockscoutTxLink>
-              </Text>
-              <Text>
-                <strong>From</strong>:{" "}
-                <BlockscoutAddressLink
-                  address={deposits[0].transactions[0]?.from}
-                >
-                  {deposits[0].transactions[0]?.from}
-                </BlockscoutAddressLink>
               </Text>
               <Text>
                 <strong>Commitment</strong>: {noteDetail.commitment?.toString()}
               </Text>
             </>
           ) : (
-            <Text>Note is valid, but {deposits.length} deposits found.</Text>
+            <Text>Note is valid, but no deposit event was found.</Text>
           )}
           <h3>Withdraw details</h3>
-          {withdrawBlocks.length === 1 && withdrawEvents.length === 1 ? (
+          {withdrawBlock ? (
             <>
               <Text>
-                <strong>Date</strong>:{" "}
-                {moment(withdrawBlocks[0].timestamp * 1000).format(
-                  "MMMM Do YYYY, h:mm:ss a"
-                )}
-              </Text>
-              <Text>
                 <strong>Transaction</strong>:{" "}
-                <BlockscoutTxLink tx={withdrawBlocks[0].transactions[1]?.hash}>
-                  {withdrawBlocks[0].transactions[1]?.hash}
+                <BlockscoutTxLink tx={withdrawBlock.transactionHash}>
+                  {withdrawBlock.transactionHash}
                 </BlockscoutTxLink>
-              </Text>
-              <Text>
-                <strong>To</strong>:{" "}
-                <BlockscoutAddressLink address={withdrawEvents[0].args[0]}>
-                  {withdrawEvents[0].args[0]}
-                </BlockscoutAddressLink>
               </Text>
               <Text>
                 <strong>Nullifier hash</strong>:{" "}
@@ -133,10 +100,7 @@ const CompliancePage = () => {
               </Text>
             </>
           ) : (
-            <Text>
-              Note is valid, but {withdrawBlocks.length} withdraw blocks and{" "}
-              {withdrawEvents.length} withdraw events found.
-            </Text>
+            <Text>Note is valid, but no withdraw event was found.</Text>
           )}
         </Container>
       )}
