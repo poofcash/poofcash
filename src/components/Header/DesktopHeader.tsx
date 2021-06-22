@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Container, Flex, Text } from "theme-ui";
+import { Box, Container, Flex, Text } from "theme-ui";
 import { Logo } from "components/Logo";
 import { AccountProfile } from "components/AccountProfile";
 import styled from "@emotion/styled";
@@ -156,8 +156,7 @@ export const DesktopHeader: React.FC = () => {
                   <Text
                     sx={{
                       color: currentPage === Page.AIRDROP ? "accent" : "text",
-                      ml: 1,
-                      mr: 4,
+                      mx: 1,
                     }}
                     variant="subtitle"
                   >
@@ -166,7 +165,9 @@ export const DesktopHeader: React.FC = () => {
                 </StyledLink>
               </>
             )}
-            <AccountProfile />
+            <Box ml={4}>
+              <AccountProfile />
+            </Box>
           </Flex>
         </Flex>
       </Container>
