@@ -14,7 +14,7 @@
     "@ledgerhq/hw-transport-webusb": "^5.46.0",
     "@poofcash/poof-kit": "^1.0.4",
     "@poofcash/poof-token": "^1.0.7",
-    "@poofcash/rewardscelo": "1.0.1",
+    "@poofcash/rewardscelo": "1.0.2",
     "@rebass/forms": "^4.0.6",
     "@reduxjs/toolkit": "^1.5.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -54,9 +54,9 @@
   },
   "scripts": {
     "start": "REACT_APP_CHAIN_ID=42220 yarn start:alfajores",
-    "start:alfajores": "react-scripts start",
+    "start:alfajores": "react-scripts --max_old_space_size=4096 start",
     "build": "REACT_APP_CHAIN_ID=42220 yarn build:alfajores",
-    "build:alfajores": "react-scripts --max_old_space_size=4096  build",
+    "build:alfajores": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write ."

@@ -2346,10 +2346,10 @@
     ethereumjs-util "^7.0.3"
     web3 "^1.2.11"
 
-"@poofcash/rewardscelo@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@poofcash/rewardscelo/-/rewardscelo-1.0.1.tgz#68cc92013006463768eb10a5768e5beffb50197a"
-  integrity sha512-L8wJil+sqbqPD4qvS4A7jRpVzFi13ZdFMVfXi82m11qzbu1jNW23YxUU5dB1x/MY8GlyG1oJ4Zwi4uDUzj4V0w==
+"@poofcash/rewardscelo@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@poofcash/rewardscelo/-/rewardscelo-1.0.2.tgz#5b8f3495f1213bbbbad631fb093d488b6be5c942"
+  integrity sha512-W/WAglJHshAMSSZHjpC5tdqY+tXLQAerrOZyQKP0utHrB9x7oQJJV0Sngy9mEaRb+jY3hEabg89lN7SslG6d3g==
   dependencies:
     "@celo/contractkit" "^1.2.0"
     "@openzeppelin/contracts" "^4.1.0"
