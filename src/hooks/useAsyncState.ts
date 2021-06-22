@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 
 export function useAsyncState<T>(
   initialState: T,
-  asyncGetter: Promise<T> | undefined
+  asyncGetter: () => Promise<T> | undefined
 ): [T, () => void] {
   const [state, setState] = useState<T>(initialState);
   const [dirty, setDirty] = useState<boolean>(true);
   useEffect(() => {
     if (dirty) {
-      asyncGetter
+      asyncGetter()
         ?.then((v) => {
           setState(v);
           setDirty(false);

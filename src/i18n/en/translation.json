@@ -78,5 +78,16 @@
   "airdrop": {
     "title": "Airdrop",
     "subtitle": "If your wallet address was used to deposit into Poof, lock CELO for voting, or deposit into Tornado, you may have receieved a vPOOF airdrop. vPOOF can be exchanged for POOF at a 1:1 rate."
+  },
+  "exchange": {
+    "title": "Exchange rCELO",
+    "subtitle": "Exchange rCELO with 0 slippage.",
+    "review": {
+      "title": "Review your exchange"
+    },
+    "select": {
+      "title": "Select an amount and currency",
+      "subtitle": "Select an amount and currency to exchange from"
+    }
   }
 }

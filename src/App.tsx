@@ -17,6 +17,7 @@ import MinePage from "pages/MinePage";
 import RedeemPage from "pages/RedeemPage";
 import { SetupAccount } from "pages/SetupAccount";
 import AirdropPage from "pages/AirdropPage";
+import ExchangePage from "pages/ExchangePage";
 
 // pass props and State interface to Component class
 const App = () => {
@@ -57,6 +58,8 @@ const App = () => {
     page = <SetupAccount />;
   } else if (currentPage === Page.AIRDROP) {
     page = <AirdropPage />;
+  } else if (currentPage === Page.EXCHANGE) {
+    page = <ExchangePage />;
   }
 
   return (

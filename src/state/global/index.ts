@@ -17,7 +17,7 @@ interface GlobalState {
 }
 
 const initialState: GlobalState = {
-  currentPage: Page.SETUP,
+  currentPage: Page.DEPOSIT,
 };
 
 // Actions

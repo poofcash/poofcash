@@ -15,7 +15,7 @@ const AirdropPage: React.FC = () => {
   const [step, setStep] = React.useState(AirdropStep.DO);
   const { address } = useContractKit();
   const { poofKit } = PoofKitGlobal.useContainer();
-  const voucherBalanceCall = React.useMemo(
+  const voucherBalanceCall = React.useCallback(
     () => poofKit?.voucherBalance(address).then((v) => fromWei(v).toString()),
     [poofKit, address]
   );

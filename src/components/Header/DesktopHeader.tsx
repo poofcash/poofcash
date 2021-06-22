@@ -42,6 +42,23 @@ export const DesktopHeader: React.FC = () => {
             <StyledLink
               to=""
               onClick={() =>
+                dispatch(setCurrentPage({ nextPage: Page.EXCHANGE }))
+              }
+            >
+              <Text
+                sx={{
+                  color: currentPage === Page.EXCHANGE ? "accent" : "text",
+                  mx: 1,
+                }}
+                variant="subtitle"
+              >
+                rCELO
+              </Text>
+            </StyledLink>
+            <Text>/</Text>
+            <StyledLink
+              to=""
+              onClick={() =>
                 dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }))
               }
             >
@@ -72,38 +89,44 @@ export const DesktopHeader: React.FC = () => {
                 Withdraw
               </Text>
             </StyledLink>
-            <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() => dispatch(setCurrentPage({ nextPage: Page.MINE }))}
-            >
-              <Text
-                sx={{
-                  color: currentPage === Page.MINE ? "accent" : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Mine
-              </Text>
-            </StyledLink>
-            <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() =>
-                dispatch(setCurrentPage({ nextPage: Page.REDEEM }))
-              }
-            >
-              <Text
-                sx={{
-                  color: currentPage === Page.REDEEM ? "accent" : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Redeem
-              </Text>
-            </StyledLink>
+            {process.env.NODE_ENV === "development" && (
+              <>
+                <Text>/</Text>
+                <StyledLink
+                  to=""
+                  onClick={() =>
+                    dispatch(setCurrentPage({ nextPage: Page.MINE }))
+                  }
+                >
+                  <Text
+                    sx={{
+                      color: currentPage === Page.MINE ? "accent" : "text",
+                      mx: 1,
+                    }}
+                    variant="subtitle"
+                  >
+                    Mine
+                  </Text>
+                </StyledLink>
+                <Text>/</Text>
+                <StyledLink
+                  to=""
+                  onClick={() =>
+                    dispatch(setCurrentPage({ nextPage: Page.REDEEM }))
+                  }
+                >
+                  <Text
+                    sx={{
+                      color: currentPage === Page.REDEEM ? "accent" : "text",
+                      mx: 1,
+                    }}
+                    variant="subtitle"
+                  >
+                    Redeem
+                  </Text>
+                </StyledLink>
+              </>
+            )}
             <Text>/</Text>
             <StyledLink
               to=""
@@ -121,24 +144,28 @@ export const DesktopHeader: React.FC = () => {
                 Report
               </Text>
             </StyledLink>
-            <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() =>
-                dispatch(setCurrentPage({ nextPage: Page.AIRDROP }))
-              }
-            >
-              <Text
-                sx={{
-                  color: currentPage === Page.AIRDROP ? "accent" : "text",
-                  ml: 1,
-                  mr: 4,
-                }}
-                variant="subtitle"
-              >
-                Airdrop
-              </Text>
-            </StyledLink>
+            {process.env.NODE_ENV === "development" && (
+              <>
+                <Text>/</Text>
+                <StyledLink
+                  to=""
+                  onClick={() =>
+                    dispatch(setCurrentPage({ nextPage: Page.AIRDROP }))
+                  }
+                >
+                  <Text
+                    sx={{
+                      color: currentPage === Page.AIRDROP ? "accent" : "text",
+                      ml: 1,
+                      mr: 4,
+                    }}
+                    variant="subtitle"
+                  >
+                    Airdrop
+                  </Text>
+                </StyledLink>
+              </>
+            )}
             <AccountProfile />
           </Flex>
         </Flex>
