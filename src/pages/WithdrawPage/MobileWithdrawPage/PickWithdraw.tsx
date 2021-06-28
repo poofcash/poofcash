@@ -189,7 +189,7 @@ export const PickWithdraw: React.FC<IProps> = ({
             <LabelWithBalance
               label="Total"
               amount={isValidNote(note) ? amount : ""}
-              currency={isValidNote(note) ? currency.toUpperCase() : "CELO"}
+              currency={isValidNote(note) ? currency : ""}
             />
             <Button
               variant="secondary"

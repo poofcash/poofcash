@@ -74,7 +74,7 @@ export const DoMine: React.FC<IProps> = ({
             } else {
               console.debug(e);
               alert(
-                `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once few minutes, so try again later.`
+                `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once every few minutes, so try again later.`
               );
             }
           })

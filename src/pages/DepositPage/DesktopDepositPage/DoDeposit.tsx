@@ -14,18 +14,15 @@ import { NoteStringCommitment } from "pages/DepositPage/types";
 import { SummaryTable } from "components/SummaryTable";
 import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
 import { NoteString } from "components/NoteString";
-import {
-  ApprovalState,
-  DepositState,
-  useApproveCallback,
-} from "hooks/writeContract";
+import { useApprove } from "hooks/writeContract";
 import { GrayBox } from "components/GrayBox";
 import { CELO } from "@ubeswap/sdk";
-import { CHAIN_ID } from "config";
-import { useGetTokenBalance } from "hooks/readContract";
+import { CHAIN_ID, CURRENCY_MAP } from "config";
+import { useTokenBalance } from "hooks/readContract";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 import { useContractKit } from "@celo-tools/use-contractkit";
-import { toBN } from "web3-utils";
+import { toBN, toWei } from "web3-utils";
+import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -34,7 +31,7 @@ interface IProps {
   setSelectedCurrency: (currency: string) => void;
   selectedCurrency: string;
   noteStringCommitment: NoteStringCommitment;
-  depositState: DepositState;
+  depositLoading: boolean;
 }
 
 export const DoDeposit: React.FC<IProps> = ({
@@ -44,10 +41,10 @@ export const DoDeposit: React.FC<IProps> = ({
   selectedCurrency,
   setSelectedCurrency,
   noteStringCommitment,
-  depositState,
+  depositLoading,
 }) => {
   const { t } = useTranslation();
-  const { address } = useContractKit();
+  const { address, connect } = useContractKit();
 
   const [confirmed, setConfirmed] = React.useState(false);
   const [
@@ -55,49 +52,40 @@ export const DoDeposit: React.FC<IProps> = ({
     setShowInsufficientBalanceModal,
   ] = React.useState(false);
 
-  const [accountBalance, setAccountBalance] = React.useState<number>();
-  const [approvalState, approveCallback] = useApproveCallback(
+  const [allowance, approve, approveLoading] = useApprove(
     CELO[CHAIN_ID].address,
-    // Only supports up to 2 decimal places
-    selectedAmount !== ""
-      ? toBN(100 * Number(selectedAmount)).mul(toBN(10).pow(toBN(16)))
-      : toBN("0")
+    toWei(selectedAmount)
   );
-  const getAccountBalance = useGetTokenBalance(CELO[CHAIN_ID], address);
-  React.useEffect(() => {
-    if (address) {
-      getAccountBalance()
-        .then((tokenAmount) => setAccountBalance(Number(tokenAmount.toExact())))
-        .catch(console.error);
-    }
-  }, [getAccountBalance, address]);
-  const approveHandler = async () => {
-    if (!address) {
-      return;
-    }
-    if (!accountBalance) {
-      alert("Your account has insufficient funds.");
-      return;
-    }
-    if (accountBalance < Number(selectedAmount)) {
-      setShowInsufficientBalanceModal(true);
-      return;
-    }
+  const userBalance = useTokenBalance(
+    CURRENCY_MAP[selectedCurrency.toLowerCase()],
+    address
+  );
 
-    approveCallback();
-  };
+  const loading = approveLoading || depositLoading;
 
-  const loading =
-    approvalState === ApprovalState.PENDING ||
-    approvalState === ApprovalState.WAITING_CONFIRMATIONS ||
-    depositState === DepositState.PENDING;
+  const connectWalletButton = (
+    <Button variant="primary" onClick={connect} sx={{ width: "100%" }}>
+      Connect Wallet
+    </Button>
+  );
+
+  const insufficientBalanceButton = (
+    <Button variant="primary" disabled={true} sx={{ width: "100%" }}>
+      Insufficient Balance
+    </Button>
+  );
 
   const approveButton = (
     <Button
       variant="primary"
-      onClick={approveHandler}
+      onClick={() =>
+        approve().catch((e) => {
+          console.error(e);
+          alert(e);
+        })
+      }
       sx={{ width: "100%" }}
-      disabled={!address || selectedAmount === "" || !confirmed}
+      disabled={!address || selectedAmount === "0" || !confirmed}
     >
       Approve
     </Button>
@@ -108,16 +96,20 @@ export const DoDeposit: React.FC<IProps> = ({
       variant="primary"
       onClick={onDepositClick}
       sx={{ width: "100%" }}
-      disabled={!address || selectedAmount === "" || !confirmed}
+      disabled={!address || selectedAmount === "0" || !confirmed}
     >
       Deposit
     </Button>
   );
 
-  let button = depositButton;
+  let button = connectWalletButton;
   if (address) {
-    if (approvalState === ApprovalState.NOT_APPROVED) {
+    if (toBN(userBalance).lt(toBN(toWei(selectedAmount)))) {
+      button = insufficientBalanceButton;
+    } else if (toBN(allowance).lt(toBN(toWei(selectedAmount)))) {
       button = approveButton;
+    } else {
+      button = depositButton;
     }
   }
 
@@ -133,9 +125,7 @@ export const DoDeposit: React.FC<IProps> = ({
     </>
   );
 
-  const totalCost = Number(selectedAmount) + Number(NETWORK_COST);
-
-  if (address && selectedAmount === "") {
+  if (address && selectedAmount === "0") {
     boxContent = (
       <>
         <Text sx={{ mb: 4 }} variant="subtitle">
@@ -159,16 +149,27 @@ export const DoDeposit: React.FC<IProps> = ({
           lineItems={[
             {
               label: "Deposit Amount",
-              value: `${selectedAmount} ${selectedCurrency.toUpperCase()}`,
+              value: `${humanFriendlyNumber(
+                selectedAmount
+              )} ${selectedCurrency}`,
             },
             {
               label: "Est. Network Fee",
-              value: `${NETWORK_COST} CELO`,
+              value: `${humanFriendlyNumber(NETWORK_COST)} CELO`,
             },
           ]}
           totalItem={{
             label: "Est. Total",
-            value: `${totalCost} CELO`,
+            value:
+              selectedCurrency === "CELO"
+                ? `${humanFriendlyNumber(
+                    Number(selectedAmount) + Number(NETWORK_COST)
+                  )} CELO`
+                : `${humanFriendlyNumber(
+                    selectedAmount
+                  )} ${selectedCurrency} + ${humanFriendlyNumber(
+                    NETWORK_COST
+                  )} CELO`,
           }}
         />
         <Text sx={{ mt: 6, mb: 1 }} variant="subtitle">

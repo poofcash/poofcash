@@ -5,10 +5,12 @@ import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
 import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
-import { GAS_HARDCODE, PRECISION } from "../MobileWithdrawPage/ConfirmWithdraw";
+import { GAS_HARDCODE } from "../MobileWithdrawPage/ConfirmWithdraw";
 import { isValidNote, parseNote } from "utils/snarks-functions";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { PoofKitGlobal } from "hooks/poofUtils";
+import { humanFriendlyNumber } from "utils/number";
+import { formatCurrency } from "utils/currency";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -105,21 +107,23 @@ export const DoWithdraw: React.FC<IProps> = ({
           lineItems={[
             {
               label: "Withdrawal Amount",
-              value: `${amount} ${currency.toUpperCase()}`,
+              value: `${humanFriendlyNumber(amount)} ${formatCurrency(
+                currency
+              )}`,
             },
             {
               label: `Relayer Fee - ${selectedRelayer?.relayerFee}%`,
-              value: `-${relayerFee
-                .toString()
-                .slice(0, PRECISION)} ${currency.toUpperCase()}`,
+              value: `- ${humanFriendlyNumber(relayerFee)} ${formatCurrency(
+                currency
+              )}`,
             },
-            { label: "Protocol Fee", value: `0 CELO` },
+            { label: "Protocol Fee", value: `0 ${formatCurrency(currency)}` },
           ]}
           totalItem={{
             label: "Total",
-            value: `${finalWithdrawAmount
-              .toString()
-              .slice(0, PRECISION)} ${currency.toUpperCase()}`,
+            value: `${humanFriendlyNumber(
+              finalWithdrawAmount
+            )} ${formatCurrency(currency)}`,
           }}
         />
       </>

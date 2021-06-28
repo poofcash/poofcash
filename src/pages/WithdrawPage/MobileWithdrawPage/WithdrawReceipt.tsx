@@ -5,12 +5,11 @@ import moment from "moment";
 import React from "react";
 import { Button, Container, Flex, Text } from "theme-ui";
 import { parseNote } from "utils/snarks-functions";
-import {
-  GAS_HARDCODE,
-  PRECISION,
-} from "pages/WithdrawPage/MobileWithdrawPage/ConfirmWithdraw";
+import { GAS_HARDCODE } from "pages/WithdrawPage/MobileWithdrawPage/ConfirmWithdraw";
 import { shortenAccount } from "hooks/accountName";
 import { SummaryTable } from "components/SummaryTable";
+import { humanFriendlyNumber } from "utils/number";
+import { formatCurrency } from "utils/currency";
 
 interface IProps {
   onDoneClick: () => void;
@@ -57,14 +56,14 @@ export const WithdrawReceipt: React.FC<IProps> = ({
           },
           {
             label: "Withdraw amount",
-            value: `${amount} ${currency.toUpperCase()}`,
+            value: `${humanFriendlyNumber(amount)} ${formatCurrency(currency)}`,
           },
         ]}
         totalItem={{
           label: "Est. Withdrawal",
-          value: `${finalWithdrawAmount
-            .toString()
-            .slice(0, PRECISION)} ${currency.toUpperCase()}`,
+          value: `${humanFriendlyNumber(finalWithdrawAmount)} ${formatCurrency(
+            currency
+          )}`,
         }}
       />
 
@@ -73,7 +72,7 @@ export const WithdrawReceipt: React.FC<IProps> = ({
           <LabelWithBalance
             label="Withdrew"
             amount={finalWithdrawAmount}
-            currency={currency.toUpperCase()}
+            currency={currency}
           />
           <Button
             onClick={() => {

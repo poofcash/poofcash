@@ -10,6 +10,9 @@ import { SummaryTable } from "components/SummaryTable";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { PoofKitV2 } from "@poofcash/poof-kit";
+import { CHAIN_ID } from "config";
+import { formatCurrency } from "utils/currency";
+import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
   onBackClick: () => void;
@@ -38,7 +41,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
 
   const relayerFee = (Number(amount) * selectedRelayer.relayerFee) / 100;
 
-  const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
+  const finalWithdrawAmount = Number(amount) - relayerFee;
 
   const handleWithdraw = async () => {
     if (!networkLibrary) {
@@ -52,7 +55,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
     }
 
     setLoading(true);
-    const poofKit = new PoofKitV2(kit);
+    const poofKit = new PoofKitV2(kit, CHAIN_ID);
     try {
       await poofKit.initialize(window.groth16);
       const txHash = await poofKit.withdrawNote(
@@ -93,21 +96,21 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
         lineItems={[
           {
             label: "Withdrawal Amount",
-            value: `${amount} ${currency.toUpperCase()}`,
+            value: `${humanFriendlyNumber(amount)} ${formatCurrency(currency)}`,
           },
           {
             label: `Relayer Fee - ${selectedRelayer?.relayerFee}%`,
-            value: `-${relayerFee
-              .toString()
-              .slice(0, PRECISION)} ${currency.toUpperCase()}`,
+            value: `- ${humanFriendlyNumber(relayerFee)} ${formatCurrency(
+              currency
+            )}`,
           },
-          { label: "Protocol Fee", value: `0 CELO` },
+          { label: "Protocol Fee", value: `0 ${formatCurrency(currency)}` },
         ]}
         totalItem={{
           label: "Total",
-          value: `${finalWithdrawAmount
-            .toString()
-            .slice(0, PRECISION)} ${currency.toUpperCase()}`,
+          value: `${humanFriendlyNumber(finalWithdrawAmount)} ${formatCurrency(
+            currency
+          )}`,
         }}
       />
       <BottomDrawer>
@@ -120,7 +123,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
             <LabelWithBalance
               label="Total"
               amount={finalWithdrawAmount}
-              currency={currency.toUpperCase()}
+              currency={currency}
             />
             <Button onClick={handleWithdraw}>Withdraw</Button>
           </Flex>

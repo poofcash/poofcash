@@ -3,7 +3,7 @@ import { useAsyncState } from "hooks/useAsyncState";
 import React from "react";
 import { ExchangeReceipt } from "./ExchangeReceipt";
 import { DoExchange } from "./DoExchange";
-import { RCELO, SCELO } from "config";
+import { CURRENCY_MAP } from "config";
 import erc20Abi from "abis/erc20.json";
 import { AbiItem, isAddress } from "web3-utils";
 
@@ -16,23 +16,29 @@ const ExchangePage: React.FC = () => {
   const [step, setStep] = React.useState(ExchangeStep.DO);
   const { kit, address } = useContractKit();
   const sCELOBalanceCall = React.useCallback(async () => {
-    const savingsCELO = new kit.web3.eth.Contract(erc20Abi as AbiItem[], SCELO);
+    const savingsCELO = new kit.web3.eth.Contract(
+      erc20Abi as AbiItem[],
+      CURRENCY_MAP.scelo
+    );
     if (!isAddress(address)) {
       return ["0", "0"];
     }
     return await Promise.all([
       savingsCELO.methods.balanceOf(address).call(),
-      savingsCELO.methods.allowance(address, RCELO).call(),
+      savingsCELO.methods.allowance(address, CURRENCY_MAP.rcelo).call(),
     ]);
   }, [kit, address]);
   const rCELOBalanceCall = React.useCallback(async () => {
-    const rewardsCELO = new kit.web3.eth.Contract(erc20Abi as AbiItem[], RCELO);
+    const rewardsCELO = new kit.web3.eth.Contract(
+      erc20Abi as AbiItem[],
+      CURRENCY_MAP.rcelo
+    );
     if (!isAddress(address)) {
       return ["0", "0"];
     }
     return await Promise.all([
       rewardsCELO.methods.balanceOf(address).call(),
-      rewardsCELO.methods.allowance(address, RCELO).call(),
+      rewardsCELO.methods.allowance(address, CURRENCY_MAP.rcelo).call(),
     ]);
   }, [kit, address]);
 

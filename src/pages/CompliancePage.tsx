@@ -78,6 +78,7 @@ const CompliancePage = () => {
                   {depositBlock.transactionHash}
                 </BlockscoutTxLink>
               </Text>
+              <br />
               <Text>
                 <strong>Commitment</strong>: {noteDetail.commitment?.toString()}
               </Text>
@@ -94,6 +95,7 @@ const CompliancePage = () => {
                   {withdrawBlock.transactionHash}
                 </BlockscoutTxLink>
               </Text>
+              <br />
               <Text>
                 <strong>Nullifier hash</strong>:{" "}
                 {noteDetail.nullifierHash?.toString()}

@@ -1,11 +1,10 @@
 import React from "react";
-import { CHAIN_ID } from "config";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
-import { useDepositCallback } from "hooks/writeContract";
 import { PickDeposit } from "pages/DepositPage/MobileDepositPage/PickDeposit";
 import { ConfirmDeposit } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
 import { DepositReceipt } from "pages/DepositPage/MobileDepositPage/DepositReceipt";
 import { NoteStringCommitment } from "pages/DepositPage/types";
+import { CHAIN_ID } from "config";
 
 enum DepositStep {
   PICKER = "PICKER",
@@ -25,6 +24,9 @@ interface IProps {
   selectedCurrency: string;
   setNoteStringCommitment: (noteStringCommitment: NoteStringCommitment) => void;
   noteStringCommitment: NoteStringCommitment;
+  txHash: string;
+  deposit: () => Promise<void>;
+  depositLoading: boolean;
 }
 
 // pass props and State interface to Component class
@@ -35,11 +37,11 @@ const MobileDepositPage: React.FC<IProps> = ({
   selectedCurrency,
   setNoteStringCommitment,
   noteStringCommitment,
+  txHash,
+  deposit,
+  depositLoading,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
-  const [depositState, txHash, depositCallback] = useDepositCallback(
-    noteStringCommitment.noteString
-  );
 
   switch (depositStep) {
     case DepositStep.PICKER:
@@ -47,13 +49,6 @@ const MobileDepositPage: React.FC<IProps> = ({
         <PickDeposit
           onDepositClick={() => {
             setDepositStep(DepositStep.CONFIRM);
-            setNoteStringCommitment(
-              getNoteStringAndCommitment(
-                selectedCurrency,
-                selectedAmount,
-                CHAIN_ID
-              )
-            );
           }}
           selectedAmount={selectedAmount}
           setSelectedAmount={setSelectedAmount}
@@ -65,19 +60,32 @@ const MobileDepositPage: React.FC<IProps> = ({
       return (
         <ConfirmDeposit
           onBackClick={() => setDepositStep(DepositStep.PICKER)}
-          onConfirmClick={() => setDepositStep(DepositStep.RECEIPT)}
+          onConfirmClick={() => {
+            deposit()
+              .then(() => setDepositStep(DepositStep.RECEIPT))
+              .catch((e) => {
+                console.error("Failed to deposit", e);
+                alert(e);
+              });
+          }}
           selectedAmount={selectedAmount}
           selectedCurrency={selectedCurrency}
           noteStringCommitment={noteStringCommitment}
-          depositState={depositState}
-          depositCallback={depositCallback}
+          depositLoading={depositLoading}
         />
       );
     case DepositStep.RECEIPT:
       return (
         <DepositReceipt
           onDoneClick={() => {
-            setNoteStringCommitment(initialNoteStringCommitment);
+            // Generate a new note
+            setNoteStringCommitment(
+              getNoteStringAndCommitment(
+                selectedCurrency,
+                selectedAmount,
+                CHAIN_ID
+              )
+            );
             setDepositStep(DepositStep.PICKER);
           }}
           selectedAmount={selectedAmount}

@@ -1,33 +1,30 @@
-import { useEffect, useMemo, useState } from "react";
-import { Token, TokenAmount } from "@ubeswap/sdk";
-import { getContract, getTokenContract } from "hooks/getContract";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getContract } from "hooks/getContract";
+import ERC20_ABI from "abis/erc20.json";
 import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
 import { useContractKit } from "@celo-tools/use-contractkit";
+import { AbiItem, isAddress } from "web3-utils";
+import { useAsyncState } from "./useAsyncState";
 
-export function useGetTokenBalance(
-  token: Token,
-  owner?: string | null
-): () => Promise<TokenAmount> {
+export function useTokenBalance(tokenAddress: string, owner?: string | null) {
   const { kit } = useContractKit();
-  const erc20 = getTokenContract(kit, token?.address);
+  const tokenContract = useMemo(() => {
+    return new kit.web3.eth.Contract(
+      (ERC20_ABI as unknown) as AbiItem,
+      tokenAddress
+    );
+  }, [tokenAddress, kit]);
 
-  const getTokenBalance = async () => {
-    const zeroTokenAmount = new TokenAmount(token, "0");
-    if (!owner) {
-      return zeroTokenAmount;
+  const balanceCall = useCallback(async () => {
+    if (!owner || !isAddress(owner)) {
+      return "0";
     }
-    if (!erc20) {
-      console.warn("ERC20 contract is null");
-      return zeroTokenAmount;
-    }
-    const balance = await erc20.methods.balanceOf(owner).call();
-    if (!balance) {
-      return zeroTokenAmount;
-    }
-    return new TokenAmount(token, balance.toString());
-  };
+    return tokenContract.methods.balanceOf(owner).call();
+  }, [owner, tokenContract]);
 
-  return getTokenBalance;
+  const [balance] = useAsyncState("0", balanceCall);
+
+  return balance;
 }
 
 // Returns a list of the latest deposits

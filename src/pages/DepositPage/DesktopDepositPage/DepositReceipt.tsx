@@ -6,6 +6,7 @@ import { useAccountName } from "hooks/accountName";
 import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
 import { SummaryTable } from "components/SummaryTable";
 import { GrayBox } from "components/GrayBox";
+import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
   onDoneClick: () => void;
@@ -51,16 +52,21 @@ export const DepositReceipt: React.FC<IProps> = ({
             },
             {
               label: "Est. total amount",
-              value: `${
-                Number(selectedAmount) + NETWORK_COST
-              } ${selectedCurrency.toUpperCase()}`,
+              value:
+                selectedCurrency === "CELO"
+                  ? `${humanFriendlyNumber(
+                      Number(selectedAmount) + Number(NETWORK_COST)
+                    )} CELO`
+                  : `${humanFriendlyNumber(
+                      selectedAmount
+                    )} ${selectedCurrency} + ${humanFriendlyNumber(
+                      NETWORK_COST
+                    )} CELO`,
             },
           ]}
           totalItem={{
             label: "Deposit",
-            value: `${Number(
-              selectedAmount
-            )} ${selectedCurrency.toUpperCase()}`,
+            value: `${humanFriendlyNumber(selectedAmount)} ${selectedCurrency}`,
           }}
         />
       </GrayBox>

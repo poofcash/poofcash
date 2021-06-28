@@ -9,7 +9,7 @@ import { PoofKitGlobal } from "hooks/poofUtils";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
-import { humanFriendlyNumber } from "components/LabelWithBalance";
+import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
   onRedeemClick: () => void;

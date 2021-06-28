@@ -7,14 +7,12 @@ export function useAsyncState<T>(
   const [state, setState] = useState<T>(initialState);
   const [dirty, setDirty] = useState<boolean>(true);
   useEffect(() => {
-    if (dirty) {
-      asyncGetter()
-        ?.then((v) => {
-          setState(v);
-          setDirty(false);
-        })
-        .catch(console.warn);
-    }
+    asyncGetter()
+      ?.then((v) => {
+        setState(v);
+        setDirty(false);
+      })
+      .catch(console.warn);
   }, [asyncGetter, dirty]);
 
   const refetch = () => {

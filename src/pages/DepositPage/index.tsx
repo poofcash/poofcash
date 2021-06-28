@@ -6,10 +6,11 @@ import { initialNoteStringCommitment } from "pages/DepositPage/MobileDepositPage
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import { CHAIN_ID } from "config";
 import { NoteStringCommitment } from "pages/DepositPage/types";
+import { useDeposit } from "hooks/writeContract";
 
 const DepositPage: React.FC = () => {
-  const [selectedAmount, setSelectedAmount] = React.useState("");
-  const [selectedCurrency, setSelectedCurrency] = React.useState("celo");
+  const [selectedAmount, setSelectedAmount] = React.useState("0");
+  const [selectedCurrency, setSelectedCurrency] = React.useState("CELO");
   const [
     noteStringCommitment,
     setNoteStringCommitment,
@@ -23,15 +24,27 @@ const DepositPage: React.FC = () => {
 
   const breakpoint = useBreakpoint();
 
+  const onCurrencyChange = (currency: string) => {
+    // Reset the selected amount
+    setSelectedCurrency(currency);
+    setSelectedAmount("0");
+  };
+  const [txHash, deposit, depositLoading] = useDeposit(
+    noteStringCommitment.noteString
+  );
+
   if (breakpoint === Breakpoint.MOBILE) {
     return (
       <MobileDepositPage
         setSelectedAmount={setSelectedAmount}
         selectedAmount={selectedAmount}
-        setSelectedCurrency={setSelectedCurrency}
+        setSelectedCurrency={onCurrencyChange}
         selectedCurrency={selectedCurrency}
         setNoteStringCommitment={setNoteStringCommitment}
         noteStringCommitment={noteStringCommitment}
+        txHash={txHash}
+        deposit={deposit}
+        depositLoading={depositLoading}
       />
     );
   }
@@ -40,10 +53,13 @@ const DepositPage: React.FC = () => {
     <DesktopDepositPage
       setSelectedAmount={setSelectedAmount}
       selectedAmount={selectedAmount}
-      setSelectedCurrency={setSelectedCurrency}
+      setSelectedCurrency={onCurrencyChange}
       selectedCurrency={selectedCurrency}
       setNoteStringCommitment={setNoteStringCommitment}
       noteStringCommitment={noteStringCommitment}
+      txHash={txHash}
+      deposit={deposit}
+      depositLoading={depositLoading}
     />
   );
 };

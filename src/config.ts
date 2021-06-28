@@ -6,15 +6,19 @@ export const CHAIN_ID: ChainIdType =
 
 export const NETWORK = CHAIN_ID === ChainId.MAINNET ? "mainnet" : "alfajores";
 
-export const SCELO =
+export const CURRENCY_MAP: Record<string, string> =
   CHAIN_ID === ChainId.MAINNET
-    ? "0x2879BFD5e7c4EF331384E908aaA3Bd3014b703fA"
-    : "0xb9B532e99DfEeb0ffB4D3EDB499f09375CF9Bf07";
+    ? {
+        scelo: "0x2879BFD5e7c4EF331384E908aaA3Bd3014b703fA",
+        rcelo: "0x1a8Dbe5958c597a744Ba51763AbEBD3355996c3e",
+        celo: "0x471ece3750da237f93b8e339c536989b8978a438",
+      }
+    : {
+        scelo: "0xb9B532e99DfEeb0ffB4D3EDB499f09375CF9Bf07",
+        rcelo: "0xBDeedCDA79BAbc4Eb509aB689895a3054461691e",
+        celo: "0xf194afdf50b03e69bd7d057c1aa9e10c9954e4c9",
+      };
 
-export const RCELO =
-  CHAIN_ID === ChainId.MAINNET
-    ? "0x1a8Dbe5958c597a744Ba51763AbEBD3355996c3e"
-    : "0xBDeedCDA79BAbc4Eb509aB689895a3054461691e";
 export const SCELO_IDX = CHAIN_ID === ChainId.MAINNET ? 0 : 1;
 
 export const RPC_URL: string =
@@ -22,12 +26,9 @@ export const RPC_URL: string =
     ? "https://explorer.celo.org"
     : "https://alfajores-forno.celo-testnet.org";
 
-// Do not allow the user to choose the following amounts
-export const AMOUNTS_DISABLED: string[] = [];
-
 export const RELAYERS = {
   mainnet: ["https://adamaris.now.im"],
-  alfajores: ["https://relayer-test.poof.cash"],
+  alfajores: ["https://relayer-test1.poof.cash"],
 };
 
 export const BLOCKSCOUT_URL =
@@ -36,3 +37,7 @@ export const BLOCKSCOUT_URL =
     : "https://alfajores-blockscout.celo-testnet.org";
 
 export const IP_URL = "https://ip.tornado.cash";
+
+export const DECIMAL_PRECISION = 3; // Number of decimals to show
+
+export const supportedCurrencies = ["rCELO", "CELO", "POOF"];

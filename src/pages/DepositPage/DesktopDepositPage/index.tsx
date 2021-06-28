@@ -4,7 +4,6 @@ import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import { CHAIN_ID } from "config";
 import { DoDeposit } from "pages/DepositPage/DesktopDepositPage/DoDeposit";
 import { DepositReceipt } from "pages/DepositPage/DesktopDepositPage/DepositReceipt";
-import { DepositState, useDepositCallback } from "hooks/writeContract";
 
 enum DepositStep {
   DO = "DO",
@@ -18,6 +17,9 @@ interface IProps {
   selectedCurrency: string;
   setNoteStringCommitment: (noteStringCommitment: NoteStringCommitment) => void;
   noteStringCommitment: NoteStringCommitment;
+  txHash: string;
+  deposit: () => Promise<void>;
+  depositLoading: boolean;
 }
 
 const DesktopDepositPage: React.FC<IProps> = ({
@@ -27,28 +29,30 @@ const DesktopDepositPage: React.FC<IProps> = ({
   selectedCurrency,
   setNoteStringCommitment,
   noteStringCommitment,
+  txHash,
+  deposit,
+  depositLoading,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.DO);
-  const [depositState, txHash, depositCallback] = useDepositCallback(
-    noteStringCommitment.noteString
-  );
-  React.useEffect(() => {
-    if (depositState === DepositState.DONE) {
-      setDepositStep(DepositStep.RECEIPT);
-    }
-  }, [depositState]);
 
   switch (depositStep) {
     case DepositStep.DO:
       return (
         <DoDeposit
-          onDepositClick={depositCallback}
+          onDepositClick={() => {
+            deposit()
+              .then(() => setDepositStep(DepositStep.RECEIPT))
+              .catch((e) => {
+                console.error("Failed to deposit", e);
+                alert(e);
+              });
+          }}
           selectedAmount={selectedAmount}
           setSelectedAmount={setSelectedAmount}
           selectedCurrency={selectedCurrency}
           setSelectedCurrency={setSelectedCurrency}
           noteStringCommitment={noteStringCommitment}
-          depositState={depositState}
+          depositLoading={depositLoading}
         />
       );
     case DepositStep.RECEIPT:

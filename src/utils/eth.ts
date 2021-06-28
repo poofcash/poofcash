@@ -1,6 +1,7 @@
 import Wallet from "ethereumjs-wallet";
 import { hexToBytes, fromWei } from "web3-utils";
 import BN from "bn.js";
+import { humanFriendlyNumber } from "utils/number";
 
 export const isPrivateKey = (privateKey: string) => {
   if (privateKey.length < 2) {
@@ -21,5 +22,5 @@ export const isPrivateKey = (privateKey: string) => {
 };
 
 export const humanFriendlyWei = (wei: BN | string) => {
-  return Number(fromWei(wei)).toLocaleString();
+  return humanFriendlyNumber(fromWei(wei));
 };

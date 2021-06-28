@@ -1,12 +1,12 @@
 import React from "react";
 import { Button, Checkbox, Container, Flex, Spinner, Text } from "theme-ui";
 import { NoteStringCommitment } from "pages/DepositPage/types";
-import { DepositState } from "hooks/writeContract";
 import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { NoteString } from "components/NoteString";
 import { SummaryTable } from "components/SummaryTable";
+import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
   onBackClick: () => void;
@@ -14,8 +14,7 @@ interface IProps {
   selectedAmount: string;
   selectedCurrency: string;
   noteStringCommitment: NoteStringCommitment;
-  depositState: DepositState;
-  depositCallback: () => void;
+  depositLoading: boolean;
 }
 
 export const NETWORK_COST = 0.0048;
@@ -26,16 +25,9 @@ export const ConfirmDeposit: React.FC<IProps> = ({
   selectedAmount,
   selectedCurrency,
   noteStringCommitment,
-  depositState,
-  depositCallback,
+  depositLoading,
 }) => {
   const [confirmed, setConfirmed] = React.useState(false);
-  React.useEffect(() => {
-    if (depositState === DepositState.DONE) {
-      onConfirmClick();
-    }
-  }, [depositState, onConfirmClick]);
-
   const totalCost = Number(selectedAmount) + Number(NETWORK_COST);
 
   return (
@@ -55,16 +47,25 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         lineItems={[
           {
             label: "Deposit Amount",
-            value: `${selectedAmount} ${selectedCurrency.toUpperCase()}`,
+            value: `${humanFriendlyNumber(selectedAmount)} ${selectedCurrency}`,
           },
           {
             label: "Est. Network Fee",
-            value: `${NETWORK_COST} CELO`,
+            value: `${humanFriendlyNumber(NETWORK_COST)} CELO`,
           },
         ]}
         totalItem={{
           label: "Est. Total",
-          value: `${totalCost} CELO`,
+          value:
+            selectedCurrency === "CELO"
+              ? `${humanFriendlyNumber(
+                  Number(selectedAmount) + Number(NETWORK_COST)
+                )} CELO`
+              : `${humanFriendlyNumber(
+                  selectedAmount
+                )} ${selectedCurrency} + ${humanFriendlyNumber(
+                  NETWORK_COST
+                )} CELO`,
         }}
       />
 
@@ -85,7 +86,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         <Text sx={{ pt: 1 }}>I backed up the Magic Password</Text>
       </Flex>
       <BottomDrawer>
-        {depositState === DepositState.PENDING ? (
+        {depositLoading ? (
           <Flex sx={{ justifyContent: "flex-end" }}>
             <Spinner />
           </Flex>
@@ -94,12 +95,10 @@ export const ConfirmDeposit: React.FC<IProps> = ({
             <LabelWithBalance
               label="Total"
               amount={totalCost.toString()}
-              currency={selectedCurrency.toUpperCase()}
+              currency={selectedCurrency}
             />
             <Button
-              onClick={() => {
-                depositCallback();
-              }}
+              onClick={onConfirmClick}
               disabled={!confirmed}
               variant="primary"
             >

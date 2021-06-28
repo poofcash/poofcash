@@ -34,7 +34,7 @@ const getNoteStringAndCommitment = (
   ]);
   let commitment = pedersenHash(preimage);
   const note: string = toHex(preimage, 62);
-  const noteString: string = `poof-${currency}-${amount}-${netId}-${note}`;
+  const noteString: string = `poof-${currency.toLowerCase()}-${amount}-${netId}-${note}`;
   commitment = toHex(commitment);
   return { noteString, commitment };
 };

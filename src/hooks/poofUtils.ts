@@ -3,6 +3,7 @@ import { useContractKit } from "@celo-tools/use-contractkit";
 import { PoofKitV2 } from "@poofcash/poof-kit";
 import { fromWei } from "web3-utils";
 import { createContainer } from "unstated-next";
+import { CHAIN_ID } from "config";
 
 export const usePoofAmount = (amount: number | string) => {
   const { poofKit } = PoofKitGlobal.useContainer();
@@ -22,7 +23,7 @@ export const usePoofAmount = (amount: number | string) => {
 const usePoofKit = () => {
   const { kit } = useContractKit();
   const [initializing, setInitializing] = React.useState(true);
-  const poofKit = new PoofKitV2(kit);
+  const poofKit = new PoofKitV2(kit, CHAIN_ID);
   // Recursively try to initialize
   const tryInit = () => {
     return poofKit

@@ -14,7 +14,7 @@ import {
 } from "theme-ui";
 import { toWei, AbiItem, toBN } from "web3-utils";
 import { humanFriendlyWei } from "utils/eth";
-import { RCELO, SCELO, SCELO_IDX } from "config";
+import { CURRENCY_MAP, SCELO_IDX } from "config";
 import erc20Abi from "abis/erc20.json";
 import { GrayBox } from "components/GrayBox";
 import { SummaryTable } from "components/SummaryTable";
@@ -53,7 +53,7 @@ export const DoExchange: React.FC<IProps> = ({
   const onExchangeClick = () => {
     setLoading(true);
     performActions(async (kit) => {
-      const rewardsKit = new RewardsCeloKit(kit, RCELO);
+      const rewardsKit = new RewardsCeloKit(kit, CURRENCY_MAP.rcelo);
       try {
         const txo =
           currencies.from === "sCELO"
@@ -78,10 +78,10 @@ export const DoExchange: React.FC<IProps> = ({
     performActions(async (kit) => {
       const erc20 = new kit.web3.eth.Contract(
         erc20Abi as AbiItem[],
-        currencies.from === "sCELO" ? SCELO : RCELO
+        currencies.from === "sCELO" ? CURRENCY_MAP.scelo : CURRENCY_MAP.rcelo
       );
       try {
-        const txo = erc20.methods.approve(RCELO, toWei(amount));
+        const txo = erc20.methods.approve(CURRENCY_MAP.rcelo, toWei(amount));
         await txo.send({
           from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),
@@ -102,7 +102,7 @@ export const DoExchange: React.FC<IProps> = ({
   let button = (
     <Button
       onClick={onApproveClick}
-      disabled={amount === "0" || !address}
+      disabled={Number(amount) <= 0 || !address}
       sx={{ width: "100%" }}
     >
       Approve {currencies.from}
@@ -118,7 +118,7 @@ export const DoExchange: React.FC<IProps> = ({
     button = (
       <Button
         onClick={onExchangeClick}
-        disabled={amount === "0" || !address}
+        disabled={Number(amount) <= 0 || !address}
         sx={{ width: "100%" }}
       >
         Exchange for {currencies.to}
