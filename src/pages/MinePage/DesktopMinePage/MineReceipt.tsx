@@ -2,7 +2,6 @@ import { BlockscoutTxLink } from "components/Links";
 import moment from "moment";
 import React from "react";
 import { Button, Container, Text } from "theme-ui";
-import { PRECISION } from "pages/MinePage/MobileMinePage/ConfirmMine";
 import { GrayBox } from "components/GrayBox";
 import { SummaryTable } from "components/SummaryTable";
 
@@ -44,7 +43,7 @@ export const MineReceipt: React.FC<IProps> = ({
           ]}
           totalItem={{
             label: "AP Mined",
-            value: `${estimatedAp.toString().slice(0, PRECISION)} AP`,
+            value: `${Number(estimatedAp).toLocaleString()} AP`,
           }}
         />
       </GrayBox>

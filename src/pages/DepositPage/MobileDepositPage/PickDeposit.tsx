@@ -1,7 +1,6 @@
 import React from "react";
 import { CHAIN_ID, CURRENCY_MAP } from "config";
 import { useApprove } from "hooks/writeContract";
-import { CELO } from "@ubeswap/sdk";
 import { useTokenBalance } from "hooks/readContract";
 import { Button, Text, Spinner } from "@theme-ui/components";
 import { Flex, Select } from "theme-ui";
@@ -42,7 +41,8 @@ export const PickDeposit: React.FC<IProps> = ({
   ] = React.useState(false);
 
   const [allowance, approve, approveLoading] = useApprove(
-    CELO[CHAIN_ID].address,
+    deployments[`netId${CHAIN_ID}`][selectedCurrency.toLowerCase()]
+      .tokenAddress,
     toWei(selectedAmount)
   );
 

@@ -16,13 +16,13 @@ import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit
 import { NoteString } from "components/NoteString";
 import { useApprove } from "hooks/writeContract";
 import { GrayBox } from "components/GrayBox";
-import { CELO } from "@ubeswap/sdk";
 import { CHAIN_ID, CURRENCY_MAP } from "config";
 import { useTokenBalance } from "hooks/readContract";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { toBN, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
+import { deployments } from "@poofcash/poof-kit";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -53,7 +53,8 @@ export const DoDeposit: React.FC<IProps> = ({
   ] = React.useState(false);
 
   const [allowance, approve, approveLoading] = useApprove(
-    CELO[CHAIN_ID].address,
+    deployments[`netId${CHAIN_ID}`][selectedCurrency.toLowerCase()]
+      .tokenAddress,
     toWei(selectedAmount)
   );
   console.log(allowance);

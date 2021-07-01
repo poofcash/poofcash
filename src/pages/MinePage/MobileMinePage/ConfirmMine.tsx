@@ -94,7 +94,7 @@ export const ConfirmMine: React.FC<IProps> = ({
         lineItems={[
           {
             label: "AP",
-            value: `${estimatedAp} AP`,
+            value: `${Number(estimatedAp).toLocaleString} AP`,
           },
           {
             label: `Relayer Fee`,
@@ -103,7 +103,7 @@ export const ConfirmMine: React.FC<IProps> = ({
         ]}
         totalItem={{
           label: "Total",
-          value: `${estimatedAp} AP`,
+          value: `${Number(estimatedAp).toLocaleString} AP`,
         }}
       />
       <BottomDrawer>

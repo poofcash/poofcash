@@ -4,7 +4,6 @@ import { BlockscoutTxLink } from "components/Links";
 import moment from "moment";
 import React from "react";
 import { Button, Container, Flex, Text } from "theme-ui";
-import { PRECISION } from "pages/MinePage/MobileMinePage/ConfirmMine";
 import { SummaryTable } from "components/SummaryTable";
 
 interface IProps {
@@ -40,7 +39,7 @@ export const MineReceipt: React.FC<IProps> = ({
         ]}
         totalItem={{
           label: "AP Mined",
-          value: `${estimatedAp.toString().slice(0, PRECISION)} AP`,
+          value: `${Number(estimatedAp).toLocaleString()} AP`,
         }}
       />
 
@@ -48,7 +47,7 @@ export const MineReceipt: React.FC<IProps> = ({
         <Flex sx={{ justifyContent: "space-between" }}>
           <LabelWithBalance
             label="Mined"
-            amount={estimatedAp.toString().slice(0, PRECISION)}
+            amount={Number(estimatedAp).toLocaleString()}
             currency="AP"
           />
           <Button

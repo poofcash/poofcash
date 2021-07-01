@@ -48,7 +48,7 @@ export const RedeemReceipt: React.FC<IProps> = ({
           },
           {
             label: "AP used",
-            value: `${amount} AP`,
+            value: `${Number(amount).toLocaleString()} AP`,
           },
         ]}
         totalItem={{

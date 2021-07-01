@@ -8,6 +8,7 @@ import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { PoofKitGlobal } from "hooks/poofUtils";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { usePoofAccount } from "hooks/poofAccount";
+import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
   onBackClick: () => void;
@@ -93,7 +94,7 @@ export const ConfirmRedeem: React.FC<IProps> = ({
         lineItems={[
           {
             label: "AP",
-            value: `${amount} AP`,
+            value: `${Number(amount).toLocaleString()} AP`,
           },
           {
             label: `Relayer Fee`,
@@ -102,7 +103,7 @@ export const ConfirmRedeem: React.FC<IProps> = ({
         ]}
         totalItem={{
           label: "Total",
-          value: `${poofAmount.slice(0, PRECISION)} POOF`,
+          value: `${humanFriendlyNumber(poofAmount)} POOF`,
         }}
       />
       <BottomDrawer>

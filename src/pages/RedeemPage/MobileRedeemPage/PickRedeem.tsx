@@ -148,7 +148,7 @@ export const PickRedeem: React.FC<IProps> = ({
   return (
     <div>
       <Text variant="form" sx={{ mb: 2 }}>
-        AP Amount (max: {maxRedeemAmount || 0} AP)
+        AP Amount (max: {Number(maxRedeemAmount || 0).toLocaleString()} AP)
       </Text>
       <Input
         mb={2}

@@ -122,7 +122,7 @@ export const DoRedeem: React.FC<IProps> = ({
           lineItems={[
             {
               label: "AP",
-              value: `${amount} AP`,
+              value: `${Number(amount).toLocaleString()} AP`,
             },
             {
               label: `Relayer Fee`,
