@@ -89,44 +89,38 @@ export const DesktopHeader: React.FC = () => {
                 Withdraw
               </Text>
             </StyledLink>
-            {process.env.NODE_ENV === "development" && (
-              <>
-                <Text>/</Text>
-                <StyledLink
-                  to=""
-                  onClick={() =>
-                    dispatch(setCurrentPage({ nextPage: Page.MINE }))
-                  }
-                >
-                  <Text
-                    sx={{
-                      color: currentPage === Page.MINE ? "accent" : "text",
-                      mx: 1,
-                    }}
-                    variant="subtitle"
-                  >
-                    Mine
-                  </Text>
-                </StyledLink>
-                <Text>/</Text>
-                <StyledLink
-                  to=""
-                  onClick={() =>
-                    dispatch(setCurrentPage({ nextPage: Page.REDEEM }))
-                  }
-                >
-                  <Text
-                    sx={{
-                      color: currentPage === Page.REDEEM ? "accent" : "text",
-                      mx: 1,
-                    }}
-                    variant="subtitle"
-                  >
-                    Redeem
-                  </Text>
-                </StyledLink>
-              </>
-            )}
+            <Text>/</Text>
+            <StyledLink
+              to=""
+              onClick={() => dispatch(setCurrentPage({ nextPage: Page.MINE }))}
+            >
+              <Text
+                sx={{
+                  color: currentPage === Page.MINE ? "accent" : "text",
+                  mx: 1,
+                }}
+                variant="subtitle"
+              >
+                Mine
+              </Text>
+            </StyledLink>
+            <Text>/</Text>
+            <StyledLink
+              to=""
+              onClick={() =>
+                dispatch(setCurrentPage({ nextPage: Page.REDEEM }))
+              }
+            >
+              <Text
+                sx={{
+                  color: currentPage === Page.REDEEM ? "accent" : "text",
+                  mx: 1,
+                }}
+                variant="subtitle"
+              >
+                Redeem
+              </Text>
+            </StyledLink>
             <Text>/</Text>
             <StyledLink
               to=""
@@ -144,27 +138,23 @@ export const DesktopHeader: React.FC = () => {
                 Report
               </Text>
             </StyledLink>
-            {process.env.NODE_ENV === "development" && (
-              <>
-                <Text>/</Text>
-                <StyledLink
-                  to=""
-                  onClick={() =>
-                    dispatch(setCurrentPage({ nextPage: Page.AIRDROP }))
-                  }
-                >
-                  <Text
-                    sx={{
-                      color: currentPage === Page.AIRDROP ? "accent" : "text",
-                      mx: 1,
-                    }}
-                    variant="subtitle"
-                  >
-                    Airdrop
-                  </Text>
-                </StyledLink>
-              </>
-            )}
+            <Text>/</Text>
+            <StyledLink
+              to=""
+              onClick={() =>
+                dispatch(setCurrentPage({ nextPage: Page.AIRDROP }))
+              }
+            >
+              <Text
+                sx={{
+                  color: currentPage === Page.AIRDROP ? "accent" : "text",
+                  mx: 1,
+                }}
+                variant="subtitle"
+              >
+                Airdrop
+              </Text>
+            </StyledLink>
             <Box ml={4}>
               <AccountProfile />
             </Box>

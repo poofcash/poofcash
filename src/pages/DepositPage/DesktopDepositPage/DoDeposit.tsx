@@ -56,6 +56,7 @@ export const DoDeposit: React.FC<IProps> = ({
     CELO[CHAIN_ID].address,
     toWei(selectedAmount)
   );
+  console.log(allowance);
   const userBalance = useTokenBalance(
     CURRENCY_MAP[selectedCurrency.toLowerCase()],
     address
