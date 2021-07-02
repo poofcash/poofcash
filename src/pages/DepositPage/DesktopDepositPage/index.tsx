@@ -1,28 +1,16 @@
 import React from "react";
-import { NoteStringCommitment } from "pages/DepositPage/types";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import { CHAIN_ID } from "config";
 import { DoDeposit } from "pages/DepositPage/DesktopDepositPage/DoDeposit";
 import { DepositReceipt } from "pages/DepositPage/DesktopDepositPage/DepositReceipt";
+import { IDepositProps } from "pages/DepositPage";
 
 enum DepositStep {
   DO = "DO",
   RECEIPT = "RECEIPT",
 }
 
-interface IProps {
-  setSelectedAmount: (amount: string) => void;
-  selectedAmount: string;
-  setSelectedCurrency: (currency: string) => void;
-  selectedCurrency: string;
-  setNoteStringCommitment: (noteStringCommitment: NoteStringCommitment) => void;
-  noteStringCommitment: NoteStringCommitment;
-  txHash: string;
-  deposit: () => Promise<void>;
-  depositLoading: boolean;
-}
-
-const DesktopDepositPage: React.FC<IProps> = ({
+const DesktopDepositPage: React.FC<IDepositProps> = ({
   setSelectedAmount,
   selectedAmount,
   setSelectedCurrency,
@@ -32,6 +20,7 @@ const DesktopDepositPage: React.FC<IProps> = ({
   txHash,
   deposit,
   depositLoading,
+  miningRate,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.DO);
 
@@ -53,6 +42,7 @@ const DesktopDepositPage: React.FC<IProps> = ({
           setSelectedCurrency={setSelectedCurrency}
           noteStringCommitment={noteStringCommitment}
           depositLoading={depositLoading}
+          miningRate={miningRate}
         />
       );
     case DepositStep.RECEIPT:

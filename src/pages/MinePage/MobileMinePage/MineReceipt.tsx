@@ -41,8 +41,12 @@ export const MineReceipt: React.FC<IProps> = ({
             value: moment().format("h:mm a"),
           },
           {
+            label: "AP",
+            value: `${estimatedAp.toLocaleString()} AP`,
+          },
+          {
             label: "Relayer fee",
-            value: `${Number(relayerFee).toLocaleString()} AP`,
+            value: `-${Number(relayerFee).toLocaleString()} AP`,
           },
         ]}
         totalItem={{

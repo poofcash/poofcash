@@ -20,6 +20,7 @@ interface IProps {
   selectedAmount: string;
   setSelectedCurrency: (currency: string) => void;
   selectedCurrency: string;
+  miningRate: string;
 }
 
 const supportedCurrencies = ["CELO", "rCELO"];
@@ -31,6 +32,7 @@ export const PickDeposit: React.FC<IProps> = ({
   setSelectedAmount,
   selectedCurrency,
   setSelectedCurrency,
+  miningRate,
 }) => {
   const { connect, address } = useContractKit();
   const breakpoint = useBreakpoint();
@@ -167,6 +169,14 @@ export const PickDeposit: React.FC<IProps> = ({
             ).toLocaleString()}
           </Text>
           <Text variant="regular">active deposits</Text>
+        </Flex>
+      )}
+      {selectedAmount !== "0" && (
+        <Flex mt={3}>
+          <Text sx={{ mr: 1 }} variant="largeNumber">
+            {humanFriendlyWei(miningRate)}
+          </Text>
+          <Text variant="regular">Est. POOF / week</Text>
         </Flex>
       )}
 

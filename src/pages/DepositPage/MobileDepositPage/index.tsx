@@ -3,8 +3,8 @@ import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import { PickDeposit } from "pages/DepositPage/MobileDepositPage/PickDeposit";
 import { ConfirmDeposit } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
 import { DepositReceipt } from "pages/DepositPage/MobileDepositPage/DepositReceipt";
-import { NoteStringCommitment } from "pages/DepositPage/types";
 import { CHAIN_ID } from "config";
+import { IDepositProps } from "pages/DepositPage";
 
 enum DepositStep {
   PICKER = "PICKER",
@@ -17,20 +17,8 @@ export const initialNoteStringCommitment = {
   commitment: "",
 };
 
-interface IProps {
-  setSelectedAmount: (amount: string) => void;
-  selectedAmount: string;
-  setSelectedCurrency: (currency: string) => void;
-  selectedCurrency: string;
-  setNoteStringCommitment: (noteStringCommitment: NoteStringCommitment) => void;
-  noteStringCommitment: NoteStringCommitment;
-  txHash: string;
-  deposit: () => Promise<void>;
-  depositLoading: boolean;
-}
-
 // pass props and State interface to Component class
-const MobileDepositPage: React.FC<IProps> = ({
+const MobileDepositPage: React.FC<IDepositProps> = ({
   setSelectedAmount,
   selectedAmount,
   setSelectedCurrency,
@@ -40,6 +28,7 @@ const MobileDepositPage: React.FC<IProps> = ({
   txHash,
   deposit,
   depositLoading,
+  miningRate,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
 
@@ -54,6 +43,7 @@ const MobileDepositPage: React.FC<IProps> = ({
           setSelectedAmount={setSelectedAmount}
           selectedCurrency={selectedCurrency}
           setSelectedCurrency={setSelectedCurrency}
+          miningRate={miningRate}
         />
       );
     case DepositStep.CONFIRM:

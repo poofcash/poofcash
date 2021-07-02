@@ -46,7 +46,7 @@ const ExchangePage: React.FC = () => {
     ["0", "0"],
     sCELOBalanceCall
   );
-  const [[rCELOBalance, rCELOAllowance], refetchRCELO] = useAsyncState(
+  const [[rCELOBalance], refetchRCELO] = useAsyncState(
     ["0", "0"],
     rCELOBalanceCall
   );
@@ -75,7 +75,6 @@ const ExchangePage: React.FC = () => {
           sCELOBalance={sCELOBalance}
           rCELOBalance={rCELOBalance}
           sCELOAllowance={sCELOAllowance}
-          rCELOAllowance={rCELOAllowance}
           refetch={() => {
             refetchSCELO();
             refetchRCELO();

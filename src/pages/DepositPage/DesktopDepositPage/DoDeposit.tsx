@@ -32,6 +32,7 @@ interface IProps {
   selectedCurrency: string;
   noteStringCommitment: NoteStringCommitment;
   depositLoading: boolean;
+  miningRate: string;
 }
 
 export const DoDeposit: React.FC<IProps> = ({
@@ -42,6 +43,7 @@ export const DoDeposit: React.FC<IProps> = ({
   setSelectedCurrency,
   noteStringCommitment,
   depositLoading,
+  miningRate,
 }) => {
   const { t } = useTranslation();
   const { address, connect } = useContractKit();
@@ -208,6 +210,7 @@ export const DoDeposit: React.FC<IProps> = ({
             setSelectedAmount={setSelectedAmount}
             selectedCurrency={selectedCurrency}
             setSelectedCurrency={setSelectedCurrency}
+            miningRate={miningRate}
           />
         </Container>
         <Container>

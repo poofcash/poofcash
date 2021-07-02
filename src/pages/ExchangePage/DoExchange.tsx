@@ -29,7 +29,6 @@ interface IProps {
   sCELOBalance: string;
   rCELOBalance: string;
   sCELOAllowance: string;
-  rCELOAllowance: string;
   refetch: () => void;
 }
 
@@ -43,11 +42,10 @@ export const DoExchange: React.FC<IProps> = ({
   sCELOBalance,
   rCELOBalance,
   sCELOAllowance,
-  rCELOAllowance,
   refetch,
 }) => {
   const { t } = useTranslation();
-  const { performActions, address } = useContractKit();
+  const { performActions, address, connect } = useContractKit();
   const [loading, setLoading] = React.useState(false);
 
   const onExchangeClick = () => {
@@ -96,34 +94,43 @@ export const DoExchange: React.FC<IProps> = ({
   };
 
   const maxBalance = currencies.from === "sCELO" ? sCELOBalance : rCELOBalance;
-  const maxAllowance =
-    currencies.from === "sCELO" ? sCELOAllowance : rCELOAllowance;
 
-  let button = (
+  const connectWalletButton = (
+    <Button variant="primary" onClick={connect} sx={{ width: "100%" }}>
+      Connect Wallet
+    </Button>
+  );
+
+  const approveButton = (
     <Button
       onClick={onApproveClick}
-      disabled={Number(amount) <= 0 || !address}
+      disabled={!address || Number(amount) <= 0}
       sx={{ width: "100%" }}
     >
       Approve {currencies.from}
     </Button>
   );
 
-  if (
-    amount !== "" &&
-    !isNaN(Number(maxAllowance)) &&
-    !isNaN(Number(amount)) &&
-    toBN(toWei(maxAllowance)).gte(toBN(toWei(amount)))
-  ) {
-    button = (
-      <Button
-        onClick={onExchangeClick}
-        disabled={Number(amount) <= 0 || !address}
-        sx={{ width: "100%" }}
-      >
-        Exchange for {currencies.to}
-      </Button>
-    );
+  const exchangeButton = (
+    <Button
+      onClick={onExchangeClick}
+      disabled={Number(amount) <= 0 || !address}
+      sx={{ width: "100%" }}
+    >
+      Exchange for {currencies.to}
+    </Button>
+  );
+
+  let button = connectWalletButton;
+  if (address) {
+    if (
+      currencies.from === "sCELO" &&
+      toBN(sCELOAllowance).lt(toBN(toWei(amount.toString())))
+    ) {
+      button = approveButton;
+    } else {
+      button = exchangeButton;
+    }
   }
 
   let boxContent = (

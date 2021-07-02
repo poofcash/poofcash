@@ -73,9 +73,13 @@ export const ConfirmMine: React.FC<IProps> = ({
               console.error(e.response.data.error);
             } else {
               console.debug(e);
-              alert(
-                `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once every few minutes, so try again later.`
-              );
+              if (e.message.includes("already spent")) {
+                alert(e.message);
+              } else {
+                alert(
+                  `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once every few minutes, so try again later.`
+                );
+              }
             }
           })
           .finally(() => {
