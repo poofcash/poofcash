@@ -43,9 +43,8 @@ export const PickDeposit: React.FC<IProps> = ({
   ] = React.useState(false);
 
   const [allowance, approve, approveLoading] = useApprove(
-    deployments[`netId${CHAIN_ID}`][selectedCurrency.toLowerCase()]
-      .tokenAddress,
-    toWei(selectedAmount)
+    selectedCurrency,
+    selectedAmount
   );
 
   const userBalance = useTokenBalance(
