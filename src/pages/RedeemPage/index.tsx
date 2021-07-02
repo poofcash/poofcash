@@ -2,64 +2,60 @@ import React from "react";
 import MobileRedeemPage from "pages/RedeemPage/MobileRedeemPage";
 import DesktopRedeemPage from "pages/RedeemPage/DesktopRedeemPage";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
-import { usePoofAmount } from "hooks/poofUtils";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
-import { NETWORK, RELAYERS } from "config";
-import axios from "axios";
+import { PoofKitGlobal, usePoofAmount } from "hooks/poofUtils";
+import { RelayerOption, useRelayer } from "hooks/useRelayer";
+import { useAsyncState } from "hooks/useAsyncState";
+
+export interface IRedeemProps {
+  setAmount: (amount: string) => void;
+  amount: string;
+  poofAmount: string;
+  setRecipient: (recipient: string) => void;
+  recipient: string;
+  setMaxRedeemAmount: (amount: string) => void;
+  maxRedeemAmount?: string;
+  setTxHash: (txHash: string) => void;
+  txHash: string;
+  selectedRelayer?: RelayerOption;
+  setSelectedRelayer: (selectedRelayer?: RelayerOption) => void;
+  relayerOptions?: Array<RelayerOption>;
+  usingCustomRelayer: boolean;
+  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
+  customRelayer?: RelayerOption;
+  setCustomRelayer: (relayerOption?: RelayerOption) => void;
+  relayerFee: string;
+}
 
 const RedeemPage: React.FC = () => {
-  const [amount, setAmount] = React.useState("");
+  const [amount, setAmount] = React.useState("0");
   const poofAmount = usePoofAmount(amount);
   const [recipient, setRecipient] = React.useState("");
-  const [selectedRelayer, setSelectedRelayer] = React.useState<RelayerOption>();
-  const [relayerOptions, setRelayerOptions] = React.useState<
-    Array<RelayerOption>
-  >([]);
-  const [customRelayer, setCustomRelayer] = React.useState<RelayerOption>();
-  const [usingCustomRelayer, setUsingCustomRelayer] = React.useState<boolean>(
-    false
-  );
   const [txHash, setTxHash] = React.useState("");
   const [maxRedeemAmount, setMaxRedeemAmount] = React.useState<
     string | undefined
   >();
-
-  React.useEffect(() => {
-    const fn = async () => {
-      const statuses = (
-        await Promise.all(
-          RELAYERS[NETWORK].map((relayerUrl: string) => {
-            return axios.get(relayerUrl + "/status").catch((e) => e);
-          })
-        )
-      ).filter((result) => {
-        if (result instanceof Error) {
-          console.error(result);
-          return false;
-        }
-        return true;
-      });
-
-      const relayerOptions = statuses.map((status) => ({
-        url: status.config.url.split("/status")[0],
-        relayerFee: status.data.poofServiceFee,
-      }));
-
-      setRelayerOptions(relayerOptions);
-      if (relayerOptions.length > 0) {
-        setSelectedRelayer(relayerOptions[0]);
-      } else {
-        setUsingCustomRelayer(true);
-      }
-    };
-    fn();
-  }, [setRelayerOptions, setSelectedRelayer]);
-
-  const relayer = React.useMemo(
-    () => (usingCustomRelayer ? customRelayer : selectedRelayer),
-    [customRelayer, selectedRelayer, usingCustomRelayer]
-  );
-
+  const {
+    relayer,
+    setSelectedRelayer,
+    relayerOptions,
+    usingCustomRelayer,
+    setUsingCustomRelayer,
+    customRelayer,
+    setCustomRelayer,
+  } = useRelayer();
+  const { poofKit } = PoofKitGlobal.useContainer();
+  const getRelayerFee = React.useCallback(async () => {
+    if (relayer) {
+      return await poofKit.swapFee(
+        relayer.gasPrices["min"] || 0.5,
+        relayer.celoPrices["poof"],
+        relayer.miningServiceFee,
+        amount
+      );
+    }
+    return "0";
+  }, [poofKit, relayer, amount]);
+  const [relayerFee] = useAsyncState("0", getRelayerFee);
   const breakpoint = useBreakpoint();
 
   if (breakpoint === Breakpoint.MOBILE) {
@@ -81,6 +77,7 @@ const RedeemPage: React.FC = () => {
         setUsingCustomRelayer={setUsingCustomRelayer}
         customRelayer={customRelayer}
         setCustomRelayer={setCustomRelayer}
+        relayerFee={relayerFee}
       />
     );
   }
@@ -103,6 +100,7 @@ const RedeemPage: React.FC = () => {
       setUsingCustomRelayer={setUsingCustomRelayer}
       customRelayer={customRelayer}
       setCustomRelayer={setCustomRelayer}
+      relayerFee={relayerFee}
     />
   );
 };

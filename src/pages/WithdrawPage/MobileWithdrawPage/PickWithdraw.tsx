@@ -6,11 +6,11 @@ import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
 import { useDebounce } from "hooks/debounce";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { isValidHttpUrl } from "utils/url.utils";
 import axios from "axios";
 import { PoofKitGlobal } from "hooks/poofUtils";
 import { PoofKitLoading } from "components/PoofKitLoading";
+import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -63,6 +63,9 @@ export const PickWithdraw: React.FC<IProps> = ({
           setCustomRelayer({
             url: relayerUrl,
             relayerFee: data.poofServiceFee,
+            miningServiceFee: data.miningServiceFee,
+            gasPrices: data.gasPrices,
+            celoPrices: data.celoPrices,
           })
         )
         .catch((err) =>

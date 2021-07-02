@@ -7,12 +7,12 @@ import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { PoofKitV2 } from "@poofcash/poof-kit";
 import { CHAIN_ID } from "config";
 import { formatCurrency } from "utils/currency";
 import { humanFriendlyNumber } from "utils/number";
+import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
   onBackClick: () => void;
@@ -21,10 +21,10 @@ interface IProps {
   recipient: string;
   setTxHash: (txHash: string) => void;
   selectedRelayer: RelayerOption;
+  relayerFee: string;
 }
 
 export const PRECISION = 7;
-export const GAS_HARDCODE = 0.0000470652;
 
 export const ConfirmWithdraw: React.FC<IProps> = ({
   onBackClick,
@@ -33,15 +33,14 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
   recipient,
   setTxHash,
   selectedRelayer,
+  relayerFee,
 }) => {
   const { library: networkLibrary } = useWeb3React(NetworkContextName);
   const { kit } = useContractKit();
   const { currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
 
-  const relayerFee = (Number(amount) * selectedRelayer.relayerFee) / 100;
-
-  const finalWithdrawAmount = Number(amount) - relayerFee;
+  const finalWithdrawAmount = Number(amount) - Number(relayerFee);
 
   const handleWithdraw = async () => {
     if (!networkLibrary) {
@@ -64,8 +63,14 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
         recipient,
         selectedRelayer.url
       );
-      setTxHash(txHash);
-      onConfirmClick();
+      if (txHash) {
+        setTxHash(txHash);
+        onConfirmClick();
+      } else {
+        alert(
+          "No response from relayer. Check your account in the explorer or try again"
+        );
+      }
     } catch (e) {
       if (e.response) {
         console.error(e.response.data.error);

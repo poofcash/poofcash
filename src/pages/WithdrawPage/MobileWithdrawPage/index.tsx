@@ -2,7 +2,7 @@ import React from "react";
 import { PickWithdraw } from "pages/WithdrawPage/MobileWithdrawPage/PickWithdraw";
 import { ConfirmWithdraw } from "pages/WithdrawPage/MobileWithdrawPage/ConfirmWithdraw";
 import { WithdrawReceipt } from "pages/WithdrawPage/MobileWithdrawPage/WithdrawReceipt";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
+import { IWithdrawProps } from "pages/WithdrawPage";
 
 enum WithdrawStep {
   PICKER = "PICKER",
@@ -10,23 +10,7 @@ enum WithdrawStep {
   RECEIPT = "RECEIPT",
 }
 
-interface IProps {
-  setNote: (note: string) => void;
-  note: string;
-  setRecipient: (recipient: string) => void;
-  recipient: string;
-  selectedRelayer?: RelayerOption;
-  setSelectedRelayer: (relayer?: RelayerOption) => void;
-  relayerOptions?: Array<RelayerOption>;
-  usingCustomRelayer: boolean;
-  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
-  customRelayer?: RelayerOption;
-  setCustomRelayer: (relayerOption?: RelayerOption) => void;
-  setTxHash: (txHash: string) => void;
-  txHash: string;
-}
-
-const WithdrawPage: React.FC<IProps> = ({
+const WithdrawPage: React.FC<IWithdrawProps> = ({
   setNote,
   note,
   setRecipient,
@@ -40,6 +24,7 @@ const WithdrawPage: React.FC<IProps> = ({
   setCustomRelayer,
   setTxHash,
   txHash,
+  relayerFee,
 }) => {
   const [withdrawStep, setWithdrawStep] = React.useState(WithdrawStep.PICKER);
 
@@ -72,6 +57,7 @@ const WithdrawPage: React.FC<IProps> = ({
           recipient={recipient}
           setTxHash={setTxHash}
           selectedRelayer={selectedRelayer!}
+          relayerFee={relayerFee}
         />
       );
     case WithdrawStep.RECEIPT:
@@ -84,8 +70,8 @@ const WithdrawPage: React.FC<IProps> = ({
           }}
           note={note}
           txHash={txHash}
-          poofServiceFee={selectedRelayer!.relayerFee}
           recipient={recipient}
+          relayerFee={relayerFee}
         />
       );
   }

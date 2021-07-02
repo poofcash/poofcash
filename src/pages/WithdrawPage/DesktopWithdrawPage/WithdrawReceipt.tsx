@@ -3,7 +3,6 @@ import moment from "moment";
 import React from "react";
 import { Button, Container, Text } from "theme-ui";
 import { parseNote } from "utils/snarks-functions";
-import { GAS_HARDCODE } from "pages/WithdrawPage/MobileWithdrawPage/ConfirmWithdraw";
 import { shortenAccount } from "hooks/accountName";
 import { GrayBox } from "components/GrayBox";
 import { SummaryTable } from "components/SummaryTable";
@@ -14,21 +13,20 @@ interface IProps {
   onDoneClick: () => void;
   note: string;
   txHash: string;
-  poofServiceFee: number;
   recipient: string;
+  relayerFee: string;
 }
 
 export const WithdrawReceipt: React.FC<IProps> = ({
   onDoneClick,
   note,
   txHash,
-  poofServiceFee,
   recipient,
+  relayerFee,
 }) => {
   const { amount, currency } = parseNote(note);
 
-  const relayerFee = (Number(amount) * Number(poofServiceFee)) / 100;
-  const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
+  const finalWithdrawAmount = Number(amount) - Number(relayerFee);
 
   return (
     <Container>

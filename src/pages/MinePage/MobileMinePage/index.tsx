@@ -2,7 +2,7 @@ import React from "react";
 import { PickMine } from "pages/MinePage/MobileMinePage/PickMine";
 import { ConfirmMine } from "pages/MinePage/MobileMinePage/ConfirmMine";
 import { MineReceipt } from "pages/MinePage/MobileMinePage/MineReceipt";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
+import { IMineProps } from "pages/MinePage";
 
 enum MineStep {
   PICKER = "PICKER",
@@ -10,23 +10,7 @@ enum MineStep {
   RECEIPT = "RECEIPT",
 }
 
-interface IProps {
-  setNote: (note: string) => void;
-  note: string;
-  noteIsValid: boolean;
-  estimatedAp: number;
-  setTxHash: (txHash: string) => void;
-  txHash: string;
-  selectedRelayer?: RelayerOption;
-  setSelectedRelayer: (relayer?: RelayerOption) => void;
-  relayerOptions?: Array<RelayerOption>;
-  usingCustomRelayer: boolean;
-  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
-  customRelayer?: RelayerOption;
-  setCustomRelayer: (relayerOption?: RelayerOption) => void;
-}
-
-const MinePage: React.FC<IProps> = ({
+const MinePage: React.FC<IMineProps> = ({
   setNote,
   note,
   noteIsValid,
@@ -40,6 +24,7 @@ const MinePage: React.FC<IProps> = ({
   setUsingCustomRelayer,
   customRelayer,
   setCustomRelayer,
+  relayerFee,
 }) => {
   const [withdrawStep, setMineStep] = React.useState(MineStep.PICKER);
   switch (withdrawStep) {
@@ -71,6 +56,7 @@ const MinePage: React.FC<IProps> = ({
           estimatedAp={estimatedAp}
           setTxHash={setTxHash}
           selectedRelayer={selectedRelayer!}
+          relayerFee={relayerFee}
         />
       );
     case MineStep.RECEIPT:
@@ -82,6 +68,7 @@ const MinePage: React.FC<IProps> = ({
           }}
           estimatedAp={estimatedAp}
           txHash={txHash}
+          relayerFee={relayerFee}
         />
       );
   }

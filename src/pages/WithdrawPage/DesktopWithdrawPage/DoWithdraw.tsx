@@ -5,12 +5,11 @@ import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
 import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
-import { GAS_HARDCODE } from "../MobileWithdrawPage/ConfirmWithdraw";
 import { isValidNote, parseNote } from "utils/snarks-functions";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { PoofKitGlobal } from "hooks/poofUtils";
 import { humanFriendlyNumber } from "utils/number";
 import { formatCurrency } from "utils/currency";
+import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -26,6 +25,7 @@ interface IProps {
   setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
   customRelayer?: RelayerOption;
   setCustomRelayer: (relayerOption?: RelayerOption) => void;
+  relayerFee: string;
 }
 
 export const DoWithdraw: React.FC<IProps> = ({
@@ -42,16 +42,14 @@ export const DoWithdraw: React.FC<IProps> = ({
   setUsingCustomRelayer,
   customRelayer,
   setCustomRelayer,
+  relayerFee,
 }) => {
   const { t } = useTranslation();
   const { currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
 
-  const relayerFee =
-    (Number(amount) * Number(selectedRelayer?.relayerFee)) / 100 ?? 0;
-
-  const finalWithdrawAmount = Number(amount) - relayerFee - GAS_HARDCODE;
+  const finalWithdrawAmount = Number(amount) - Number(relayerFee);
 
   const handleWithdraw = async () => {
     if (!selectedRelayer) {
@@ -72,8 +70,14 @@ export const DoWithdraw: React.FC<IProps> = ({
         recipient,
         selectedRelayer.url
       );
-      setTxHash(txHash);
-      onWithdrawClick();
+      if (txHash) {
+        setTxHash(txHash);
+        onWithdrawClick();
+      } else {
+        alert(
+          "No response from relayer. Check your account in the explorer or try again"
+        );
+      }
     } catch (e) {
       if (e.response) {
         console.error(e.response.data.error);

@@ -6,12 +6,12 @@ import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
 import { useDebounce } from "hooks/debounce";
 import { isValidHttpUrl } from "utils/url.utils";
 import axios from "axios";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { PoofKitGlobal } from "hooks/poofUtils";
+import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
   onMineClick: () => void;
@@ -58,6 +58,9 @@ export const PickMine: React.FC<IProps> = ({
           setCustomRelayer({
             url: relayerUrl,
             relayerFee: data.poofServiceFee,
+            miningServiceFee: data.miningServiceFee,
+            gasPrices: data.gasPrices,
+            celoPrices: data.celoPrices,
           })
         )
         .catch((err) =>
@@ -118,10 +121,10 @@ export const PickMine: React.FC<IProps> = ({
   return (
     <div>
       <Text variant="form" sx={{ mb: 2 }}>
-        Magic password{" "}
+        Magic password
       </Text>
       <Input
-        mb={4}
+        mb={2}
         disabled={loading}
         name="note"
         type="text"
@@ -143,6 +146,7 @@ export const PickMine: React.FC<IProps> = ({
         Relayer
       </Text>
       <Select
+        mb={2}
         disabled={loading}
         name="relayer"
         value={usingCustomRelayer ? "custom" : selectedRelayer?.url ?? "custom"}

@@ -6,8 +6,8 @@ import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
 import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { PoofKitGlobal } from "hooks/poofUtils";
+import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
   onBackClick: () => void;
@@ -16,6 +16,7 @@ interface IProps {
   estimatedAp: number;
   setTxHash: (txHash: string) => void;
   selectedRelayer: RelayerOption;
+  relayerFee: string;
 }
 
 export const PRECISION = 7;
@@ -28,6 +29,7 @@ export const ConfirmMine: React.FC<IProps> = ({
   estimatedAp,
   setTxHash,
   selectedRelayer,
+  relayerFee,
 }) => {
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
   const [loading, setLoading] = React.useState(false);
@@ -37,6 +39,8 @@ export const ConfirmMine: React.FC<IProps> = ({
   if (poofKitLoading) {
     return <PoofKitLoading />;
   }
+
+  const totalMineAmount = Number(estimatedAp) - Number(relayerFee);
 
   const handleMine = async () => {
     if (!selectedRelayer) {
@@ -55,8 +59,14 @@ export const ConfirmMine: React.FC<IProps> = ({
         poofKit
           ?.reward(privateKey, note, selectedRelayer.url)
           .then((txHash) => {
-            setTxHash(txHash);
-            onConfirmClick();
+            if (txHash) {
+              setTxHash(txHash);
+              onConfirmClick();
+            } else {
+              alert(
+                "No response from relayer. Check your account in the explorer or try again"
+              );
+            }
           })
           .catch((e) => {
             if (e.response) {
@@ -94,16 +104,16 @@ export const ConfirmMine: React.FC<IProps> = ({
         lineItems={[
           {
             label: "AP",
-            value: `${Number(estimatedAp).toLocaleString} AP`,
+            value: `${Number(estimatedAp).toLocaleString()} AP`,
           },
           {
             label: `Relayer Fee`,
-            value: `-${0} AP`,
+            value: `-${Number(relayerFee).toLocaleString()} AP`,
           },
         ]}
         totalItem={{
           label: "Total",
-          value: `${Number(estimatedAp).toLocaleString} AP`,
+          value: `${Number(totalMineAmount).toLocaleString()} AP`,
         }}
       />
       <BottomDrawer>

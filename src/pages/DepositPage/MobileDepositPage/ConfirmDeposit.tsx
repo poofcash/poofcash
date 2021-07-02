@@ -17,7 +17,7 @@ interface IProps {
   depositLoading: boolean;
 }
 
-export const NETWORK_COST = 0.0048;
+export const NETWORK_COST = 0.0001;
 
 export const ConfirmDeposit: React.FC<IProps> = ({
   onBackClick,

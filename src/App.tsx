@@ -9,8 +9,8 @@ import { NetworkContextName } from "index";
 import Modal from "react-modal";
 import { Header } from "components/Header";
 import "i18n/config";
-import { useDispatch, useSelector } from "react-redux";
-import { Page, setCurrentPage } from "state/global";
+import { useSelector } from "react-redux";
+import { Page } from "state/global";
 import { AppState } from "state";
 import { PasswordPrompt } from "hooks/poofAccount";
 import MinePage from "pages/MinePage";
@@ -36,14 +36,6 @@ const App = () => {
   const currentPage = useSelector(
     (state: AppState) => state.global.currentPage
   );
-
-  const poofAccount = useSelector((state: AppState) => state.user.poofAccount);
-  const dispatch = useDispatch();
-  React.useEffect(() => {
-    if (poofAccount) {
-      dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }));
-    }
-  }, [poofAccount, dispatch]);
 
   let page = <DepositPage />;
   if (currentPage === Page.WITHDRAW) {

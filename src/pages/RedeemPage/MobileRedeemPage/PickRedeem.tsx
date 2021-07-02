@@ -7,12 +7,12 @@ import { useDebounce } from "hooks/debounce";
 import { isValidHttpUrl } from "utils/url.utils";
 import axios from "axios";
 import web3 from "web3";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/poofUtils";
 import { PoofKitLoading } from "components/PoofKitLoading";
+import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -31,6 +31,7 @@ interface IProps {
   setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
   customRelayer?: RelayerOption;
   setCustomRelayer: (relayerOption?: RelayerOption) => void;
+  relayerFee: string;
 }
 
 export const PickRedeem: React.FC<IProps> = ({
@@ -50,6 +51,7 @@ export const PickRedeem: React.FC<IProps> = ({
   setUsingCustomRelayer,
   customRelayer,
   setCustomRelayer,
+  relayerFee,
 }) => {
   const breakpoint = useBreakpoint();
   const [customRelayerError, setCustomRelayerError] = React.useState<
@@ -68,6 +70,9 @@ export const PickRedeem: React.FC<IProps> = ({
           setCustomRelayer({
             url: relayerUrl,
             relayerFee: data.poofServiceFee,
+            miningServiceFee: data.miningServiceFee,
+            gasPrices: data.gasPrices,
+            celoPrices: data.celoPrices,
           })
         )
         .catch((err) =>
@@ -128,7 +133,7 @@ export const PickRedeem: React.FC<IProps> = ({
             if (amount === "" || recipient === "") {
               return true;
             }
-            if (Number(amount) > Number(maxRedeemAmount)) {
+            if (Number(amount) + Number(relayerFee) > Number(maxRedeemAmount)) {
               return true;
             }
             if (usingCustomRelayer) {
@@ -162,14 +167,15 @@ export const PickRedeem: React.FC<IProps> = ({
         max={maxRedeemAmount || 0}
         step="1"
       />
-      {amount !== "" && Number(amount) > Number(maxRedeemAmount) && (
-        <>
-          <Text sx={{ mt: 2, color: "red" }} variant="form">
-            Amount exceeds maximum: {maxRedeemAmount || 0} AP
-          </Text>
-          <br />
-        </>
-      )}
+      {amount !== "" &&
+        Number(amount) + Number(relayerFee) > Number(maxRedeemAmount) && (
+          <>
+            <Text sx={{ mt: 2, color: "red" }} variant="form">
+              Amount + Relayer Fee exceeds maximum: {maxRedeemAmount || 0} AP
+            </Text>
+            <br />
+          </>
+        )}
 
       <Text variant="form" sx={{ mt: 4, mb: 2 }}>
         Recipient address

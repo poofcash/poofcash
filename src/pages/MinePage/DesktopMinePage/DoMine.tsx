@@ -8,7 +8,7 @@ import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/poofUtils";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
+import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
   onMineClick: () => void;
@@ -24,6 +24,7 @@ interface IProps {
   setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
   customRelayer?: RelayerOption;
   setCustomRelayer: (relayerOption?: RelayerOption) => void;
+  relayerFee: string;
 }
 
 export const DoMine: React.FC<IProps> = ({
@@ -40,6 +41,7 @@ export const DoMine: React.FC<IProps> = ({
   setUsingCustomRelayer,
   customRelayer,
   setCustomRelayer,
+  relayerFee,
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
@@ -47,6 +49,8 @@ export const DoMine: React.FC<IProps> = ({
   const dispatch = useDispatch();
 
   const { poofAccount, actWithPoofAccount } = usePoofAccount();
+
+  const totalMineAmount = Number(estimatedAp) - Number(relayerFee);
 
   const handleMine = async () => {
     if (!selectedRelayer) {
@@ -65,8 +69,14 @@ export const DoMine: React.FC<IProps> = ({
         poofKit
           ?.reward(privateKey, note, selectedRelayer.url)
           .then((txHash) => {
-            setTxHash(txHash);
-            onMineClick();
+            if (txHash) {
+              setTxHash(txHash);
+              onMineClick();
+            } else {
+              alert(
+                "No response from relayer. Check your account in the explorer or try again"
+              );
+            }
           })
           .catch((e) => {
             if (e.response) {
@@ -107,16 +117,16 @@ export const DoMine: React.FC<IProps> = ({
           lineItems={[
             {
               label: "AP",
-              value: `${Number(estimatedAp).toLocaleString} AP`,
+              value: `${Number(estimatedAp).toLocaleString()} AP`,
             },
             {
               label: `Relayer Fee`,
-              value: `-${0} AP`,
+              value: `-${Number(relayerFee).toLocaleString()} AP`,
             },
           ]}
           totalItem={{
             label: "Total",
-            value: `${Number(estimatedAp).toLocaleString} AP`,
+            value: `${Number(totalMineAmount).toLocaleString()} AP`,
           }}
         />
       </>

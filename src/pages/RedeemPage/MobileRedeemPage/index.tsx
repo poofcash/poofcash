@@ -2,7 +2,7 @@ import React from "react";
 import { PickRedeem } from "pages/RedeemPage/MobileRedeemPage/PickRedeem";
 import { ConfirmRedeem } from "pages/RedeemPage/MobileRedeemPage/ConfirmRedeem";
 import { RedeemReceipt } from "pages/RedeemPage/MobileRedeemPage/RedeemReceipt";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
+import { IRedeemProps } from "pages/RedeemPage";
 
 enum RedeemStep {
   PICKER = "PICKER",
@@ -10,26 +10,7 @@ enum RedeemStep {
   RECEIPT = "RECEIPT",
 }
 
-interface IProps {
-  setAmount: (amount: string) => void;
-  amount: string;
-  poofAmount: string;
-  setRecipient: (recipient: string) => void;
-  recipient: string;
-  setMaxRedeemAmount: (amount: string) => void;
-  maxRedeemAmount?: string;
-  setTxHash: (txHash: string) => void;
-  txHash: string;
-  selectedRelayer?: RelayerOption;
-  setSelectedRelayer: (selectedRelayer?: RelayerOption) => void;
-  relayerOptions?: Array<RelayerOption>;
-  usingCustomRelayer: boolean;
-  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
-  customRelayer?: RelayerOption;
-  setCustomRelayer: (relayerOption?: RelayerOption) => void;
-}
-
-const RedeemPage: React.FC<IProps> = ({
+const RedeemPage: React.FC<IRedeemProps> = ({
   setAmount,
   amount,
   poofAmount,
@@ -46,6 +27,7 @@ const RedeemPage: React.FC<IProps> = ({
   setUsingCustomRelayer,
   customRelayer,
   setCustomRelayer,
+  relayerFee,
 }) => {
   const [redeemStep, setRedeemStep] = React.useState(RedeemStep.PICKER);
   switch (redeemStep) {
@@ -69,6 +51,7 @@ const RedeemPage: React.FC<IProps> = ({
           setUsingCustomRelayer={setUsingCustomRelayer}
           customRelayer={customRelayer}
           setCustomRelayer={setCustomRelayer}
+          relayerFee={relayerFee}
         />
       );
     case RedeemStep.CONFIRM:
@@ -81,6 +64,7 @@ const RedeemPage: React.FC<IProps> = ({
           recipient={recipient}
           setTxHash={setTxHash}
           selectedRelayer={selectedRelayer!}
+          relayerFee={relayerFee}
         />
       );
     case RedeemStep.RECEIPT:

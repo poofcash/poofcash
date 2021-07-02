@@ -1,33 +1,14 @@
 import React from "react";
 import { DoRedeem } from "pages/RedeemPage/DesktopRedeemPage/DoRedeem";
 import { RedeemReceipt } from "pages/RedeemPage/DesktopRedeemPage/RedeemReceipt";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
+import { IRedeemProps } from "pages/RedeemPage";
 
 enum RedeemStep {
   DO = "DO",
   RECEIPT = "RECEIPT",
 }
 
-interface IProps {
-  setAmount: (amount: string) => void;
-  amount: string;
-  poofAmount: string;
-  setRecipient: (recipient: string) => void;
-  recipient: string;
-  setMaxRedeemAmount: (amount: string) => void;
-  maxRedeemAmount?: string;
-  setTxHash: (txHash: string) => void;
-  txHash: string;
-  selectedRelayer?: RelayerOption;
-  setSelectedRelayer: (selectedRelayer?: RelayerOption) => void;
-  relayerOptions?: Array<RelayerOption>;
-  usingCustomRelayer: boolean;
-  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
-  customRelayer?: RelayerOption;
-  setCustomRelayer: (relayerOption?: RelayerOption) => void;
-}
-
-const DesktopRedeemPage: React.FC<IProps> = ({
+const DesktopRedeemPage: React.FC<IRedeemProps> = ({
   setAmount,
   amount,
   poofAmount,
@@ -44,6 +25,7 @@ const DesktopRedeemPage: React.FC<IProps> = ({
   setUsingCustomRelayer,
   customRelayer,
   setCustomRelayer,
+  relayerFee,
 }) => {
   const [redeemStep, setRedeemStep] = React.useState(RedeemStep.DO);
   switch (redeemStep) {
@@ -68,6 +50,7 @@ const DesktopRedeemPage: React.FC<IProps> = ({
           setUsingCustomRelayer={setUsingCustomRelayer}
           customRelayer={customRelayer}
           setCustomRelayer={setCustomRelayer}
+          relayerFee={relayerFee}
         />
       );
     case RedeemStep.RECEIPT:

@@ -4,11 +4,11 @@ import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { PoofKitGlobal } from "hooks/poofUtils";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { usePoofAccount } from "hooks/poofAccount";
 import { humanFriendlyNumber } from "utils/number";
+import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
   onBackClick: () => void;
@@ -18,6 +18,7 @@ interface IProps {
   recipient: string;
   setTxHash: (txHash: string) => void;
   selectedRelayer: RelayerOption;
+  relayerFee: string;
 }
 
 export const PRECISION = 7;
@@ -31,6 +32,7 @@ export const ConfirmRedeem: React.FC<IProps> = ({
   recipient,
   setTxHash,
   selectedRelayer,
+  relayerFee,
 }) => {
   const [loading, setLoading] = React.useState(false);
 
@@ -57,8 +59,14 @@ export const ConfirmRedeem: React.FC<IProps> = ({
         poofKit
           ?.swap(privateKey, amount, recipient, selectedRelayer.url)
           .then((txHash) => {
-            setTxHash(txHash);
-            onConfirmClick();
+            if (txHash) {
+              setTxHash(txHash);
+              onConfirmClick();
+            } else {
+              alert(
+                "No response from relayer. Check your account in the explorer or try again"
+              );
+            }
           })
           .catch((e) => {
             if (e.response) {
@@ -98,7 +106,7 @@ export const ConfirmRedeem: React.FC<IProps> = ({
           },
           {
             label: `Relayer Fee`,
-            value: `-${0} AP`,
+            value: `-${Number(relayerFee).toLocaleString()} AP`,
           },
         ]}
         totalItem={{

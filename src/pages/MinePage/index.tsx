@@ -2,13 +2,29 @@ import React from "react";
 import MobileMinePage from "pages/MinePage/MobileMinePage";
 import DesktopMinePage from "pages/MinePage/DesktopMinePage";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
-import { NETWORK, RELAYERS } from "config";
-import axios from "axios";
 import { NoteInfo } from "@poofcash/poof-kit";
 import { isValidNote } from "utils/snarks-functions";
 import { PoofKitGlobal } from "hooks/poofUtils";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { useLatestBlockNumber } from "hooks/web3";
+import { RelayerOption, useRelayer } from "hooks/useRelayer";
+import { useAsyncState } from "hooks/useAsyncState";
+
+export interface IMineProps {
+  setNote: (note: string) => void;
+  note: string;
+  noteIsValid: boolean;
+  estimatedAp: number;
+  setTxHash: (txHash: string) => void;
+  txHash: string;
+  selectedRelayer?: RelayerOption;
+  setSelectedRelayer: (relayer?: RelayerOption) => void;
+  relayerOptions?: Array<RelayerOption>;
+  usingCustomRelayer: boolean;
+  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
+  customRelayer?: RelayerOption;
+  setCustomRelayer: (relayerOption?: RelayerOption) => void;
+  relayerFee: string;
+}
 
 const MinePage: React.FC = () => {
   const [note, setNote] = React.useState("");
@@ -33,53 +49,26 @@ const MinePage: React.FC = () => {
     );
     estimatedAp = blocksElapsed * noteInfo.rate;
   }
-
-  const [selectedRelayer, setSelectedRelayer] = React.useState<RelayerOption>();
-  const [relayerOptions, setRelayerOptions] = React.useState<
-    Array<RelayerOption>
-  >([]);
-  const [customRelayer, setCustomRelayer] = React.useState<RelayerOption>();
-  const [usingCustomRelayer, setUsingCustomRelayer] = React.useState<boolean>(
-    false
-  );
   const [txHash, setTxHash] = React.useState("");
-
-  React.useEffect(() => {
-    const fn = async () => {
-      const statuses = (
-        await Promise.all(
-          RELAYERS[NETWORK].map((relayerUrl: string) => {
-            return axios.get(relayerUrl + "/status").catch((e) => e);
-          })
-        )
-      ).filter((result) => {
-        if (result instanceof Error) {
-          console.error(result);
-          return false;
-        }
-        return true;
-      });
-
-      const relayerOptions = statuses.map((status) => ({
-        url: status.config.url.split("/status")[0],
-        relayerFee: status.data.poofServiceFee,
-      }));
-
-      setRelayerOptions(relayerOptions);
-      if (relayerOptions.length > 0) {
-        setSelectedRelayer(relayerOptions[0]);
-      } else {
-        setUsingCustomRelayer(true);
-      }
-    };
-    fn();
-  }, [setRelayerOptions, setSelectedRelayer]);
-
-  const relayer = React.useMemo(
-    () => (usingCustomRelayer ? customRelayer : selectedRelayer),
-    [customRelayer, selectedRelayer, usingCustomRelayer]
-  );
-
+  const {
+    relayer,
+    setSelectedRelayer,
+    relayerOptions,
+    usingCustomRelayer,
+    setUsingCustomRelayer,
+    customRelayer,
+    setCustomRelayer,
+  } = useRelayer();
+  const getRelayerFee = React.useCallback(async () => {
+    if (relayer) {
+      return await poofKit.rewardFee(
+        relayer.gasPrices["min"] || 0.5,
+        relayer.celoPrices["poof"]
+      );
+    }
+    return "0";
+  }, [poofKit, relayer]);
+  const [relayerFee] = useAsyncState("0", getRelayerFee);
   const breakpoint = useBreakpoint();
 
   if (breakpoint === Breakpoint.MOBILE) {
@@ -98,6 +87,7 @@ const MinePage: React.FC = () => {
         setUsingCustomRelayer={setUsingCustomRelayer}
         customRelayer={customRelayer}
         setCustomRelayer={setCustomRelayer}
+        relayerFee={relayerFee}
       />
     );
   }
@@ -117,6 +107,7 @@ const MinePage: React.FC = () => {
       setUsingCustomRelayer={setUsingCustomRelayer}
       customRelayer={customRelayer}
       setCustomRelayer={setCustomRelayer}
+      relayerFee={relayerFee}
     />
   );
 };

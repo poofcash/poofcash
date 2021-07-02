@@ -1,30 +1,14 @@
 import React from "react";
 import { DoMine } from "pages/MinePage/DesktopMinePage/DoMine";
 import { MineReceipt } from "pages/MinePage/DesktopMinePage/MineReceipt";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
+import { IMineProps } from "pages/MinePage";
 
 enum MineStep {
   DO = "DO",
   RECEIPT = "RECEIPT",
 }
 
-interface IProps {
-  setNote: (note: string) => void;
-  note: string;
-  noteIsValid: boolean;
-  estimatedAp: number;
-  setTxHash: (txHash: string) => void;
-  txHash: string;
-  selectedRelayer?: RelayerOption;
-  setSelectedRelayer: (relayer?: RelayerOption) => void;
-  relayerOptions?: Array<RelayerOption>;
-  usingCustomRelayer: boolean;
-  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
-  customRelayer?: RelayerOption;
-  setCustomRelayer: (relayerOption?: RelayerOption) => void;
-}
-
-const DesktopMinePage: React.FC<IProps> = ({
+const DesktopMinePage: React.FC<IMineProps> = ({
   setNote,
   note,
   noteIsValid,
@@ -38,6 +22,7 @@ const DesktopMinePage: React.FC<IProps> = ({
   setUsingCustomRelayer,
   customRelayer,
   setCustomRelayer,
+  relayerFee,
 }) => {
   const [depositStep, setMineStep] = React.useState(MineStep.DO);
   switch (depositStep) {
@@ -59,6 +44,7 @@ const DesktopMinePage: React.FC<IProps> = ({
           setUsingCustomRelayer={setUsingCustomRelayer}
           customRelayer={customRelayer}
           setCustomRelayer={setCustomRelayer}
+          relayerFee={relayerFee}
         />
       );
     case MineStep.RECEIPT:
@@ -70,6 +56,7 @@ const DesktopMinePage: React.FC<IProps> = ({
           }}
           estimatedAp={estimatedAp}
           txHash={txHash}
+          relayerFee={relayerFee}
         />
       );
   }

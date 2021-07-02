@@ -8,8 +8,8 @@ import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/poofUtils";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
-import { RelayerOption } from "pages/WithdrawPage/DesktopWithdrawPage";
 import { humanFriendlyNumber } from "utils/number";
+import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -28,6 +28,7 @@ interface IProps {
   setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
   customRelayer?: RelayerOption;
   setCustomRelayer: (relayerOption?: RelayerOption) => void;
+  relayerFee: string;
 }
 
 export const DoRedeem: React.FC<IProps> = ({
@@ -47,6 +48,7 @@ export const DoRedeem: React.FC<IProps> = ({
   setUsingCustomRelayer,
   customRelayer,
   setCustomRelayer,
+  relayerFee,
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
@@ -82,8 +84,14 @@ export const DoRedeem: React.FC<IProps> = ({
         poofKit
           ?.swap(privateKey, amount, recipient, selectedRelayer.url)
           .then((txHash) => {
-            setTxHash(txHash);
-            onRedeemClick();
+            if (txHash) {
+              setTxHash(txHash);
+              onRedeemClick();
+            } else {
+              alert(
+                "No response from relayer. Check your account in the explorer or try again"
+              );
+            }
           })
           .catch((e) => {
             if (e.response) {
@@ -126,7 +134,7 @@ export const DoRedeem: React.FC<IProps> = ({
             },
             {
               label: `Relayer Fee`,
-              value: `-${0} AP`,
+              value: `${Number(relayerFee).toLocaleString()} AP`,
             },
           ]}
           totalItem={{
@@ -170,7 +178,7 @@ export const DoRedeem: React.FC<IProps> = ({
             if (amount === "" || recipient === "") {
               return true;
             }
-            if (Number(amount) > Number(maxRedeemAmount)) {
+            if (Number(amount) + Number(relayerFee) > Number(maxRedeemAmount)) {
               return true;
             }
             if (usingCustomRelayer) {
@@ -212,6 +220,7 @@ export const DoRedeem: React.FC<IProps> = ({
           setUsingCustomRelayer={setUsingCustomRelayer}
           customRelayer={customRelayer}
           setCustomRelayer={setCustomRelayer}
+          relayerFee={relayerFee}
         />
       </Container>
       <Container>

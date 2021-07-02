@@ -1,34 +1,14 @@
 import React from "react";
 import { DoWithdraw } from "pages/WithdrawPage/DesktopWithdrawPage/DoWithdraw";
 import { WithdrawReceipt } from "pages/WithdrawPage/DesktopWithdrawPage/WithdrawReceipt";
+import { IWithdrawProps } from "pages/WithdrawPage";
 
 enum WithdrawStep {
   DO = "DO",
   RECEIPT = "RECEIPT",
 }
 
-export type RelayerOption = {
-  url: string;
-  relayerFee: number;
-};
-
-interface IProps {
-  setNote: (note: string) => void;
-  note: string;
-  setRecipient: (recipient: string) => void;
-  recipient: string;
-  setTxHash: (txHash: string) => void;
-  selectedRelayer?: RelayerOption;
-  setSelectedRelayer: (relayer?: RelayerOption) => void;
-  relayerOptions?: Array<RelayerOption>;
-  usingCustomRelayer: boolean;
-  setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
-  customRelayer?: RelayerOption;
-  setCustomRelayer: (relayerOption?: RelayerOption) => void;
-  txHash: string;
-}
-
-const DesktopWithdrawPage: React.FC<IProps> = ({
+const DesktopWithdrawPage: React.FC<IWithdrawProps> = ({
   setNote,
   note,
   setRecipient,
@@ -42,6 +22,7 @@ const DesktopWithdrawPage: React.FC<IProps> = ({
   customRelayer,
   setCustomRelayer,
   txHash,
+  relayerFee,
 }) => {
   const [depositStep, setWithdrawStep] = React.useState(WithdrawStep.DO);
   switch (depositStep) {
@@ -63,6 +44,7 @@ const DesktopWithdrawPage: React.FC<IProps> = ({
           setUsingCustomRelayer={setUsingCustomRelayer}
           customRelayer={customRelayer}
           setCustomRelayer={setCustomRelayer}
+          relayerFee={relayerFee}
         />
       );
     case WithdrawStep.RECEIPT:
@@ -75,8 +57,8 @@ const DesktopWithdrawPage: React.FC<IProps> = ({
           }}
           note={note}
           txHash={txHash}
-          poofServiceFee={selectedRelayer!.relayerFee}
           recipient={recipient}
+          relayerFee={relayerFee}
         />
       );
   }

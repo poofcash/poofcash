@@ -9,13 +9,17 @@ interface IProps {
   onDoneClick: () => void;
   txHash: string;
   estimatedAp: number;
+  relayerFee: string;
 }
 
 export const MineReceipt: React.FC<IProps> = ({
   onDoneClick,
   txHash,
   estimatedAp,
+  relayerFee,
 }) => {
+  const totalMined = estimatedAp - Number(relayerFee);
+
   return (
     <Container>
       <Text sx={{ mb: 1 }} variant="title">
@@ -40,10 +44,14 @@ export const MineReceipt: React.FC<IProps> = ({
               label: "Time completed",
               value: moment().format("h:mm a"),
             },
+            {
+              label: "Relayer fee",
+              value: `${Number(relayerFee).toLocaleString()} AP`,
+            },
           ]}
           totalItem={{
             label: "AP Mined",
-            value: `${Number(estimatedAp).toLocaleString()} AP`,
+            value: `${totalMined.toLocaleString()} AP`,
           }}
         />
       </GrayBox>
