@@ -16,13 +16,12 @@ import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit
 import { NoteString } from "components/NoteString";
 import { useApprove } from "hooks/writeContract";
 import { GrayBox } from "components/GrayBox";
-import { CHAIN_ID, CURRENCY_MAP } from "config";
+import { CURRENCY_MAP } from "config";
 import { useTokenBalance } from "hooks/readContract";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 import { useContractKit } from "@ubeswap/use-contractkit";
 import { toBN, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
-import { deployments } from "@poofcash/poof-kit";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -55,9 +54,8 @@ export const DoDeposit: React.FC<IProps> = ({
   ] = React.useState(false);
 
   const [allowance, approve, approveLoading] = useApprove(
-    deployments[`netId${CHAIN_ID}`][selectedCurrency.toLowerCase()]
-      .tokenAddress,
-    toWei(selectedAmount)
+    selectedCurrency,
+    selectedAmount
   );
   const userBalance = useTokenBalance(
     CURRENCY_MAP[selectedCurrency.toLowerCase()],
