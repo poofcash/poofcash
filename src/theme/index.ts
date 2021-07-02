@@ -208,6 +208,11 @@ export const preset = {
       fontFamily: "Regular",
       lineHeight: "body",
     },
+    countdown: {
+      width: ["180px", "320px"],
+      height: ["180px", "320px"],
+      color: "#7C71FD",
+    },
   },
   cards: {
     primary: {

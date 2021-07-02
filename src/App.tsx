@@ -2,7 +2,7 @@ import React from "react";
 import CompliancePage from "pages/CompliancePage";
 import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
-import { Container } from "theme-ui";
+import { Container, Flex, Link, Text } from "theme-ui";
 import { network } from "connectors";
 import { useWeb3React } from "@web3-react/core";
 import { NetworkContextName } from "index";
@@ -18,6 +18,8 @@ import RedeemPage from "pages/RedeemPage";
 import { SetupAccount } from "pages/SetupAccount";
 import AirdropPage from "pages/AirdropPage";
 import ExchangePage from "pages/ExchangePage";
+import { CHAIN_ID, MINE_START } from "config";
+import { Countdown } from "components/Countdown";
 
 // pass props and State interface to Component class
 const App = () => {
@@ -52,6 +54,38 @@ const App = () => {
     page = <AirdropPage />;
   } else if (currentPage === Page.EXCHANGE) {
     page = <ExchangePage />;
+  }
+
+  const currentTime = Math.round(Date.now() / 1000);
+  if (CHAIN_ID === 42220 && currentTime < MINE_START) {
+    if (
+      currentPage === Page.MINE ||
+      currentPage === Page.REDEEM ||
+      currentPage === Page.AIRDROP
+    ) {
+      let title = "Mining";
+      if (currentPage === Page.REDEEM) {
+        title = "Redemption";
+      } else if (currentPage === Page.AIRDROP) {
+        title = "Airdrop";
+      }
+      page = (
+        <Flex sx={{ flexDirection: "column", alignItems: "center" }}>
+          <Text variant="title">{title} begins in</Text>
+          <Countdown start={MINE_START - 1209600} end={MINE_START} />
+          <Text mt={4}>
+            Tune in to updates on{" "}
+            <Link
+              href="https://twitter.com/Poofcash"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Twitter
+            </Link>
+          </Text>
+        </Flex>
+      );
+    }
   }
 
   return (

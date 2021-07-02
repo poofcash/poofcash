@@ -41,3 +41,5 @@ export const IP_URL = "https://ip.tornado.cash";
 export const DECIMAL_PRECISION = 3; // Number of decimals to show
 
 export const supportedCurrencies = ["rCELO", "CELO", "POOF"];
+
+export const MINE_START = 1625745600;
