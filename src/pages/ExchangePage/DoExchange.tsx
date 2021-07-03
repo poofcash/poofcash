@@ -1,5 +1,5 @@
 import React from "react";
-import { useContractKit } from "@celo-tools/use-contractkit";
+import { useContractKit } from "@ubeswap/use-contractkit";
 import { RewardsCeloKit } from "@poofcash/rewardscelo";
 import { useTranslation } from "react-i18next";
 import {

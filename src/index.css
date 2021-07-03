@@ -21,3 +21,8 @@
   src: local("Articulat CF"), url(./fonts/Medium.otf) format("opentype");
   font-weight: 500;
 }
+
+/* HACK: Fix title color in wallet modal */
+.tw-text-lg {
+  color: black;
+}

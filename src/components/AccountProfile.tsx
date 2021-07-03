@@ -2,7 +2,7 @@ import React from "react";
 import { Flex } from "theme-ui";
 import { BlockscoutAddressLink } from "components/Links";
 import { Text } from "theme-ui";
-import { useContractKit } from "@celo-tools/use-contractkit";
+import { useContractKit } from "@ubeswap/use-contractkit";
 import { shortenAccount } from "hooks/accountName";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "state";

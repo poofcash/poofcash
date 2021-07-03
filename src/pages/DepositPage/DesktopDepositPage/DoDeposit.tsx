@@ -19,7 +19,7 @@ import { GrayBox } from "components/GrayBox";
 import { CHAIN_ID, CURRENCY_MAP } from "config";
 import { useTokenBalance } from "hooks/readContract";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
-import { useContractKit } from "@celo-tools/use-contractkit";
+import { useContractKit } from "@ubeswap/use-contractkit";
 import { toBN, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
 import { deployments } from "@poofcash/poof-kit";

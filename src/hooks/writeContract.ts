@@ -1,7 +1,7 @@
 import React from "react";
 import { ContractKit } from "@celo/contractkit";
 import { MaxUint256 } from "@ethersproject/constants";
-import { useContractKit } from "@celo-tools/use-contractkit";
+import { useContractKit } from "@ubeswap/use-contractkit";
 import { toWei } from "web3-utils";
 import { PoofKitV2 } from "@poofcash/poof-kit";
 import { Address } from "@celo/base";
@@ -36,7 +36,7 @@ export function useApprove(
           useExact ? amountToApprove : MaxUint256.toString()
         );
         const tx = await kit.sendTransactionObject(approveTxo, {
-          from: address,
+          from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),
         });
         await tx.waitReceipt();
@@ -47,13 +47,7 @@ export function useApprove(
     } finally {
       setLoading(false);
     }
-  }, [
-    tokenAddress,
-    amountToApprove,
-    performActions,
-    address,
-    refetchAllowance,
-  ]);
+  }, [tokenAddress, amountToApprove, performActions, refetchAllowance]);
 
   return [allowance, approve, loading];
 }
@@ -63,7 +57,7 @@ export function useDeposit(
 ): [string, () => Promise<void>, boolean] {
   const [loading, setLoading] = React.useState(false);
   const [txHash, setTxHash] = React.useState("");
-  const { getConnectedKit, address } = useContractKit();
+  const { getConnectedKit } = useContractKit();
 
   const deposit = React.useCallback(async () => {
     setLoading(true);
@@ -73,7 +67,7 @@ export function useDeposit(
       const depositTxo = poofKit.depositNote(noteString);
       await kit
         .sendTransactionObject(depositTxo, {
-          from: address,
+          from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),
         })
         .then((tx) => tx.getHash())
@@ -83,7 +77,7 @@ export function useDeposit(
     } finally {
       setLoading(false);
     }
-  }, [getConnectedKit, noteString, address]);
+  }, [getConnectedKit, noteString]);
 
   return [txHash, deposit, loading];
 }

@@ -8,17 +8,18 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "theme-ui";
 import { BrowserRouter } from "react-router-dom";
 import store from "state";
-import "index.css";
 import {
   Alfajores,
   ContractKitProvider,
   Mainnet,
-} from "@celo-tools/use-contractkit";
-import "@celo-tools/use-contractkit/lib/styles.css";
+} from "@ubeswap/use-contractkit";
 import { ChainId } from "@ubeswap/sdk";
 import { CHAIN_ID } from "config";
 import { PasswordPrompt } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/poofUtils";
+
+import "@ubeswap/use-contractkit/lib/styles.css";
+import "index.css";
 
 declare global {
   interface Window {

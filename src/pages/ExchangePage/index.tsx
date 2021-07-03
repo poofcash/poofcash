@@ -1,4 +1,4 @@
-import { useContractKit } from "@celo-tools/use-contractkit";
+import { useContractKit } from "@ubeswap/use-contractkit";
 import { useAsyncState } from "hooks/useAsyncState";
 import React from "react";
 import { ExchangeReceipt } from "./ExchangeReceipt";
@@ -20,7 +20,7 @@ const ExchangePage: React.FC = () => {
       erc20Abi as AbiItem[],
       CURRENCY_MAP.scelo
     );
-    if (!isAddress(address)) {
+    if (!address || !isAddress(address)) {
       return ["0", "0"];
     }
     return await Promise.all([
@@ -33,7 +33,7 @@ const ExchangePage: React.FC = () => {
       erc20Abi as AbiItem[],
       CURRENCY_MAP.rcelo
     );
-    if (!isAddress(address)) {
+    if (!address || !isAddress(address)) {
       return ["0", "0"];
     }
     return await Promise.all([

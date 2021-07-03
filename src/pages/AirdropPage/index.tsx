@@ -1,4 +1,4 @@
-import { useContractKit } from "@celo-tools/use-contractkit";
+import { useContractKit } from "@ubeswap/use-contractkit";
 import { PoofKitGlobal } from "hooks/poofUtils";
 import { useAsyncState } from "hooks/useAsyncState";
 import React from "react";
@@ -15,10 +15,14 @@ const AirdropPage: React.FC = () => {
   const [step, setStep] = React.useState(AirdropStep.DO);
   const { address } = useContractKit();
   const { poofKit } = PoofKitGlobal.useContainer();
-  const voucherBalanceCall = React.useCallback(
-    () => poofKit?.voucherBalance(address).then((v) => fromWei(v).toString()),
-    [poofKit, address]
-  );
+  const voucherBalanceCall = React.useCallback(async () => {
+    if (!address) {
+      return "0";
+    }
+    return await poofKit
+      ?.voucherBalance(address)
+      .then((v) => fromWei(v).toString());
+  }, [poofKit, address]);
   const [redeemAmount] = useAsyncState("0", voucherBalanceCall);
   const [txHash, setTxHash] = React.useState("");
 

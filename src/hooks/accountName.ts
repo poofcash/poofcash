@@ -1,6 +1,9 @@
-import { useContractKit } from "@celo-tools/use-contractkit";
+import { useContractKit } from "@ubeswap/use-contractkit";
 
-export const shortenAccount = (account: string) => {
+export const shortenAccount = (account: string | null) => {
+  if (!account) {
+    return "0x????...????";
+  }
   return (
     account.slice(0, 6) +
     ".." +

@@ -1213,32 +1213,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@celo-tools/use-contractkit@^1.0.0-beta.12":
-  version "1.0.0-beta.12"
-  resolved "https://registry.yarnpkg.com/@celo-tools/use-contractkit/-/use-contractkit-1.0.0-beta.12.tgz#6297960159528b63301f4923fde1db5d26de3437"
-  integrity sha512-EwFFLCEvpyYdReG92ikCT8hzDI24nErct0UAVQhnln+rWwHU1YhXIvnC1Acy4UWWbIa1JHfAK3t7twkYW2NgtA==
-  dependencies:
-    "@celo/contractkit" "^1.2.0"
-    "@celo/utils" "^1.2.0"
-    "@celo/wallet-base" "^1.2.0"
-    "@celo/wallet-ledger" "^1.2.0"
-    "@celo/wallet-local" "^1.2.0"
-    "@celo/wallet-remote" "^1.2.0"
-    "@ledgerhq/hw-transport-webusb" "^5.43.0"
-    "@types/qrcode.react" "^1.0.1"
-    "@types/react-modal" "^3.12.0"
-    "@walletconnect/client" "2.0.0-beta.0"
-    "@walletconnect/types" "2.0.0-beta.0"
-    autoprefixer "^10.2.4"
-    contractkit-walletconnect "0.0.15"
-    postcss "^8.2.6"
-    qrcode.react "^1.0.1"
-    react-loader-spinner "^4.0.0"
-    react-modal "^3.12.1"
-    tailwindcss "^2.0.3"
-    unstated-next "^1.1.0"
-    web3 "^1.3.4"
-
 "@celo/base@^1.2.0", "@celo/base@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@celo/base/-/base-1.2.1.tgz#633ee3e8c8bcca954cad36f99718887582136f07"
@@ -2197,7 +2171,7 @@
     "@ledgerhq/errors" "^5.11.0"
     "@ledgerhq/hw-transport" "^5.11.0"
 
-"@ledgerhq/hw-transport-webusb@^5.43.0", "@ledgerhq/hw-transport-webusb@^5.46.0":
+"@ledgerhq/hw-transport-webusb@^5.46.0", "@ledgerhq/hw-transport-webusb@^5.51.1":
   version "5.53.1"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-webusb/-/hw-transport-webusb-5.53.1.tgz#3df8c401417571e3bcacc378d8aca587214b05ae"
   integrity sha512-A/f+xcrkIAZiJrvPpDvsrjxQX4cI2kbdiunQkwsYmOG3Bp4z89ZnsBiC7YBst4n2/g+QgTg0/KPVtODU5djooQ==
@@ -3521,6 +3495,31 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
+"@ubeswap/use-contractkit@1.0.0-ube.6":
+  version "1.0.0-ube.6"
+  resolved "https://registry.yarnpkg.com/@ubeswap/use-contractkit/-/use-contractkit-1.0.0-ube.6.tgz#ab8c78934272a76b2d9b990bbb5f357d667e6ac0"
+  integrity sha512-fUPvXII8uLPdohIXRoheZC1A/a7BkAull9/d6N/ZcCRDBHmnRyCfrOmTDZdvCDuSwvVMTNjIyEzeZJVoZQZb+A==
+  dependencies:
+    "@celo/contractkit" "^1.2.0"
+    "@celo/utils" "^1.2.0"
+    "@celo/wallet-base" "^1.2.0"
+    "@celo/wallet-ledger" "^1.2.0"
+    "@celo/wallet-local" "^1.2.0"
+    "@celo/wallet-remote" "^1.2.0"
+    "@ledgerhq/hw-transport-webusb" "^5.51.1"
+    "@types/qrcode.react" "^1.0.1"
+    "@types/react-modal" "^3.12.0"
+    "@walletconnect/client" "2.0.0-beta.0"
+    "@walletconnect/types" "2.0.0-beta.0"
+    autoprefixer "^10.2.6"
+    contractkit-walletconnect "0.0.15"
+    postcss "^8.3.0"
+    qrcode.react "^1.0.1"
+    react-loader-spinner "^4.0.0"
+    react-modal "^3.13.1"
+    tailwindcss "^2.1.2"
+    unstated-next "^1.1.0"
+
 "@umpirsky/country-list@https://github.com/umpirsky/country-list#05fda51":
   version "1.0.0"
   resolved "https://github.com/umpirsky/country-list#05fda51cd97b3294e8175ffed06104c44b3c71d7"
@@ -4227,7 +4226,7 @@ atomic-sleep@^1.0.0:
   resolved "https://registry.yarnpkg.com/atomic-sleep/-/atomic-sleep-1.0.0.tgz#eb85b77a601fc932cfe432c5acd364a9e2c9075b"
   integrity sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==
 
-autoprefixer@^10.2.4:
+autoprefixer@^10.2.6:
   version "10.2.6"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-10.2.6.tgz#aadd9ec34e1c98d403e01950038049f0eb252949"
   integrity sha512-8lChSmdU6dCNMCQopIf4Pe5kipkAGj/fvTMslCsih0uHpOrXOPUEVOmYMMqmw3cekQkSD7EhIeuYl5y0BLdKqg==
@@ -12833,7 +12832,7 @@ postcss@7.0.36, postcss@^7, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, pos
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-postcss@^8.1.0, postcss@^8.1.6, postcss@^8.2.1, postcss@^8.2.6:
+postcss@^8.1.0, postcss@^8.1.6, postcss@^8.2.1, postcss@^8.3.0:
   version "8.3.5"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.3.5.tgz#982216b113412bc20a86289e91eb994952a5b709"
   integrity sha512-NxTuJocUhYGsMiMFHDUkmjSKT3EdH4/WbGF6GCi1NDGk+vbcUTun4fpbOqaPtD8IIsztA2ilZm2DhYCuyN58gA==
@@ -13315,7 +13314,7 @@ react-loader-spinner@^4.0.0:
   dependencies:
     prop-types "^15.7.2"
 
-react-modal@^3.12.1:
+react-modal@^3.12.1, react-modal@^3.13.1:
   version "3.14.3"
   resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.14.3.tgz#7eb7c5ec85523e5843e2d4737cc17fc3f6aeb1c0"
   integrity sha512-+C2KODVKyu20zHXPJxfOOcf571L1u/EpFlH+oS/3YDn8rgVE51QZuxuuIwabJ8ZFnOEHaD+r6XNjqwtxZnXO0g==
@@ -15106,7 +15105,7 @@ table@^6.0.9:
     string-width "^4.2.0"
     strip-ansi "^6.0.0"
 
-tailwindcss@^2.0.3:
+tailwindcss@^2.1.2:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-2.2.4.tgz#6a2e259b1e26125aeaa7cdc479963fd217c308b0"
   integrity sha512-OdBCPgazNNsknSP+JfrPzkay9aqKjhKtFhbhgxHgvEFdHy/GuRPo2SCJ4w1SFTN8H6FPI4m6qD/Jj20NWY1GkA==
@@ -16531,7 +16530,7 @@ web3@1.3.5:
     web3-shh "1.3.5"
     web3-utils "1.3.5"
 
-web3@^1.0.0-beta.55, web3@^1.2.11, web3@^1.2.8, web3@^1.3.4:
+web3@^1.0.0-beta.55, web3@^1.2.11, web3@^1.2.8:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/web3/-/web3-1.4.0.tgz#717c01723226daebab9274be5cb56644de860688"
   integrity sha512-faT3pIX+1tuo+wqmUFQPe10MUGaB1UvRYxw9dmVJFLxaRAIfXErSilOf3jFhSwKbbPNkwG0bTiudCLN9JgeS7A==
