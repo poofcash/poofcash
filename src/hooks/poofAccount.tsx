@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "state";
 import Web3 from "web3";
 import Modal from "react-modal";
-import { Text, Button, Flex, Input, Container } from "theme-ui";
+import { Text, Button, Flex, Input, Container, Box } from "theme-ui";
 import { createContainer } from "unstated-next";
 import { setAccount } from "state/user";
 import { Breakpoint, useBreakpoint } from "./breakpoint";
@@ -27,11 +27,17 @@ const usePasswordPrompt = () => {
   };
 
   let modalStyle: any = {
-    content: { top: "25%", left: "25%", width: "50%", height: "50%" },
+    content: {
+      top: "25%",
+      left: "25%",
+      width: "50%",
+      height: "50%",
+      padding: 0,
+    },
   };
   if (breakpoint === Breakpoint.MOBILE) {
     modalStyle = {
-      content: { top: 0, left: 0, width: "100%", height: "100%" },
+      content: { top: 0, left: 0, width: "100%", height: "100%", padding: 0 },
     };
   }
 
@@ -41,48 +47,50 @@ const usePasswordPrompt = () => {
       onRequestClose={() => setIsOpen(false)}
       style={modalStyle}
     >
-      <Container pt={["66%", 0]}>
-        <form
-          onSubmit={(e) => {
-            if (action) {
-              action(password);
-            }
-            reset();
-            e.preventDefault();
-          }}
-        >
-          <Text variant="title" sx={{ mb: 2 }}>
-            Enter account password
-          </Text>
-          <br />
-          <Text variant="regularGray" sx={{ mb: 2 }}>
-            {subtitle}
-          </Text>
-          <br />
-          <Input
-            sx={{ mb: 2 }}
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-            autoFocus
-            autoComplete="off"
-          />
-          <Flex sx={{ justifyContent: "flex-end" }}>
-            <Button
-              type="button"
-              sx={{ mr: 4 }}
-              onClick={() => {
-                if (cancelAction) {
-                  cancelAction();
-                }
-                reset();
-              }}
-              variant="secondary"
-            >
-              Cancel
-            </Button>
-            <Button type="submit">Enter</Button>
-          </Flex>
-        </form>
+      <Container sx={{ width: "100%", height: "100%", bg: "background", p: 4 }}>
+        <Box pt={["66%", 0]}>
+          <form
+            onSubmit={(e) => {
+              if (action) {
+                action(password);
+              }
+              reset();
+              e.preventDefault();
+            }}
+          >
+            <Text variant="title" sx={{ mb: 2 }}>
+              Enter account password
+            </Text>
+            <br />
+            <Text variant="regularGray" sx={{ mb: 2 }}>
+              {subtitle}
+            </Text>
+            <br />
+            <Input
+              sx={{ mb: 2 }}
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              autoFocus
+              autoComplete="off"
+            />
+            <Flex sx={{ justifyContent: "flex-end" }}>
+              <Button
+                type="button"
+                sx={{ mr: 4 }}
+                onClick={() => {
+                  if (cancelAction) {
+                    cancelAction();
+                  }
+                  reset();
+                }}
+                variant="secondary"
+              >
+                Cancel
+              </Button>
+              <Button type="submit">Enter</Button>
+            </Flex>
+          </form>
+        </Box>
       </Container>
     </Modal>
   );

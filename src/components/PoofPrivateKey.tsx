@@ -13,7 +13,7 @@ export const PoofPrivateKey: React.FC<IProps> = ({ privateKey }) => {
     <Flex>
       <Input
         sx={{
-          background: "#F1F4F4",
+          backgroundColor: "box",
           borderRadius: "6px 0px 0px 6px",
           border: "none",
           maxWidth: "80rem",
