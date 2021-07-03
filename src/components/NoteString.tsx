@@ -15,7 +15,7 @@ export const NoteString: React.FC<IProps> = ({ noteString }) => {
     <Flex>
       <Input
         sx={{
-          backgroundColor: "background",
+          backgroundColor: ["box", "background"],
           borderRadius: "6px 0px 0px 6px",
           border: "none",
           maxWidth: "80rem",
@@ -44,6 +44,7 @@ export const NoteString: React.FC<IProps> = ({ noteString }) => {
         >
           <ClipboardIcon />
           <Text
+            color="white"
             sx={{
               pr: 2,
               fontWeight: 600,

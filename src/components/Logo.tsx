@@ -15,13 +15,17 @@ export const Logo: React.FC = () => {
           <Moon
             color="white"
             style={{ cursor: "pointer" }}
-            onClick={() => setColorMode && setColorMode("default")}
+            onClick={() => {
+              setColorMode("default");
+            }}
             size={16}
           />
         ) : (
           <Sun
             style={{ cursor: "pointer" }}
-            onClick={() => setColorMode && setColorMode("dark")}
+            onClick={() => {
+              setColorMode("dark");
+            }}
             size={16}
           />
         )}

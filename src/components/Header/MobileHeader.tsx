@@ -13,7 +13,7 @@ export const MobileHeader: React.FC = () => {
   const dispatch = useDispatch();
 
   return (
-    <Container sx={{ pt: 4, px: 3, width: "auto", backgroundColor: "#F1F4F4" }}>
+    <Container sx={{ pt: 4, px: 3, width: "auto", backgroundColor: "box" }}>
       <Flex
         sx={{
           mb: 2,

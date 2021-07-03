@@ -4,8 +4,8 @@ export const preset = {
     text: "#333333",
     accent: "#7C71FD",
     background: "#fff",
-    primary: "#499EE9",
-    secondary: "#30c",
+    primary: "#5352FC",
+    secondary: "#bababa",
     muted: "#f6f6f9",
     gray: "#bababa",
     darkgray: "#8d8d8d",
@@ -190,13 +190,14 @@ export const preset = {
     secondary: {
       ":disabled": {
         color: "muted",
+        bg: "disabled",
       },
       fontFamily: "Bold",
       fontSize: 18,
       lineHeight: "20px",
       variant: "buttons.primary",
       color: "#333333",
-      bg: "#F1F4F4",
+      bg: "secondary",
     },
     done: {
       variant: "buttons.secondary",
@@ -221,7 +222,7 @@ export const preset = {
     },
     switcherSelected: {
       variant: "buttons.switcher",
-      borderBottom: "3px solid black",
+      borderBottom: "3px solid",
       color: "text",
     },
   },

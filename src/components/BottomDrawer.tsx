@@ -7,7 +7,7 @@ export const BottomDrawer: React.FC = ({ children }) => {
   return (
     <Container
       sx={{
-        background: "white",
+        backgroundColor: "box",
         boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.12)",
         position: "fixed",
         bottom: 0,
