@@ -10,6 +10,25 @@ export const preset = {
     gray: "#bababa",
     darkgray: "#8d8d8d",
     highlight: "hsla(205, 100%, 40%, 0.125)",
+    box: "#F1F4F4",
+    disabled: "#BDBDBD",
+    link: "#7C71FC",
+    modes: {
+      dark: {
+        text: "#FAFAFA",
+        accent: "#5352FC",
+        background: "#212121",
+        primary: "#5352FC",
+        secondary: "#757575",
+        muted: "#757575",
+        gray: "#bababa",
+        darkgray: "#BDBDBD",
+        highlight: "hsla(205, 100%, 40%, 0.125)",
+        box: "#363945",
+        disabled: "#F1F4F4",
+        link: "#7C71FC",
+      },
+    },
   },
   fonts: {
     regular: "Regular",
@@ -33,6 +52,9 @@ export const preset = {
     card: "0 0 4px rgba(0, 0, 0, .125)",
   },
   text: {
+    default: {
+      color: "text",
+    },
     title: {
       fontFamily: "Medium",
       fontSize: [28],
@@ -104,13 +126,13 @@ export const preset = {
       fontFamily: "DemiBold",
       fontSize: 24,
       lineHeight: "20px",
-      color: "#333333",
+      color: "text",
     },
     reallyBigNumber: {
       fontFamily: "DemiBold",
       fontSize: 32,
       lineHeight: "20px",
-      color: "#333333",
+      color: "text",
     },
   },
   variants: {
@@ -125,7 +147,7 @@ export const preset = {
       boxShadow: "card",
     },
     link: {
-      color: "primary",
+      color: "link",
       textDecoration: "none",
     },
     nav: {
@@ -151,9 +173,9 @@ export const preset = {
   buttons: {
     primary: {
       ":disabled": {
-        color: "gray",
+        color: "muted",
         cursor: "auto",
-        bg: "#F1F4F4",
+        bg: "disabled",
       },
       fontFamily: "Bold",
       fontSize: 18,
@@ -163,11 +185,11 @@ export const preset = {
       borderRadius: ["32px", "6px"],
       height: ["48px", "42px"],
       color: "#F1F4F4",
-      bg: "#333333",
+      bg: "primary",
     },
     secondary: {
       ":disabled": {
-        color: " gray",
+        color: "muted",
       },
       fontFamily: "Bold",
       fontSize: 18,
@@ -211,7 +233,13 @@ export const preset = {
     countdown: {
       width: ["180px", "320px"],
       height: ["180px", "320px"],
-      color: "#7C71FD",
+      color: "accent",
+    },
+    a: {
+      ":visited": {
+        color: "link",
+      },
+      color: "link",
     },
   },
   cards: {

@@ -28,7 +28,7 @@ export const RPC_URL: string =
 
 export const RELAYERS = {
   mainnet: ["https://adamaris.now.im"],
-  alfajores: ["https://relayer-test1.poof.cash"],
+  alfajores: ["https://relayer-test.poof.cash"],
 };
 
 export const BLOCKSCOUT_URL =

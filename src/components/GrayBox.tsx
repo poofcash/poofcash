@@ -5,7 +5,7 @@ export const GrayBox: React.FC = ({ children }) => {
   return (
     <Box
       sx={{
-        bg: "#F1F4F4",
+        bg: "box",
         borderRadius: "6px",
         width: "100%",
         minHeight: "50%",

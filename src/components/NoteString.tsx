@@ -15,7 +15,7 @@ export const NoteString: React.FC<IProps> = ({ noteString }) => {
     <Flex>
       <Input
         sx={{
-          background: ["#F1F4F4", "white"],
+          backgroundColor: "background",
           borderRadius: "6px 0px 0px 6px",
           border: "none",
           maxWidth: "80rem",
@@ -37,7 +37,7 @@ export const NoteString: React.FC<IProps> = ({ noteString }) => {
           sx={{
             alignItems: "center",
             borderRadius: "0px 6px 6px 0px",
-            backgroundColor: "#7C71FD",
+            backgroundColor: "accent",
             p: "14px",
             cursor: "pointer",
           }}
@@ -49,7 +49,6 @@ export const NoteString: React.FC<IProps> = ({ noteString }) => {
               fontWeight: 600,
               fontSize: 18,
               lineHeight: "20px",
-              color: "#F1F4F4",
               ml: 1,
             }}
           >
