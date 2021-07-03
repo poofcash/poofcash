@@ -7,12 +7,11 @@ import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
-import { useContractKit } from "@celo-tools/use-contractkit";
-import { PoofKitV2 } from "@poofcash/poof-kit";
-import { CHAIN_ID } from "config";
 import { formatCurrency } from "utils/currency";
 import { humanFriendlyNumber } from "utils/number";
 import { RelayerOption } from "hooks/useRelayer";
+import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitLoading } from "components/PoofKitLoading";
 
 interface IProps {
   onBackClick: () => void;
@@ -36,9 +35,13 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
   relayerFee,
 }) => {
   const { library: networkLibrary } = useWeb3React(NetworkContextName);
-  const { kit } = useContractKit();
   const { currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
+  const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
+
+  if (poofKitLoading) {
+    return <PoofKitLoading />;
+  }
 
   const finalWithdrawAmount = Number(amount) - Number(relayerFee);
 
@@ -54,9 +57,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
     }
 
     setLoading(true);
-    const poofKit = new PoofKitV2(kit, CHAIN_ID);
     try {
-      await poofKit.initialize(window.groth16);
       const txHash = await poofKit.withdrawNote(
         note,
         "0",
