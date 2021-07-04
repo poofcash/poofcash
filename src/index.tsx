@@ -6,13 +6,7 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "theme-ui";
 import { BrowserRouter } from "react-router-dom";
 import store from "state";
-import {
-  Alfajores,
-  ContractKitProvider,
-  Mainnet,
-} from "@ubeswap/use-contractkit";
-import { ChainId } from "@ubeswap/sdk";
-import { CHAIN_ID } from "config";
+import { ContractKitProvider } from "@ubeswap/use-contractkit";
 import { PasswordPrompt } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/poofUtils";
 
@@ -31,13 +25,11 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <ContractKitProvider
-            dappName="Poof.cash"
-            dappDescription="Decentralized, private transactions for Celo"
-            dappUrl={window.location.href.slice(
-              0,
-              window.location.href.length - 1
-            )}
-            networks={[CHAIN_ID === ChainId.MAINNET ? Mainnet : Alfajores]}
+            dapp={{
+              name: "Poof.cash",
+              description: "Decentralized, private transactions for Celo",
+              url: "https://app.poof.cash",
+            }}
           >
             <PasswordPrompt.Provider>
               <PoofKitGlobal.Provider>

@@ -55,7 +55,7 @@ export const AccountProfile: React.FC = () => {
             <>
               <Text
                 sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
-                onClick={connect}
+                onClick={() => connect().then(console.log).catch(console.error)}
                 variant="form"
               >
                 Connect
