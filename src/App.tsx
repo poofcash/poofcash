@@ -16,10 +16,14 @@ import AirdropPage from "pages/AirdropPage";
 import ExchangePage from "pages/ExchangePage";
 import { CHAIN_ID, MINE_START } from "config";
 import { Countdown } from "components/Countdown";
+import Modal from "react-modal";
 
 // pass props and State interface to Component class
 const App: React.FC = () => {
   const { passwordModal } = PasswordPrompt.useContainer();
+  React.useEffect(() => {
+    Modal.setAppElement("body");
+  });
 
   const currentPage = useSelector(
     (state: AppState) => state.global.currentPage
