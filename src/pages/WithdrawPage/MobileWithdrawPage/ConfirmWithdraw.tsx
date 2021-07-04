@@ -1,5 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
-import { NetworkContextName } from "index";
 import React from "react";
 import { Button, Container, Flex, Spinner, Text } from "theme-ui";
 import { parseNote } from "utils/snarks-functions";
@@ -34,7 +32,6 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
   selectedRelayer,
   relayerFee,
 }) => {
-  const { library: networkLibrary } = useWeb3React(NetworkContextName);
   const { currency, amount } = parseNote(note);
   const [loading, setLoading] = React.useState(false);
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
@@ -46,11 +43,6 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
   const finalWithdrawAmount = Number(amount) - Number(relayerFee);
 
   const handleWithdraw = async () => {
-    if (!networkLibrary) {
-      console.error("Library is not defined");
-      return;
-    }
-
     if (!selectedRelayer) {
       alert("Relayer is undefined");
       return;

@@ -29,7 +29,6 @@
     "@ubeswap/injected-connector": "^6.0.8",
     "@ubeswap/sdk": "^2.0.1",
     "@ubeswap/use-contractkit": "1.0.0-ube.6",
-    "@web3-react/core": "^6.1.9",
     "axios": "^0.21.1",
     "circomlib": "git+https://github.com/tornadocash/circomlib.git#c372f14d324d57339c88451834bf2824e73bbdbc",
     "ethereumjs-wallet": "^1.0.1",

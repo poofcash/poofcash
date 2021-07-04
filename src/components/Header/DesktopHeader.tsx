@@ -4,7 +4,6 @@ import { Box, Container, Flex, Text } from "theme-ui";
 import { Logo } from "components/Logo";
 import { AccountProfile } from "components/AccountProfile";
 import styled from "@emotion/styled";
-import { ConnectWallet } from "pages/ConnectWallet";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "state";
 import { Page, setCurrentPage } from "state/global";
@@ -19,9 +18,6 @@ export const DesktopHeader: React.FC = () => {
     (state: AppState) => state.global.currentPage
   );
   const dispatch = useDispatch();
-  const [showConnectWalletModal, setShowConnectWalletModal] = React.useState(
-    false
-  );
 
   return (
     <>
@@ -161,11 +157,6 @@ export const DesktopHeader: React.FC = () => {
           </Flex>
         </Flex>
       </Container>
-
-      <ConnectWallet
-        isOpen={showConnectWalletModal}
-        goBack={() => setShowConnectWalletModal(false)}
-      />
     </>
   );
 };

@@ -3,10 +3,6 @@ import CompliancePage from "pages/CompliancePage";
 import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
 import { Container, Flex, Link, Text } from "theme-ui";
-import { network } from "connectors";
-import { useWeb3React } from "@web3-react/core";
-import { NetworkContextName } from "index";
-import Modal from "react-modal";
 import { Header } from "components/Header";
 import "i18n/config";
 import { useSelector } from "react-redux";
@@ -22,17 +18,7 @@ import { CHAIN_ID, MINE_START } from "config";
 import { Countdown } from "components/Countdown";
 
 // pass props and State interface to Component class
-const App = () => {
-  const { activate: activateNetwork, library } = useWeb3React(
-    NetworkContextName
-  );
-  React.useEffect(() => {
-    Modal.setAppElement("body");
-    if (!library) {
-      activateNetwork(network);
-    }
-  }, [library, activateNetwork]);
-
+const App: React.FC = () => {
   const { passwordModal } = PasswordPrompt.useContainer();
 
   const currentPage = useSelector(
