@@ -27,7 +27,7 @@ export const RPC_URL: string =
     : "https://alfajores-forno.celo-testnet.org";
 
 export const RELAYERS = {
-  mainnet: ["https://adamaris.now.im"],
+  mainnet: ["https://adamaris.privatedns.org"],
   alfajores: ["https://relayer-test.poof.cash"],
 };
 
