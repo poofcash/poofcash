@@ -24,46 +24,70 @@ export const MobileHeader: React.FC = () => {
         <Logo />
         <AccountProfile />
       </Flex>
-      <Flex sx={{ width: "fit-content" }}>
-        <Button
-          variant={
-            currentPage === Page.DEPOSIT ? "switcherSelected" : "switcher"
-          }
-          onClick={() => dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }))}
-        >
-          Deposit
-        </Button>
-        <Button
-          variant={
-            currentPage === Page.WITHDRAW ? "switcherSelected" : "switcher"
-          }
-          onClick={() => dispatch(setCurrentPage({ nextPage: Page.WITHDRAW }))}
-        >
-          Withdraw
-        </Button>
-        {process.env.NODE_ENV === "development" && (
-          <>
-            <Button
-              variant={
-                currentPage === Page.MINE ? "switcherSelected" : "switcher"
-              }
-              onClick={() => dispatch(setCurrentPage({ nextPage: Page.MINE }))}
-            >
-              Mine
-            </Button>
-            <Button
-              variant={
-                currentPage === Page.REDEEM ? "switcherSelected" : "switcher"
-              }
-              onClick={() =>
-                dispatch(setCurrentPage({ nextPage: Page.REDEEM }))
-              }
-            >
-              Redeem
-            </Button>
-          </>
-        )}
-      </Flex>
+      <Container sx={{ overflow: "scroll" }}>
+        <Flex sx={{ width: "fit-content" }}>
+          <Button
+            variant={
+              currentPage === Page.EXCHANGE ? "switcherSelected" : "switcher"
+            }
+            onClick={() =>
+              dispatch(setCurrentPage({ nextPage: Page.EXCHANGE }))
+            }
+          >
+            Exchange
+          </Button>
+          <Button
+            variant={
+              currentPage === Page.DEPOSIT ? "switcherSelected" : "switcher"
+            }
+            onClick={() => dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }))}
+          >
+            Deposit
+          </Button>
+          <Button
+            variant={
+              currentPage === Page.WITHDRAW ? "switcherSelected" : "switcher"
+            }
+            onClick={() =>
+              dispatch(setCurrentPage({ nextPage: Page.WITHDRAW }))
+            }
+          >
+            Withdraw
+          </Button>
+          <Button
+            variant={
+              currentPage === Page.AIRDROP ? "switcherSelected" : "switcher"
+            }
+            onClick={() => dispatch(setCurrentPage({ nextPage: Page.AIRDROP }))}
+          >
+            Airdrop
+          </Button>
+          {process.env.NODE_ENV === "development" && (
+            <>
+              <Button
+                variant={
+                  currentPage === Page.MINE ? "switcherSelected" : "switcher"
+                }
+                onClick={() =>
+                  dispatch(setCurrentPage({ nextPage: Page.MINE }))
+                }
+              >
+                Mine
+              </Button>
+              <Button
+                variant={
+                  currentPage === Page.REDEEM ? "switcherSelected" : "switcher"
+                }
+                onClick={() =>
+                  dispatch(setCurrentPage({ nextPage: Page.REDEEM }))
+                }
+              >
+                Redeem
+              </Button>
+            </>
+          )}
+        </Flex>
+      </Container>
     </Container>
   );
 };

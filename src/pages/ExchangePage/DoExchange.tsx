@@ -125,7 +125,7 @@ export const DoExchange: React.FC<IProps> = ({
   if (address) {
     if (
       currencies.from === "sCELO" &&
-      toBN(sCELOAllowance).lt(toBN(toWei(amount.toString())))
+      toBN(sCELOAllowance).lt(toBN(toWei(amount === "" ? "0" : amount)))
     ) {
       button = approveButton;
     } else {
@@ -180,7 +180,7 @@ export const DoExchange: React.FC<IProps> = ({
   }
 
   return (
-    <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
+    <Grid sx={{ gridTemplateColumns: ["1fr", "1fr 1fr"] }}>
       <Container>
         <Text variant="title">{t("exchange.title")}</Text>
         <br />
