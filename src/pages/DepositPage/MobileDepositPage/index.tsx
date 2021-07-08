@@ -28,7 +28,8 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
   txHash,
   deposit,
   depositLoading,
-  miningRate,
+  poofRate,
+  apRate,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
 
@@ -43,7 +44,8 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
           setSelectedAmount={setSelectedAmount}
           selectedCurrency={selectedCurrency}
           setSelectedCurrency={setSelectedCurrency}
-          miningRate={miningRate}
+          poofRate={poofRate}
+          apRate={apRate}
         />
       );
     case DepositStep.CONFIRM:

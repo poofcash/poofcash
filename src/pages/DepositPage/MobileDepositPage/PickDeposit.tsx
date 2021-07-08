@@ -20,7 +20,8 @@ interface IProps {
   selectedAmount: string;
   setSelectedCurrency: (currency: string) => void;
   selectedCurrency: string;
-  miningRate: string;
+  poofRate: string;
+  apRate: string;
 }
 
 const supportedCurrencies = ["CELO", "rCELO"];
@@ -32,7 +33,8 @@ export const PickDeposit: React.FC<IProps> = ({
   setSelectedAmount,
   selectedCurrency,
   setSelectedCurrency,
-  miningRate,
+  poofRate,
+  apRate,
 }) => {
   const { connect, address } = useContractKit();
   const breakpoint = useBreakpoint();
@@ -172,12 +174,20 @@ export const PickDeposit: React.FC<IProps> = ({
         </Flex>
       )}
       {selectedAmount !== "0" && (
-        <Flex mt={3}>
-          <Text sx={{ mr: 1 }} variant="largeNumber">
-            {humanFriendlyWei(miningRate)}
-          </Text>
-          <Text variant="regular">Est. POOF / week</Text>
-        </Flex>
+        <>
+          <Flex mt={3}>
+            <Text sx={{ mr: 1 }} variant="largeNumber">
+              {Number(apRate).toLocaleString()}
+            </Text>
+            <Text variant="regular">AP / block</Text>
+          </Flex>
+          <Flex mt={3}>
+            <Text sx={{ mr: 1 }} variant="largeNumber">
+              {humanFriendlyWei(poofRate)}
+            </Text>
+            <Text variant="regular">Est. POOF / week</Text>
+          </Flex>
+        </>
       )}
 
       <InsufficientBalanceModal

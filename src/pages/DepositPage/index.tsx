@@ -10,6 +10,8 @@ import { useDeposit } from "hooks/writeContract";
 import { useAsyncState } from "hooks/useAsyncState";
 import { PoofKitGlobal } from "hooks/poofUtils";
 
+export const BLOCKS_PER_WEEK = 120960;
+
 export interface IDepositProps {
   setSelectedAmount: (amount: string) => void;
   selectedAmount: string;
@@ -20,7 +22,8 @@ export interface IDepositProps {
   txHash: string;
   deposit: () => Promise<void>;
   depositLoading: boolean;
-  miningRate: string;
+  poofRate: string;
+  apRate: string;
 }
 
 const DepositPage: React.FC = () => {
@@ -28,15 +31,18 @@ const DepositPage: React.FC = () => {
   const [selectedCurrency, setSelectedCurrency] = React.useState("CELO");
   const { poofKit } = PoofKitGlobal.useContainer();
   const getMiningRate = React.useCallback(async () => {
-    const { poofRate } = await poofKit.miningRate(
+    const { poofRate, apRate } = await poofKit.miningRate(
       selectedCurrency,
       selectedAmount,
       CHAIN_ID,
-      120960 // Blocks per week
+      BLOCKS_PER_WEEK
     );
-    return poofRate;
+    return { poofRate, apRate };
   }, [poofKit, selectedCurrency, selectedAmount]);
-  const [miningRate] = useAsyncState("0", getMiningRate);
+  const [{ poofRate, apRate }] = useAsyncState(
+    { poofRate: "0", apRate: "0" },
+    getMiningRate
+  );
   const [
     noteStringCommitment,
     setNoteStringCommitment,
@@ -71,7 +77,8 @@ const DepositPage: React.FC = () => {
         txHash={txHash}
         deposit={deposit}
         depositLoading={depositLoading}
-        miningRate={miningRate}
+        poofRate={poofRate}
+        apRate={apRate}
       />
     );
   }
@@ -87,7 +94,8 @@ const DepositPage: React.FC = () => {
       txHash={txHash}
       deposit={deposit}
       depositLoading={depositLoading}
-      miningRate={miningRate}
+      poofRate={poofRate}
+      apRate={apRate}
     />
   );
 };

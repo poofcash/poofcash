@@ -20,7 +20,8 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
   txHash,
   deposit,
   depositLoading,
-  miningRate,
+  poofRate,
+  apRate,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.DO);
 
@@ -42,7 +43,8 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
           setSelectedCurrency={setSelectedCurrency}
           noteStringCommitment={noteStringCommitment}
           depositLoading={depositLoading}
-          miningRate={miningRate}
+          poofRate={poofRate}
+          apRate={apRate}
         />
       );
     case DepositStep.RECEIPT:
