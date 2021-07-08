@@ -39,7 +39,7 @@ Will generate a production build in `build/`
 
 ## Deploying on IPFS
 
-After generating a build, add the `build/` directory to any IPFS node
+Anyone can help make the Poof interface available across the world. To do so, take the latest release (usually a zip), unzip it, and add it to an IPFS node. The easiest way to add (and free!) is through https://pinata.cloud/
 
 ## Listing your relayer
 
