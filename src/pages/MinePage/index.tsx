@@ -8,6 +8,7 @@ import { PoofKitGlobal } from "hooks/poofUtils";
 import { useLatestBlockNumber } from "hooks/web3";
 import { RelayerOption, useRelayer } from "hooks/useRelayer";
 import { useAsyncState } from "hooks/useAsyncState";
+import { PoofKitLoading } from "components/PoofKitLoading";
 
 export interface IMineProps {
   setNote: (note: string) => void;
@@ -70,6 +71,18 @@ const MinePage: React.FC = () => {
   }, [poofKit, relayer]);
   const [relayerFee] = useAsyncState("0", getRelayerFee);
   const breakpoint = useBreakpoint();
+
+  const [initialized, setInitialized] = React.useState(false);
+  React.useEffect(() => {
+    poofKit
+      .initializeReward()
+      .then(() => setInitialized(true))
+      .catch(console.warn);
+  });
+
+  if (!initialized) {
+    return <PoofKitLoading />;
+  }
 
   if (breakpoint === Breakpoint.MOBILE) {
     return (

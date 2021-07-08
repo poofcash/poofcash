@@ -5,6 +5,7 @@ import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
 import { PoofKitGlobal, usePoofAmount } from "hooks/poofUtils";
 import { RelayerOption, useRelayer } from "hooks/useRelayer";
 import { useAsyncState } from "hooks/useAsyncState";
+import { PoofKitLoading } from "components/PoofKitLoading";
 
 export interface IRedeemProps {
   setAmount: (amount: string) => void;
@@ -57,6 +58,18 @@ const RedeemPage: React.FC = () => {
   }, [poofKit, relayer, amount]);
   const [relayerFee] = useAsyncState("0", getRelayerFee);
   const breakpoint = useBreakpoint();
+
+  const [initialized, setInitialized] = React.useState(false);
+  React.useEffect(() => {
+    poofKit
+      .initializeSwap()
+      .then(() => setInitialized(true))
+      .catch(console.warn);
+  });
+
+  if (!initialized) {
+    return <PoofKitLoading />;
+  }
 
   if (breakpoint === Breakpoint.MOBILE) {
     return (
