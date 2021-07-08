@@ -19,7 +19,7 @@ export const Countdown: React.FC<IProps> = ({ start, end }) => {
 
   const countdownText = moment
     .utc(diff)
-    .format("DD [days:]HH [hours:]mm [minutes:]ss [seconds]");
+    .format("HH [hours:]mm [minutes:]ss [seconds]");
   const comps = countdownText.split(":");
 
   return (
