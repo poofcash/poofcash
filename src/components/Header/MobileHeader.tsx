@@ -56,36 +56,28 @@ export const MobileHeader: React.FC = () => {
           </Button>
           <Button
             variant={
+              currentPage === Page.MINE ? "switcherSelected" : "switcher"
+            }
+            onClick={() => dispatch(setCurrentPage({ nextPage: Page.MINE }))}
+          >
+            Mine
+          </Button>
+          <Button
+            variant={
+              currentPage === Page.REDEEM ? "switcherSelected" : "switcher"
+            }
+            onClick={() => dispatch(setCurrentPage({ nextPage: Page.REDEEM }))}
+          >
+            Redeem
+          </Button>
+          <Button
+            variant={
               currentPage === Page.AIRDROP ? "switcherSelected" : "switcher"
             }
             onClick={() => dispatch(setCurrentPage({ nextPage: Page.AIRDROP }))}
           >
             Airdrop
           </Button>
-          {process.env.NODE_ENV === "development" && (
-            <>
-              <Button
-                variant={
-                  currentPage === Page.MINE ? "switcherSelected" : "switcher"
-                }
-                onClick={() =>
-                  dispatch(setCurrentPage({ nextPage: Page.MINE }))
-                }
-              >
-                Mine
-              </Button>
-              <Button
-                variant={
-                  currentPage === Page.REDEEM ? "switcherSelected" : "switcher"
-                }
-                onClick={() =>
-                  dispatch(setCurrentPage({ nextPage: Page.REDEEM }))
-                }
-              >
-                Redeem
-              </Button>
-            </>
-          )}
         </Flex>
       </Container>
     </Container>
