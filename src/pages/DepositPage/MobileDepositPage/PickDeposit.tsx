@@ -8,7 +8,7 @@ import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
-import { useContractKit } from "@ubeswap/use-contractkit";
+import { useContractKit } from "@celo-tools/use-contractkit";
 import { toBN, fromWei, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
 import { humanFriendlyWei } from "utils/eth";

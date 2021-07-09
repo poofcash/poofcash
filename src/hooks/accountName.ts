@@ -1,4 +1,4 @@
-import { useContractKit } from "@ubeswap/use-contractkit";
+import { useContractKit } from "@celo-tools/use-contractkit";
 
 export const shortenAccount = (account: string | null) => {
   if (!account) {

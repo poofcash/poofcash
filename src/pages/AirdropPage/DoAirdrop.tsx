@@ -1,5 +1,5 @@
 import React from "react";
-import { useContractKit } from "@ubeswap/use-contractkit";
+import { useContractKit } from "@celo-tools/use-contractkit";
 import { PoofKitV2 } from "@poofcash/poof-kit";
 import { useTranslation } from "react-i18next";
 import { Box, Button, Container, Flex, Text } from "theme-ui";
