@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {

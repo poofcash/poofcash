@@ -10,7 +10,7 @@ import web3 from "web3";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { usePoofAccount } from "hooks/poofAccount";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { RelayerOption } from "hooks/useRelayer";
 

@@ -2,7 +2,7 @@ import React from "react";
 import { isValidNote, parseNote, toHex } from "utils/snarks-functions";
 import { Container, Input, Text } from "theme-ui";
 import { BlockscoutTxLink } from "components/Links";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { EventData } from "web3-eth-contract";
 
 type NoteDetail = {

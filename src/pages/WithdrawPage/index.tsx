@@ -6,7 +6,7 @@ import { RelayerOption, useRelayer } from "hooks/useRelayer";
 import { calculateFee, deployments, parseNote } from "@poofcash/poof-kit";
 import { isValidNote } from "utils/snarks-functions";
 import { fromWei } from "web3-utils";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
 
 export interface IWithdrawProps {

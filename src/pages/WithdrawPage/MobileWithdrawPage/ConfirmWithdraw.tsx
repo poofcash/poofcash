@@ -8,7 +8,7 @@ import { SummaryTable } from "components/SummaryTable";
 import { formatCurrency } from "utils/currency";
 import { humanFriendlyNumber } from "utils/number";
 import { RelayerOption } from "hooks/useRelayer";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
 
 interface IProps {

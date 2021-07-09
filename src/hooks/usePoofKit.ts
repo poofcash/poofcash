@@ -1,24 +1,8 @@
 import React from "react";
 import { useContractKit } from "@ubeswap/use-contractkit";
 import { PoofKitV2 } from "@poofcash/poof-kit";
-import { fromWei } from "web3-utils";
 import { createContainer } from "unstated-next";
 import { CHAIN_ID } from "config";
-
-export const usePoofAmount = (amount: number | string) => {
-  const { poofKit } = PoofKitGlobal.useContainer();
-  const [poofAmount, setPoofAmount] = React.useState<string | undefined>();
-  React.useEffect(() => {
-    poofKit
-      .ap2Poof(Number(amount))
-      .then((poofAmount) => setPoofAmount(fromWei(poofAmount)))
-      .catch(console.error);
-  });
-  if (Number(amount) === 0) {
-    return "0";
-  }
-  return poofAmount || "0";
-};
 
 const usePoofKit = () => {
   const { kit } = useContractKit();

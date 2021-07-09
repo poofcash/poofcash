@@ -8,7 +8,7 @@ import { CHAIN_ID } from "config";
 import { NoteStringCommitment } from "pages/DepositPage/types";
 import { useDeposit } from "hooks/writeContract";
 import { useAsyncState } from "hooks/useAsyncState";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 
 export const BLOCKS_PER_WEEK = 120960;
 

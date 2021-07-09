@@ -6,7 +6,7 @@ import { toWei } from "web3-utils";
 import { PoofKitV2 } from "@poofcash/poof-kit";
 import { Address } from "@celo/base";
 import { CHAIN_ID } from "config";
-import { PoofKitGlobal } from "./poofUtils";
+import { PoofKitGlobal } from "./usePoofKit";
 import { useAsyncState } from "./useAsyncState";
 
 export function useApprove(

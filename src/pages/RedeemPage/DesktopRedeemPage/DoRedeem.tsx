@@ -5,7 +5,7 @@ import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
 import { usePoofAccount } from "hooks/poofAccount";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { humanFriendlyNumber } from "utils/number";

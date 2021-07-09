@@ -1,5 +1,5 @@
 import { useContractKit } from "@ubeswap/use-contractkit";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { useAsyncState } from "hooks/useAsyncState";
 import React from "react";
 import { AirdropReceipt } from "./AirdropReceipt";

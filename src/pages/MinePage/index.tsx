@@ -4,7 +4,7 @@ import DesktopMinePage from "pages/MinePage/DesktopMinePage";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
 import { NoteInfo } from "@poofcash/poof-kit";
 import { isValidNote } from "utils/snarks-functions";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { useLatestBlockNumber } from "hooks/web3";
 import { RelayerOption, useRelayer } from "hooks/useRelayer";
 import { useAsyncState } from "hooks/useAsyncState";

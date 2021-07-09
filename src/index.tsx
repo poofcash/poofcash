@@ -8,7 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 import store from "state";
 import { ContractKitProvider } from "@ubeswap/use-contractkit";
 import { PasswordPrompt } from "hooks/poofAccount";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 
 import "@ubeswap/use-contractkit/lib/styles.css";
 import "index.css";

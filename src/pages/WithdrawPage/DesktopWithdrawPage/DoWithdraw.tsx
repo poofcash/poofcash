@@ -6,7 +6,7 @@ import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
 import { isValidNote, parseNote } from "utils/snarks-functions";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { humanFriendlyNumber } from "utils/number";
 import { formatCurrency } from "utils/currency";
 import { RelayerOption } from "hooks/useRelayer";

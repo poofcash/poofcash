@@ -8,7 +8,7 @@ import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
 import { useDebounce } from "hooks/debounce";
 import { isValidHttpUrl } from "utils/url.utils";
 import axios from "axios";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { RelayerOption } from "hooks/useRelayer";
 

@@ -4,7 +4,7 @@ import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { usePoofAccount } from "hooks/poofAccount";
 import { humanFriendlyNumber } from "utils/number";

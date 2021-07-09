@@ -6,7 +6,7 @@ import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
 import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
-import { PoofKitGlobal } from "hooks/poofUtils";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 import { RelayerOption } from "hooks/useRelayer";
 
 interface IProps {
