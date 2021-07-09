@@ -9,17 +9,25 @@ const usePoofKit = () => {
   const [initializing, setInitializing] = React.useState(true);
   const poofKit = new PoofKitV2(kit, CHAIN_ID);
   // Recursively try to initialize
-  const tryInit = () => {
-    return poofKit
-      .initialize(window.groth16)
-      .then(() => setInitializing(false))
-      .catch((e) => {
-        console.error("Failed to init PoofKit:", e);
-        tryInit();
-      });
+  const tryInit = async (firstTry: boolean) => {
+    setTimeout(
+      async () => {
+        if (!window.groth16) {
+          tryInit(false);
+        }
+        try {
+          await poofKit.initialize(window.groth16);
+          return setInitializing(false);
+        } catch (e) {
+          console.error("Failed to init PoofKit:", e);
+          tryInit(false);
+        }
+      },
+      firstTry ? 0 : 2500
+    );
   };
   React.useEffect(() => {
-    tryInit();
+    tryInit(true);
   });
   return { poofKit, poofKitLoading: initializing };
 };
