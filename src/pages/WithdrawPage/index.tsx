@@ -6,8 +6,6 @@ import { RelayerOption, useRelayer } from "hooks/useRelayer";
 import { calculateFee, deployments, parseNote } from "@poofcash/poof-kit";
 import { isValidNote } from "utils/snarks-functions";
 import { fromWei } from "web3-utils";
-import { PoofKitGlobal } from "hooks/usePoofKit";
-import { PoofKitLoading } from "components/PoofKitLoading";
 
 export interface IWithdrawProps {
   setNote: (note: string) => void;
@@ -55,18 +53,6 @@ const WithdrawPage: React.FC = () => {
         5e5
       )
     );
-  }
-  const { poofKit } = PoofKitGlobal.useContainer();
-  const [initialized, setInitialized] = React.useState(false);
-  React.useEffect(() => {
-    poofKit
-      .initializeSend()
-      .then(() => setInitialized(true))
-      .catch(console.warn);
-  });
-
-  if (!initialized) {
-    return <PoofKitLoading />;
   }
 
   if (breakpoint === Breakpoint.MOBILE) {
