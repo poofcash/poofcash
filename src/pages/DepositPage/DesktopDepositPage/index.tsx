@@ -4,6 +4,7 @@ import { CHAIN_ID } from "config";
 import { DoDeposit } from "pages/DepositPage/DesktopDepositPage/DoDeposit";
 import { DepositReceipt } from "pages/DepositPage/DesktopDepositPage/DepositReceipt";
 import { IDepositProps } from "pages/DepositPage";
+import { usePoofAccount } from "hooks/poofAccount";
 
 enum DepositStep {
   DO = "DO",
@@ -22,20 +23,35 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
   depositLoading,
   poofRate,
   apRate,
+  backup,
+  setBackup,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.DO);
+  const { poofAccount, actWithPoofAccount } = usePoofAccount();
 
   switch (depositStep) {
     case DepositStep.DO:
       return (
         <DoDeposit
-          onDepositClick={() => {
-            deposit()
-              .then(() => setDepositStep(DepositStep.RECEIPT))
-              .catch((e) => {
-                console.error("Failed to deposit", e);
-                alert(e);
-              });
+          onDepositClick={async () => {
+            try {
+              if (poofAccount && backup) {
+                actWithPoofAccount(
+                  (privateKey) => {
+                    deposit(privateKey).then(() =>
+                      setDepositStep(DepositStep.RECEIPT)
+                    );
+                  },
+                  () => {}
+                );
+              } else {
+                await deposit();
+                setDepositStep(DepositStep.RECEIPT);
+              }
+            } catch (e) {
+              console.error("Failed to deposit", e);
+              alert(e);
+            }
           }}
           selectedAmount={selectedAmount}
           setSelectedAmount={setSelectedAmount}
@@ -45,6 +61,8 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
           depositLoading={depositLoading}
           poofRate={poofRate}
           apRate={apRate}
+          backup={backup}
+          setBackup={setBackup}
         />
       );
     case DepositStep.RECEIPT:

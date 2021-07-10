@@ -54,6 +54,7 @@ export const CreateAccount: React.FC<IProps> = ({ goBack }) => {
           onClick={() => {
             savePoofAccount(privateKey, () => {
               dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }));
+              goBack();
             });
           }}
         >

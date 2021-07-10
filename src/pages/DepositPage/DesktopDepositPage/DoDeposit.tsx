@@ -23,6 +23,9 @@ import { useContractKit } from "@ubeswap/use-contractkit";
 import { toBN, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
 import { deployments } from "@poofcash/poof-kit";
+import { useDispatch } from "react-redux";
+import { Page, setCurrentPage } from "state/global";
+import { usePoofAccount } from "hooks/poofAccount";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -34,6 +37,8 @@ interface IProps {
   depositLoading: boolean;
   poofRate: string;
   apRate: string;
+  backup: boolean;
+  setBackup: (backup: boolean) => void;
 }
 
 export const DoDeposit: React.FC<IProps> = ({
@@ -46,6 +51,8 @@ export const DoDeposit: React.FC<IProps> = ({
   depositLoading,
   poofRate,
   apRate,
+  backup,
+  setBackup,
 }) => {
   const { t } = useTranslation();
   const { address, connect } = useContractKit();
@@ -65,56 +72,60 @@ export const DoDeposit: React.FC<IProps> = ({
     CURRENCY_MAP[selectedCurrency.toLowerCase()],
     address
   );
+  const dispatch = useDispatch();
+  const { poofAccount } = usePoofAccount();
 
   const loading = approveLoading || depositLoading;
 
-  const connectWalletButton = (
+  let button = (
     <Button variant="primary" onClick={connect} sx={{ width: "100%" }}>
       Connect Wallet
     </Button>
   );
-
-  const insufficientBalanceButton = (
-    <Button variant="primary" disabled={true} sx={{ width: "100%" }}>
-      Insufficient Balance
-    </Button>
-  );
-
-  const approveButton = (
-    <Button
-      variant="primary"
-      onClick={() =>
-        approve().catch((e) => {
-          console.error(e);
-          alert(e);
-        })
-      }
-      sx={{ width: "100%" }}
-      disabled={!address || selectedAmount === "0" || !confirmed}
-    >
-      Approve
-    </Button>
-  );
-
-  const depositButton = (
-    <Button
-      variant="primary"
-      onClick={onDepositClick}
-      sx={{ width: "100%" }}
-      disabled={!address || selectedAmount === "0" || !confirmed}
-    >
-      Deposit
-    </Button>
-  );
-
-  let button = connectWalletButton;
   if (address) {
     if (toBN(userBalance).lt(toBN(toWei(selectedAmount)))) {
-      button = insufficientBalanceButton;
+      button = (
+        <Button variant="primary" disabled={true} sx={{ width: "100%" }}>
+          Insufficient Balance
+        </Button>
+      );
     } else if (toBN(allowance).lt(toBN(toWei(selectedAmount)))) {
-      button = approveButton;
+      button = (
+        <Button
+          variant="primary"
+          onClick={() =>
+            approve().catch((e) => {
+              console.error(e);
+              alert(e);
+            })
+          }
+          sx={{ width: "100%" }}
+          disabled={!address || selectedAmount === "0" || !confirmed}
+        >
+          Approve
+        </Button>
+      );
+    } else if (!poofAccount && backup) {
+      button = (
+        <Button
+          variant="primary"
+          onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
+          sx={{ width: "100%" }}
+        >
+          Connect Poof account
+        </Button>
+      );
     } else {
-      button = depositButton;
+      button = (
+        <Button
+          variant="primary"
+          onClick={onDepositClick}
+          sx={{ width: "100%" }}
+          disabled={!address || selectedAmount === "0" || !confirmed}
+        >
+          Deposit
+        </Button>
+      );
     }
   }
 
@@ -192,6 +203,13 @@ export const DoDeposit: React.FC<IProps> = ({
         >
           <Checkbox readOnly checked={confirmed} />
           <Text sx={{ pt: 1 }}>I backed up the Magic Password</Text>
+        </Flex>
+        <Flex
+          sx={{ mt: 4, alignItems: "center" }}
+          onClick={() => setBackup(!backup)}
+        >
+          <Checkbox readOnly checked={backup} />
+          <Text sx={{ pt: 1 }}>Create an on-chain backup</Text>
         </Flex>
       </>
     );

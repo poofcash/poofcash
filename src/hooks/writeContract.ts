@@ -54,30 +54,33 @@ export function useApprove(
 
 export function useDeposit(
   noteString: string
-): [string, () => Promise<void>, boolean] {
+): [string, (privateKey?: string) => Promise<void>, boolean] {
   const [loading, setLoading] = React.useState(false);
   const [txHash, setTxHash] = React.useState("");
   const { getConnectedKit } = useContractKit();
 
-  const deposit = React.useCallback(async () => {
-    setLoading(true);
-    try {
-      const kit = await getConnectedKit();
-      const poofKit = new PoofKitV2(kit, CHAIN_ID);
-      const depositTxo = poofKit.depositNote(noteString);
-      await kit
-        .sendTransactionObject(depositTxo, {
-          from: kit.defaultAccount,
-          gasPrice: toWei("0.1", "gwei"),
-        })
-        .then((tx) => tx.getHash())
-        .then(setTxHash);
-    } catch (e) {
-      throw e;
-    } finally {
-      setLoading(false);
-    }
-  }, [getConnectedKit, noteString]);
+  const deposit = React.useCallback(
+    async (privateKey?: string) => {
+      setLoading(true);
+      try {
+        const kit = await getConnectedKit();
+        const poofKit = new PoofKitV2(kit, CHAIN_ID);
+        let depositTxo = poofKit.depositNote(noteString, privateKey);
+        await kit
+          .sendTransactionObject(depositTxo, {
+            from: kit.defaultAccount,
+            gasPrice: toWei("0.1", "gwei"),
+          })
+          .then((tx) => tx.getHash())
+          .then(setTxHash);
+      } catch (e) {
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [getConnectedKit, noteString]
+  );
 
   return [txHash, deposit, loading];
 }

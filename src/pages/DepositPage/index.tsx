@@ -9,6 +9,7 @@ import { NoteStringCommitment } from "pages/DepositPage/types";
 import { useDeposit } from "hooks/writeContract";
 import { useAsyncState } from "hooks/useAsyncState";
 import { PoofKitGlobal } from "hooks/usePoofKit";
+import { usePoofAccount } from "hooks/poofAccount";
 
 export const BLOCKS_PER_WEEK = 120960;
 
@@ -20,10 +21,12 @@ export interface IDepositProps {
   setNoteStringCommitment: (noteStringCommitment: NoteStringCommitment) => void;
   noteStringCommitment: NoteStringCommitment;
   txHash: string;
-  deposit: () => Promise<void>;
+  deposit: (privateKey?: string) => Promise<void>;
   depositLoading: boolean;
   poofRate: string;
   apRate: string;
+  backup: boolean;
+  setBackup: (backup: boolean) => void;
 }
 
 const DepositPage: React.FC = () => {
@@ -64,6 +67,10 @@ const DepositPage: React.FC = () => {
   const [txHash, deposit, depositLoading] = useDeposit(
     noteStringCommitment.noteString
   );
+  const { poofAccount } = usePoofAccount();
+  const [backup, setBackup] = React.useState<boolean>(
+    poofAccount !== undefined
+  );
 
   if (breakpoint === Breakpoint.MOBILE) {
     return (
@@ -79,6 +86,8 @@ const DepositPage: React.FC = () => {
         depositLoading={depositLoading}
         poofRate={poofRate}
         apRate={apRate}
+        backup={backup}
+        setBackup={setBackup}
       />
     );
   }
@@ -96,6 +105,8 @@ const DepositPage: React.FC = () => {
       depositLoading={depositLoading}
       poofRate={poofRate}
       apRate={apRate}
+      backup={backup}
+      setBackup={setBackup}
     />
   );
 };
