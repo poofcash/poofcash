@@ -55,9 +55,9 @@ const NoteList: React.FC<IProps> = ({
         <Spinner />
       ) : notes ? (
         notes.map((deposit) => {
-          const noteAmount = `${fromWei(
-            deposit.note.amount
-          ).toString()} ${formatCurrency(deposit.note.currency)}`;
+          const noteAmount = `${Number(
+            fromWei(deposit.note.amount)
+          ).toLocaleString()} ${formatCurrency(deposit.note.currency)}`;
           const depositBlockNumber = deposit.depositBlock!.blockNumber;
           const apEarned =
             ((deposit.withdrawBlock?.blockNumber ??

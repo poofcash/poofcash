@@ -5,6 +5,7 @@ import { ConfirmDeposit } from "pages/DepositPage/MobileDepositPage/ConfirmDepos
 import { DepositReceipt } from "pages/DepositPage/MobileDepositPage/DepositReceipt";
 import { CHAIN_ID } from "config";
 import { IDepositProps } from "pages/DepositPage";
+import { usePoofAccount } from "hooks/poofAccount";
 
 enum DepositStep {
   PICKER = "PICKER",
@@ -34,6 +35,7 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
   setBackup,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
+  const { poofAccount, actWithPoofAccount } = usePoofAccount();
 
   switch (depositStep) {
     case DepositStep.PICKER:
@@ -54,13 +56,25 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
       return (
         <ConfirmDeposit
           onBackClick={() => setDepositStep(DepositStep.PICKER)}
-          onConfirmClick={() => {
-            deposit()
-              .then(() => setDepositStep(DepositStep.RECEIPT))
-              .catch((e) => {
-                console.error("Failed to deposit", e);
-                alert(e);
-              });
+          onConfirmClick={async () => {
+            try {
+              if (poofAccount && backup) {
+                actWithPoofAccount(
+                  (privateKey) => {
+                    deposit(privateKey).then(() =>
+                      setDepositStep(DepositStep.RECEIPT)
+                    );
+                  },
+                  () => {}
+                );
+              } else {
+                await deposit();
+                setDepositStep(DepositStep.RECEIPT);
+              }
+            } catch (e) {
+              console.error("Failed to deposit", e);
+              alert(e);
+            }
           }}
           selectedAmount={selectedAmount}
           selectedCurrency={selectedCurrency}
