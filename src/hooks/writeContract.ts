@@ -26,7 +26,7 @@ export function useApprove(
   const [allowance, refetchAllowance] = useAsyncState("0", allowanceCall);
 
   const approve = React.useCallback(async (): Promise<void> => {
-    const useExact = true;
+    const useExact = false;
     setLoading(true);
     try {
       await performActions(async (kit: ContractKit) => {
