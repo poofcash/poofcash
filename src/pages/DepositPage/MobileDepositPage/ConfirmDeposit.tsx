@@ -7,6 +7,9 @@ import { LabelWithBalance } from "components/LabelWithBalance";
 import { NoteString } from "components/NoteString";
 import { SummaryTable } from "components/SummaryTable";
 import { humanFriendlyNumber } from "utils/number";
+import { useDispatch } from "react-redux";
+import { usePoofAccount } from "hooks/poofAccount";
+import { Page, setCurrentPage } from "state/global";
 
 interface IProps {
   onBackClick: () => void;
@@ -15,6 +18,8 @@ interface IProps {
   selectedCurrency: string;
   noteStringCommitment: NoteStringCommitment;
   depositLoading: boolean;
+  backup: boolean;
+  setBackup: (backup: boolean) => void;
 }
 
 export const NETWORK_COST = 0.0001;
@@ -26,9 +31,27 @@ export const ConfirmDeposit: React.FC<IProps> = ({
   selectedCurrency,
   noteStringCommitment,
   depositLoading,
+  backup,
+  setBackup,
 }) => {
   const [confirmed, setConfirmed] = React.useState(false);
   const totalCost = Number(selectedAmount) + Number(NETWORK_COST);
+  const dispatch = useDispatch();
+  const { poofAccount } = usePoofAccount();
+
+  let button = (
+    <Button onClick={onConfirmClick} disabled={!confirmed} variant="primary">
+      Deposit
+    </Button>
+  );
+  if (backup && !poofAccount) {
+    <Button
+      onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
+      variant="primary"
+    >
+      Deposit
+    </Button>;
+  }
 
   return (
     <Container>
@@ -85,6 +108,13 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         <Checkbox readOnly checked={confirmed} />
         <Text sx={{ pt: 1 }}>I backed up the Magic Password</Text>
       </Flex>
+      <Flex
+        sx={{ mt: 4, alignItems: "center" }}
+        onClick={() => setBackup(!backup)}
+      >
+        <Checkbox readOnly checked={backup} />
+        <Text sx={{ pt: 1 }}>Create an on-chain backup</Text>
+      </Flex>
       <BottomDrawer>
         {depositLoading ? (
           <Flex sx={{ justifyContent: "flex-end" }}>
@@ -97,13 +127,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
               amount={totalCost.toString()}
               currency={selectedCurrency}
             />
-            <Button
-              onClick={onConfirmClick}
-              disabled={!confirmed}
-              variant="primary"
-            >
-              Deposit
-            </Button>
+            {button}
           </Flex>
         )}
       </BottomDrawer>

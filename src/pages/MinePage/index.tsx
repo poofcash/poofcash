@@ -38,7 +38,7 @@ const MinePage: React.FC = () => {
   }, [noteIsValid, note, poofKit]);
 
   // Calculate estimated AP
-  const latestBlockNumber = useLatestBlockNumber();
+  const [latestBlockNumber] = useLatestBlockNumber();
   let estimatedAp = 0;
   if (isValidNote(note) && noteInfo && noteInfo.depositBlock) {
     const withdrawBlock =

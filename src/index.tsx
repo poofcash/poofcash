@@ -9,6 +9,7 @@ import store from "state";
 import { ContractKitProvider } from "@ubeswap/use-contractkit";
 import { PasswordPrompt } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
+import { DepositListGlobal } from "components/DepositList";
 
 import "@ubeswap/use-contractkit/lib/styles.css";
 import "index.css";
@@ -33,7 +34,9 @@ ReactDOM.render(
           >
             <PasswordPrompt.Provider>
               <PoofKitGlobal.Provider>
-                <App />
+                <DepositListGlobal.Provider>
+                  <App />
+                </DepositListGlobal.Provider>
               </PoofKitGlobal.Provider>
             </PasswordPrompt.Provider>
           </ContractKitProvider>

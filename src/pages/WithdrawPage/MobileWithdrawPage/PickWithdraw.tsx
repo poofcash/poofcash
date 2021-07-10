@@ -1,7 +1,7 @@
 import React from "react";
 import web3 from "web3";
 import { isValidNote, parseNote } from "utils/snarks-functions";
-import { Button, Flex, Input, Select, Text } from "theme-ui";
+import { Box, Button, Divider, Flex, Input, Select, Text } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
@@ -11,6 +11,7 @@ import axios from "axios";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { RelayerOption } from "hooks/useRelayer";
+import { DepositListGlobal } from "components/DepositList";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -44,6 +45,7 @@ export const PickWithdraw: React.FC<IProps> = ({
   setCustomRelayer,
 }) => {
   const breakpoint = useBreakpoint();
+  const { depositList } = DepositListGlobal.useContainer();
   const [customRelayerError, setCustomRelayerError] = React.useState<
     string | null
   >(null);
@@ -185,6 +187,9 @@ export const PickWithdraw: React.FC<IProps> = ({
           </Text>
         </>
       )}
+
+      <Divider my={4} />
+      <Box>{depositList}</Box>
 
       {breakpoint === Breakpoint.MOBILE && (
         <BottomDrawer>

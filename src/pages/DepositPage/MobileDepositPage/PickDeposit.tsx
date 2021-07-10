@@ -3,7 +3,7 @@ import { CHAIN_ID, CURRENCY_MAP } from "config";
 import { useApprove } from "hooks/writeContract";
 import { useTokenBalance } from "hooks/readContract";
 import { Button, Text, Spinner } from "@theme-ui/components";
-import { Flex, Select } from "theme-ui";
+import { Box, Divider, Flex, Select } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
@@ -13,6 +13,7 @@ import { toBN, fromWei, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
 import { humanFriendlyWei } from "utils/eth";
 import { deployments } from "@poofcash/poof-kit";
+import { DepositListGlobal } from "components/DepositList";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -38,6 +39,7 @@ export const PickDeposit: React.FC<IProps> = ({
 }) => {
   const { connect, address } = useContractKit();
   const breakpoint = useBreakpoint();
+  const { depositList } = DepositListGlobal.useContainer();
 
   const [
     showInsufficientBalanceModal,
@@ -189,6 +191,9 @@ export const PickDeposit: React.FC<IProps> = ({
           </Flex>
         </>
       )}
+
+      <Divider my={4} />
+      <Box>{depositList}</Box>
 
       <InsufficientBalanceModal
         onClose={() => setShowInsufficientBalanceModal(false)}

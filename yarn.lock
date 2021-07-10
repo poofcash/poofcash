@@ -2301,10 +2301,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@poofcash/poof-kit@^1.0.17":
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.17.tgz#bcb0171a0b6e681637f5a59eb9883e4e1896f24a"
-  integrity sha512-rItTTFxclMd0i6u5MjQSKRrdkWcLngivOMhjwkwjPFrrC4vna8Yq9QpEeSGpsgqY0wUfm3ewfHhqKPHJQlpVPg==
+"@poofcash/poof-kit@^1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.18.tgz#250f81b5e99a0a291c792449720afedc6ddc455f"
+  integrity sha512-K9E3WuWUxOAVLIsgvq+JOYag/r8k08YJfcoOryPmTlCSCMwnvfAnuk11ubquF0933M0nkW8oJhydA75ARrc9rA==
   dependencies:
     "@celo/contractkit" "^1.1.0"
     "@types/bn.js" "^5.1.0"

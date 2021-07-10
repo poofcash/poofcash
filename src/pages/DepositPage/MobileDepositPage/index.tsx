@@ -30,6 +30,8 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
   depositLoading,
   poofRate,
   apRate,
+  backup,
+  setBackup,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
 
@@ -64,6 +66,8 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
           selectedCurrency={selectedCurrency}
           noteStringCommitment={noteStringCommitment}
           depositLoading={depositLoading}
+          backup={backup}
+          setBackup={setBackup}
         />
       );
     case DepositStep.RECEIPT:

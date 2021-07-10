@@ -31,6 +31,7 @@ export const preset = {
     },
   },
   fonts: {
+    heading: "Bold",
     regular: "Regular",
     bold: "Bold",
     demiBold: "DemiBold",
@@ -141,11 +142,6 @@ export const preset = {
       height: "avatar",
       borderRadius: "circle",
     },
-    card: {
-      p: 2,
-      bg: "background",
-      boxShadow: "card",
-    },
     link: {
       color: "link",
       textDecoration: "none",
@@ -248,6 +244,7 @@ export const preset = {
       padding: 2,
       borderRadius: 4,
       boxShadow: "0 0 8px rgba(0, 0, 0, 0.125)",
+      bg: "box",
     },
     compact: {
       padding: 1,

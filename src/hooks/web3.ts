@@ -1,11 +1,11 @@
 import { useContractKit } from "@ubeswap/use-contractkit";
 import React from "react";
+import { useAsyncState } from "./useAsyncState";
 
-export function useLatestBlockNumber() {
+export function useLatestBlockNumber(): [number, () => void] {
   const { kit } = useContractKit();
-  const [latestBlock, setLatestBlock] = React.useState(0);
-  React.useEffect(() => {
-    kit.web3.eth.getBlockNumber().then(setLatestBlock);
-  }, [kit, setLatestBlock]);
-  return latestBlock;
+  const getBlockNumber = React.useCallback(async () => {
+    return await kit.web3.eth.getBlockNumber();
+  }, [kit]);
+  return useAsyncState(0, getBlockNumber);
 }

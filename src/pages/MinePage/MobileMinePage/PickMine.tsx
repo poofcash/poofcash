@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Flex, Input, Select, Text } from "theme-ui";
+import { Box, Button, Divider, Flex, Input, Select, Text } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
@@ -12,6 +12,7 @@ import { usePoofAccount } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { RelayerOption } from "hooks/useRelayer";
+import { DepositListGlobal } from "components/DepositList";
 
 interface IProps {
   onMineClick: () => void;
@@ -45,6 +46,7 @@ export const PickMine: React.FC<IProps> = ({
   setCustomRelayer,
 }) => {
   const breakpoint = useBreakpoint();
+  const { withdrawList } = DepositListGlobal.useContainer();
   const [customRelayerError, setCustomRelayerError] = React.useState<
     string | null
   >(null);
@@ -198,6 +200,9 @@ export const PickMine: React.FC<IProps> = ({
           </Text>
         </>
       )}
+
+      <Divider my={4} />
+      <Box>{withdrawList}</Box>
 
       {breakpoint === Breakpoint.MOBILE && (
         <BottomDrawer>
