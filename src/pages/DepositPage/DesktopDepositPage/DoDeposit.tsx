@@ -25,7 +25,7 @@ import { humanFriendlyNumber } from "utils/number";
 import { deployments } from "@poofcash/poof-kit";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -73,7 +73,7 @@ export const DoDeposit: React.FC<IProps> = ({
     address
   );
   const dispatch = useDispatch();
-  const { poofAccount } = usePoofAccount();
+  const { poofAccount } = PoofAccountGlobal.useContainer();
 
   const loading = approveLoading || depositLoading;
 

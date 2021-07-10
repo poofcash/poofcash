@@ -3,7 +3,7 @@ import { Button, Checkbox, Flex, Text } from "theme-ui";
 import { useTranslation } from "react-i18next";
 import Web3 from "web3";
 import { PoofPrivateKey } from "components/PoofPrivateKey";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 
@@ -20,7 +20,7 @@ export const CreateAccount: React.FC<IProps> = ({ goBack }) => {
     []
   );
   const [confirmed, setConfirmed] = React.useState(false);
-  const { savePoofAccount } = usePoofAccount();
+  const { savePoofAccount } = PoofAccountGlobal.useContainer();
   const dispatch = useDispatch();
 
   return (

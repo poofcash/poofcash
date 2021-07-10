@@ -4,7 +4,7 @@ import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
 import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
@@ -48,7 +48,7 @@ export const DoMine: React.FC<IProps> = ({
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
   const dispatch = useDispatch();
 
-  const { poofAccount, actWithPoofAccount } = usePoofAccount();
+  const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
 
   const totalMineAmount = Number(estimatedAp) - Number(relayerFee);
 

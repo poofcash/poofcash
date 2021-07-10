@@ -8,7 +8,7 @@ import { isValidHttpUrl } from "utils/url.utils";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { RelayerOption } from "hooks/useRelayer";
@@ -75,7 +75,7 @@ export const PickMine: React.FC<IProps> = ({
       setCustomRelayerError("Invalid custom relayer url format");
     }
   }, 200);
-  const { poofAccount } = usePoofAccount();
+  const { poofAccount } = PoofAccountGlobal.useContainer();
   const dispatch = useDispatch();
 
   const { poofKitLoading } = PoofKitGlobal.useContainer();

@@ -4,7 +4,7 @@ import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { RelayerOption } from "hooks/useRelayer";
@@ -34,7 +34,7 @@ export const ConfirmMine: React.FC<IProps> = ({
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
   const [loading, setLoading] = React.useState(false);
 
-  const { actWithPoofAccount } = usePoofAccount();
+  const { actWithPoofAccount } = PoofAccountGlobal.useContainer();
 
   if (poofKitLoading) {
     return <PoofKitLoading />;

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Container, Flex, Input, Text } from "theme-ui";
 import { useTranslation } from "react-i18next";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { isPrivateKey } from "utils/eth";
@@ -13,7 +13,7 @@ interface IProps {
 export const Login: React.FC<IProps> = ({ goBack }) => {
   const { t } = useTranslation();
   const [privateKey, setPrivateKey] = React.useState("");
-  const { savePoofAccount } = usePoofAccount();
+  const { savePoofAccount } = PoofAccountGlobal.useContainer();
   const dispatch = useDispatch();
 
   return (

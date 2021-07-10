@@ -7,7 +7,7 @@ import { ThemeProvider } from "theme-ui";
 import { BrowserRouter } from "react-router-dom";
 import store from "state";
 import { ContractKitProvider } from "@ubeswap/use-contractkit";
-import { PasswordPrompt } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { DepositListGlobal } from "components/DepositList";
 
@@ -32,13 +32,13 @@ ReactDOM.render(
               url: "https://app.poof.cash",
             }}
           >
-            <PasswordPrompt.Provider>
-              <PoofKitGlobal.Provider>
+            <PoofKitGlobal.Provider>
+              <PoofAccountGlobal.Provider>
                 <DepositListGlobal.Provider>
                   <App />
                 </DepositListGlobal.Provider>
-              </PoofKitGlobal.Provider>
-            </PasswordPrompt.Provider>
+              </PoofAccountGlobal.Provider>
+            </PoofKitGlobal.Provider>
           </ContractKitProvider>
         </BrowserRouter>
       </ThemeProvider>

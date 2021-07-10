@@ -8,17 +8,17 @@ import "i18n/config";
 import { useSelector } from "react-redux";
 import { Page } from "state/global";
 import { AppState } from "state";
-import { PasswordPrompt } from "hooks/poofAccount";
 import MinePage from "pages/MinePage";
 import RedeemPage from "pages/RedeemPage";
 import { SetupAccount } from "pages/SetupAccount";
 import AirdropPage from "pages/AirdropPage";
 import ExchangePage from "pages/ExchangePage";
 import Modal from "react-modal";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 
 // pass props and State interface to Component class
 const App: React.FC = () => {
-  const { passwordModal } = PasswordPrompt.useContainer();
+  const { passwordModal } = PoofAccountGlobal.useContainer();
   React.useEffect(() => {
     Modal.setAppElement("body");
   });

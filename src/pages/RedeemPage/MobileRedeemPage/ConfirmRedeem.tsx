@@ -6,7 +6,7 @@ import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { humanFriendlyNumber } from "utils/number";
 import { RelayerOption } from "hooks/useRelayer";
 
@@ -36,7 +36,7 @@ export const ConfirmRedeem: React.FC<IProps> = ({
 }) => {
   const [loading, setLoading] = React.useState(false);
 
-  const { actWithPoofAccount } = usePoofAccount();
+  const { actWithPoofAccount } = PoofAccountGlobal.useContainer();
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
 
   if (poofKitLoading) {

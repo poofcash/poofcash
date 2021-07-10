@@ -5,7 +5,7 @@ import { ConfirmDeposit } from "pages/DepositPage/MobileDepositPage/ConfirmDepos
 import { DepositReceipt } from "pages/DepositPage/MobileDepositPage/DepositReceipt";
 import { CHAIN_ID } from "config";
 import { IDepositProps } from "pages/DepositPage";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 
 enum DepositStep {
   PICKER = "PICKER",
@@ -35,7 +35,7 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
   setBackup,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
-  const { poofAccount, actWithPoofAccount } = usePoofAccount();
+  const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
 
   switch (depositStep) {
     case DepositStep.PICKER:

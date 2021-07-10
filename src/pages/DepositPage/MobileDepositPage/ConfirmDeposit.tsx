@@ -8,7 +8,7 @@ import { NoteString } from "components/NoteString";
 import { SummaryTable } from "components/SummaryTable";
 import { humanFriendlyNumber } from "utils/number";
 import { useDispatch } from "react-redux";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { Page, setCurrentPage } from "state/global";
 
 interface IProps {
@@ -37,7 +37,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
   const [confirmed, setConfirmed] = React.useState(false);
   const totalCost = Number(selectedAmount) + Number(NETWORK_COST);
   const dispatch = useDispatch();
-  const { poofAccount } = usePoofAccount();
+  const { poofAccount } = PoofAccountGlobal.useContainer();
 
   let button = (
     <Button onClick={onConfirmClick} disabled={!confirmed} variant="primary">

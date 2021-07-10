@@ -9,7 +9,7 @@ import { NoteStringCommitment } from "pages/DepositPage/types";
 import { useDeposit } from "hooks/writeContract";
 import { useAsyncState } from "hooks/useAsyncState";
 import { PoofKitGlobal } from "hooks/usePoofKit";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 
 export const BLOCKS_PER_WEEK = 120960;
 
@@ -67,7 +67,7 @@ const DepositPage: React.FC = () => {
   const [txHash, deposit, depositLoading] = useDeposit(
     noteStringCommitment.noteString
   );
-  const { poofAccount } = usePoofAccount();
+  const { poofAccount } = PoofAccountGlobal.useContainer();
   const [backup, setBackup] = React.useState<boolean>(
     poofAccount !== undefined
   );

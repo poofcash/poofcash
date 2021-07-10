@@ -4,7 +4,7 @@ import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
 import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
@@ -52,7 +52,7 @@ export const DoRedeem: React.FC<IProps> = ({
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
-  const { poofAccount, actWithPoofAccount } = usePoofAccount();
+  const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
   const dispatch = useDispatch();
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
 

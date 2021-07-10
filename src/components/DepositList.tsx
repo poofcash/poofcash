@@ -1,6 +1,6 @@
 import React from "react";
 import { NoteInfo } from "@poofcash/poof-kit";
-import { usePoofAccount } from "hooks/poofAccount";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { Box, Button, Card, Flex, Heading, Spinner, Text } from "theme-ui";
 import { isValidNote } from "utils/snarks-functions";
@@ -104,7 +104,7 @@ const NoteList: React.FC<IProps> = ({
 
 const useDepositList = () => {
   const { poofKit } = PoofKitGlobal.useContainer();
-  const { poofAccount, actWithPoofAccount } = usePoofAccount();
+  const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
   const [latestBlock, refreshLatestBlock] = useLatestBlockNumber();
   const [loading, setLoading] = React.useState(false);
   const [deposits, setDeposits] = React.useState<NoteInfo[]>();

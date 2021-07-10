@@ -110,11 +110,10 @@ const usePasswordPrompt = () => {
   return { passwordModal, promptPassword };
 };
 
-export const PasswordPrompt = createContainer(usePasswordPrompt);
-
-export const usePoofAccount = () => {
+const usePoofAccount = () => {
   const poofAccount = useSelector((state: AppState) => state.user.poofAccount);
-  const { promptPassword } = PasswordPrompt.useContainer();
+  const [privateKey, setPrivateKey] = React.useState<string>();
+  const { promptPassword, passwordModal } = usePasswordPrompt();
   const dispatch = useDispatch();
 
   const actWithPoofAccount = (
@@ -124,23 +123,29 @@ export const usePoofAccount = () => {
     if (!poofAccount) {
       return;
     }
-    promptPassword(
-      (password: string) => {
-        try {
-          const decryptedPoofAccount = web3.eth.accounts.decrypt(
-            poofAccount,
-            password
-          );
-          action(decryptedPoofAccount.privateKey.slice(2));
-        } catch (e) {
-          console.error(e);
-          alert("Failed to decrypt account. Is your password correct?");
-          cancelAction();
-        }
-      },
-      cancelAction,
-      "Enter your password to decrypt and retrieve your saved private key from local storage."
-    );
+    if (privateKey) {
+      action(privateKey);
+    } else {
+      promptPassword(
+        (password: string) => {
+          try {
+            const decryptedPoofAccount = web3.eth.accounts.decrypt(
+              poofAccount,
+              password
+            );
+            const privateKey = decryptedPoofAccount.privateKey.slice(2);
+            action(privateKey);
+            setPrivateKey(privateKey);
+          } catch (e) {
+            console.error(e);
+            alert("Failed to decrypt account. Is your password correct?");
+            cancelAction();
+          }
+        },
+        cancelAction,
+        "Enter your password to decrypt and retrieve your saved private key from local storage."
+      );
+    }
   };
 
   const savePoofAccount = (privateKey: string, onSave: () => void) => {
@@ -158,5 +163,7 @@ export const usePoofAccount = () => {
     );
   };
 
-  return { poofAccount, actWithPoofAccount, savePoofAccount };
+  return { poofAccount, actWithPoofAccount, savePoofAccount, passwordModal };
 };
+
+export const PoofAccountGlobal = createContainer(usePoofAccount);
