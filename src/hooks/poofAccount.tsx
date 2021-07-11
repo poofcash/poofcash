@@ -12,7 +12,7 @@ const web3 = new Web3();
 
 const usePasswordPrompt = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [password, setPassword] = React.useState("");
+  const passwordInput = React.useRef<any>(null);
   const [action, setAction] = React.useState<(password: string) => void>();
   const [cancelAction, setCancelAction] = React.useState<() => void>();
   const [subtitle, setSubtitle] = React.useState("");
@@ -20,7 +20,6 @@ const usePasswordPrompt = () => {
 
   const reset = () => {
     setIsOpen(false);
-    setPassword("");
     setAction(undefined);
     setCancelAction(undefined);
     setSubtitle("");
@@ -54,6 +53,7 @@ const usePasswordPrompt = () => {
         <Box pt={["66%", 0]}>
           <form
             onSubmit={(e) => {
+              const password = passwordInput?.current.value;
               if (action) {
                 action(password);
               }
@@ -72,7 +72,7 @@ const usePasswordPrompt = () => {
             <Input
               sx={{ mb: 2 }}
               type="password"
-              onChange={(e) => setPassword(e.target.value)}
+              ref={passwordInput}
               autoFocus
               autoComplete="off"
             />
