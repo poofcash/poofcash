@@ -44,7 +44,10 @@ const usePasswordPrompt = () => {
   const passwordModal = (
     <Modal
       isOpen={isOpen}
-      onRequestClose={() => setIsOpen(false)}
+      onRequestClose={() => {
+        setIsOpen(false);
+        cancelAction && cancelAction();
+      }}
       style={modalStyle}
     >
       <Container sx={{ width: "100%", height: "100%", bg: "background", p: 4 }}>
