@@ -9,7 +9,7 @@
     "@ethersproject/contracts": "^5.0.12",
     "@ethersproject/providers": "^5.0.24",
     "@ethersproject/solidity": "^5.0.10",
-    "@poofcash/poof-kit": "^1.0.18",
+    "@poofcash/poof-kit": "^1.0.19",
     "@poofcash/rewardscelo": "1.0.2",
     "@rebass/forms": "^4.0.6",
     "@reduxjs/toolkit": "^1.5.0",
