@@ -2301,10 +2301,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@poofcash/poof-kit@^1.0.21":
-  version "1.0.21"
-  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.21.tgz#c4d9977023f334a29d29c8e1cef444d1b2d0329d"
-  integrity sha512-eGFauglSjpGRGuGEoH61QdO0KSgmi3bzzACN931YfI6CSFr0ooFZZdsrL11dujC7cSggW0b5uFiDt15qJt8JaA==
+"@poofcash/poof-kit@^1.0.22":
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.22.tgz#33476d3db3d2eb4a87e81ec44c9c1c102dec3dab"
+  integrity sha512-nd4d663OqLLyzRG0nnT5+0Dp0d8dlmLaepM+QaJA4H8/l/+kO4U5AmxLai18fZCLXJc1sjoaJdN8umNoaWVidA==
   dependencies:
     "@celo/contractkit" "^1.1.0"
     "@types/bn.js" "^5.1.0"
@@ -2317,6 +2317,7 @@
     decimal.js "^10.2.1"
     dotenv "^8.2.0"
     eth-sig-util "^3.0.1"
+    fflate "^0.7.1"
     fixed-merkle-tree "^0.3.4"
     gas-price-oracle "^0.2.2"
     snarkjs "git+https://github.com/poofcash/snarkjs.git#869181cfaf7526fe8972073d31655493a04326d5"
@@ -7734,6 +7735,11 @@ fetch-ponyfill@^4.0.0:
   integrity sha1-rjzl9zLGReq4fkroeTQUcJsjmJM=
   dependencies:
     node-fetch "~1.7.1"
+
+fflate@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.7.1.tgz#56e87e87c3f2fe01b025fbb1c4ea835990c02fa2"
+  integrity sha512-VYM2Xy1gSA5MerKzCnmmuV2XljkpKwgJBKezW+495TTnTCh1x5HcYa1aH8wRU/MfTGhW4ziXqgwprgQUVl3Ohw==
 
 figgy-pudding@^3.5.1:
   version "3.5.2"

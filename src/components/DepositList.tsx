@@ -153,7 +153,7 @@ const useDepositList = () => {
             .map((a) => ({ ...a, latestBlock }));
           const deposits = notes.filter((v) => v.withdrawBlock == null);
           const withdrawals = notes.filter(
-            (v) => v.withdrawBlock != null && !v.isMined
+            (v) => v.withdrawBlock != null && !v.isMined && v.rate > 0
           );
           setDeposits(deposits);
           setWithdrawals(withdrawals);
