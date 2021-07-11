@@ -2301,10 +2301,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@poofcash/poof-kit@^1.0.20":
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.20.tgz#54e66c9d43d3b49478f1be45da481bccef76fe9a"
-  integrity sha512-+0h9jjzqlTAsm9Q3gwgJyH2+WWqAREM6JAQM6tg+VadiJvD8tbDNcs9/aYuUQ+Wx/5BwvlibnmQvOD88tbEHjw==
+"@poofcash/poof-kit@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.21.tgz#c4d9977023f334a29d29c8e1cef444d1b2d0329d"
+  integrity sha512-eGFauglSjpGRGuGEoH61QdO0KSgmi3bzzACN931YfI6CSFr0ooFZZdsrL11dujC7cSggW0b5uFiDt15qJt8JaA==
   dependencies:
     "@celo/contractkit" "^1.1.0"
     "@types/bn.js" "^5.1.0"
@@ -2319,7 +2319,6 @@
     eth-sig-util "^3.0.1"
     fixed-merkle-tree "^0.3.4"
     gas-price-oracle "^0.2.2"
-    lzutf8 "^0.6.0"
     snarkjs "git+https://github.com/poofcash/snarkjs.git#869181cfaf7526fe8972073d31655493a04326d5"
     web3 "^1.2.8"
     websnark "git+https://github.com/poofcash/websnark.git#a0226866cc9d9d9f7195ffe439709d25e69ca680"
@@ -10612,13 +10611,6 @@ lz-string@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
-
-lzutf8@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/lzutf8/-/lzutf8-0.6.0.tgz#ddfced3aa9959be68cc46d12c609e64d41e710f8"
-  integrity sha512-Ji0WsBU3OIA/c/RHd/vvHbda+WnbnXREpE1xHgdoyy601dQn3ZFlkDtGKDh/AtFpbO1+3YFL01KqJrD7NYuWHg==
-  dependencies:
-    readable-stream "^3.6.0"
 
 magic-string@^0.25.0, magic-string@^0.25.7:
   version "0.25.7"
