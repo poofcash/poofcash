@@ -54,7 +54,7 @@ const NoteList: React.FC<IProps> = ({
       {loading ? (
         <Spinner />
       ) : notes ? (
-        notes.map((deposit) => {
+        notes.map((deposit, idx) => {
           const noteAmount = `${Number(
             fromWei(deposit.note.amount)
           ).toLocaleString()} ${formatCurrency(deposit.note.currency)}`;
@@ -66,7 +66,7 @@ const NoteList: React.FC<IProps> = ({
             deposit.rate;
 
           return (
-            <Card mb={3}>
+            <Card mb={3} key={idx}>
               <Flex
                 sx={{ justifyContent: "space-between", alignItems: "center" }}
               >
@@ -126,7 +126,9 @@ const useDepositList = () => {
                 b.depositBlock!.blockNumber - a.depositBlock!.blockNumber
             );
           const deposits = notes.filter((v) => v.withdrawBlock == null);
-          const withdrawals = notes.filter((v) => v.withdrawBlock != null);
+          const withdrawals = notes.filter(
+            (v) => v.withdrawBlock != null && !v.isMined
+          );
           setDeposits(deposits);
           setWithdrawals(withdrawals);
           setLoading(false);
