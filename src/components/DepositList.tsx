@@ -12,20 +12,76 @@ import { useLatestBlockNumber } from "hooks/web3";
 import { RefreshCw } from "react-feather";
 import { createContainer } from "unstated-next";
 import { EncryptedKeystoreV3Json } from "web3-core";
+import { FixedSizeList } from "react-window";
 
-interface IProps {
+type ExtendedNoteInfo = NoteInfo & { latestBlock: number };
+
+interface IItemProps {
+  index: number;
+  data: ExtendedNoteInfo[];
+  style: React.CSSProperties;
+}
+
+const NoteItem: React.FC<IItemProps> = ({ index, data, style }) => {
+  const noteInfo = data[index];
+  const { latestBlock } = noteInfo;
+  const noteAmount = `${Number(
+    fromWei(noteInfo.note.amount)
+  ).toLocaleString()} ${formatCurrency(noteInfo.note.currency)}`;
+  const depositBlockNumber = noteInfo.depositBlock!.blockNumber;
+  const apEarned =
+    ((noteInfo.withdrawBlock?.blockNumber ??
+      Math.max(latestBlock, depositBlockNumber)) -
+      depositBlockNumber) *
+    noteInfo.rate;
+
+  return (
+    <Box style={style}>
+      <Card mb={3}>
+        <Flex
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Box>
+            <Text variant="bold" mr={1}>
+              Amount:
+            </Text>
+            <Text>{noteAmount}</Text>
+            <br />
+            <Text variant="bold" mr={1}>
+              AP earned:
+            </Text>
+            <Text>{apEarned.toLocaleString()} AP</Text>
+          </Box>
+          <CopyToClipboard
+            onCopy={() => {
+              alert("Magic password copied to clipboard");
+            }}
+            text={noteInfo.noteString}
+          >
+            <Button>
+              <ClipboardIcon />
+            </Button>
+          </CopyToClipboard>
+        </Flex>
+      </Card>
+    </Box>
+  );
+};
+
+interface IListProps {
   title: string;
   poofAccount: EncryptedKeystoreV3Json | undefined;
-  latestBlock: number;
   loading: boolean;
-  notes: NoteInfo[] | undefined;
+  notes: ExtendedNoteInfo[] | undefined;
   unlockDeposits: () => void;
 }
 
-const NoteList: React.FC<IProps> = ({
+const NoteList: React.FC<IListProps> = ({
   title,
   poofAccount,
-  latestBlock,
   loading,
   notes,
   unlockDeposits,
@@ -54,47 +110,16 @@ const NoteList: React.FC<IProps> = ({
       {loading ? (
         <Spinner />
       ) : notes ? (
-        notes.map((deposit, idx) => {
-          const noteAmount = `${Number(
-            fromWei(deposit.note.amount)
-          ).toLocaleString()} ${formatCurrency(deposit.note.currency)}`;
-          const depositBlockNumber = deposit.depositBlock!.blockNumber;
-          const apEarned =
-            ((deposit.withdrawBlock?.blockNumber ??
-              Math.max(latestBlock, depositBlockNumber)) -
-              depositBlockNumber) *
-            deposit.rate;
-
-          return (
-            <Card mb={3} key={idx}>
-              <Flex
-                sx={{ justifyContent: "space-between", alignItems: "center" }}
-              >
-                <Box>
-                  <Text variant="bold" mr={1}>
-                    Amount:
-                  </Text>
-                  <Text>{noteAmount}</Text>
-                  <br />
-                  <Text variant="bold" mr={1}>
-                    AP earned:
-                  </Text>
-                  <Text>{apEarned.toLocaleString()} AP</Text>
-                </Box>
-                <CopyToClipboard
-                  onCopy={() => {
-                    alert("Magic password copied to clipboard");
-                  }}
-                  text={deposit.noteString}
-                >
-                  <Button>
-                    <ClipboardIcon />
-                  </Button>
-                </CopyToClipboard>
-              </Flex>
-            </Card>
-          );
-        })
+        <FixedSizeList
+          height={240}
+          width="100%"
+          itemData={notes}
+          itemCount={notes.length}
+          itemSize={80}
+          style={{ marginBottom: "16px" }}
+        >
+          {NoteItem}
+        </FixedSizeList>
       ) : (
         <Button onClick={unlockDeposits}>Unlock notes</Button>
       )}
@@ -107,8 +132,8 @@ const useDepositList = () => {
   const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
   const [latestBlock, refreshLatestBlock] = useLatestBlockNumber();
   const [loading, setLoading] = React.useState(false);
-  const [deposits, setDeposits] = React.useState<NoteInfo[]>();
-  const [withdrawals, setWithdrawals] = React.useState<NoteInfo[]>();
+  const [deposits, setDeposits] = React.useState<ExtendedNoteInfo[]>();
+  const [withdrawals, setWithdrawals] = React.useState<ExtendedNoteInfo[]>();
 
   const unlockDeposits = React.useCallback(() => {
     setLoading(true);
@@ -124,7 +149,8 @@ const useDepositList = () => {
             .sort(
               (a, b) =>
                 b.depositBlock!.blockNumber - a.depositBlock!.blockNumber
-            );
+            )
+            .map((a) => ({ ...a, latestBlock }));
           const deposits = notes.filter((v) => v.withdrawBlock == null);
           const withdrawals = notes.filter(
             (v) => v.withdrawBlock != null && !v.isMined
@@ -144,19 +170,19 @@ const useDepositList = () => {
     poofKit,
     setDeposits,
     refreshLatestBlock,
+    latestBlock,
   ]);
 
-  const depositListProps = {
+  const props = {
     poofAccount,
-    latestBlock,
     loading,
     unlockDeposits,
   };
   const depositList = (
-    <NoteList title="Deposit List" notes={deposits} {...depositListProps} />
+    <NoteList title="Deposit List" notes={deposits} {...props} />
   );
   const withdrawList = (
-    <NoteList title="Withdraw List" notes={withdrawals} {...depositListProps} />
+    <NoteList title="Withdraw List" notes={withdrawals} {...props} />
   );
 
   return { depositList, withdrawList };
