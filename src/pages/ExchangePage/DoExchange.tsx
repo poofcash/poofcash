@@ -15,7 +15,7 @@ import {
 import { toWei, AbiItem, toBN } from "web3-utils";
 import { humanFriendlyWei } from "utils/eth";
 import { CURRENCY_MAP, SCELO_IDX } from "config";
-import erc20Abi from "abis/erc20.json";
+import erc20Abi from "abis/ERC20.json";
 import { GrayBox } from "components/GrayBox";
 import { SummaryTable } from "components/SummaryTable";
 

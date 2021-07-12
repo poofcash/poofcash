@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getContract } from "hooks/getContract";
-import ERC20_ABI from "abis/erc20.json";
-import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
+import ERC20_ABI from "abis/ERC20.json";
+import ERC20_TORNADO_ABI from "abis/ERC20Tornado.json";
 import { useContractKit } from "@ubeswap/use-contractkit";
 import { AbiItem, isAddress } from "web3-utils";
 import { useAsyncState } from "./useAsyncState";

@@ -1,5 +1,5 @@
-import ERC20_ABI from "abis/erc20.json";
-import ERC20_TORNADO_ABI from "abis/erc20tornado.json";
+import ERC20_ABI from "abis/ERC20.json";
+import ERC20_TORNADO_ABI from "abis/ERC20Tornado.json";
 import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 // import { getAddress } from "@ethersproject/address";
 import { Contract } from "web3-eth-contract";

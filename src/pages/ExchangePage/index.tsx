@@ -4,7 +4,7 @@ import React from "react";
 import { ExchangeReceipt } from "./ExchangeReceipt";
 import { DoExchange } from "./DoExchange";
 import { CURRENCY_MAP } from "config";
-import erc20Abi from "abis/erc20.json";
+import erc20Abi from "abis/ERC20.json";
 import { AbiItem, isAddress } from "web3-utils";
 
 enum ExchangeStep {
