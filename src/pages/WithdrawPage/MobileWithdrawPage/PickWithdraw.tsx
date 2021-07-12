@@ -100,6 +100,7 @@ export const PickWithdraw: React.FC<IProps> = ({
         onChange={(e) => setNote(e.target.value)}
         value={note}
         pattern="/poof-(?<currency>\w+)-(?<amount>[\d.]+)-(?<netId>\d+)-0x(?<note>[0-9a-fA-F]{124})/g"
+        autoComplete="off"
       />
       {note !== "" && !validNote && (
         <>

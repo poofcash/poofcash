@@ -64,6 +64,7 @@ const CompliancePage = () => {
         value={note}
         onChange={handleChange}
         placeholder="Enter magic password here"
+        autoComplete="off"
       />
       {note && !noteIsValid && <Text>Note is invalid.</Text>}
       <br />

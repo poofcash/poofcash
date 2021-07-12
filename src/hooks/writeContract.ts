@@ -70,6 +70,7 @@ export function useDeposit(
           .sendTransactionObject(depositTxo, {
             from: kit.defaultAccount,
             gasPrice: toWei("0.13", "gwei"),
+            value: 0,
           })
           .then((tx) => tx.getHash())
           .then(setTxHash);
