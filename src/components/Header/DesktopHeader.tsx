@@ -48,7 +48,7 @@ export const DesktopHeader: React.FC = () => {
                 }}
                 variant="subtitle"
               >
-                rCELO
+                Exchange
               </Text>
             </StyledLink>
             <Text>/</Text>

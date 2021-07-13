@@ -35,11 +35,10 @@ export function useApprove(
           tokenAddress,
           useExact ? amountToApprove : MaxUint256.toString()
         );
-        const tx = await kit.sendTransactionObject(approveTxo, {
+        await approveTxo.send({
           from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),
         });
-        await tx.waitReceipt();
         refetchAllowance();
       });
     } catch (error) {
@@ -66,14 +65,12 @@ export function useDeposit(
         const kit = await getConnectedKit();
         const poofKit = new PoofKitV2(kit, CHAIN_ID);
         let depositTxo = poofKit.depositNote(noteString, privateKey);
-        await kit
-          .sendTransactionObject(depositTxo, {
-            from: kit.defaultAccount,
-            gasPrice: toWei("0.13", "gwei"),
-            value: 0,
-          })
-          .then((tx) => tx.getHash())
-          .then(setTxHash);
+        const tx = await depositTxo.send(depositTxo, {
+          from: kit.defaultAccount,
+          gasPrice: toWei("0.13", "gwei"),
+          value: 0,
+        });
+        setTxHash(tx.transactionHash);
       } catch (e) {
         throw e;
       } finally {
