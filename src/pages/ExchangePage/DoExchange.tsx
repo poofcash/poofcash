@@ -145,7 +145,7 @@ export const DoExchange: React.FC<IProps> = ({
     </>
   );
 
-  if (address && amount === "") {
+  if (address && amount === "0") {
     boxContent = (
       <>
         <Text sx={{ mb: 4 }} variant="subtitle">
