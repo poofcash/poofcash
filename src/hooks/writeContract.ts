@@ -1,7 +1,7 @@
 import React from "react";
 import { ContractKit } from "@celo/contractkit";
 import { MaxUint256 } from "@ethersproject/constants";
-import { useContractKit } from "@ubeswap/use-contractkit";
+import { useContractKit } from "@celo-tools/use-contractkit";
 import { toWei } from "web3-utils";
 import { PoofKitV2 } from "@poofcash/poof-kit";
 import { Address } from "@celo/base";

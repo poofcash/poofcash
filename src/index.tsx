@@ -6,12 +6,12 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "theme-ui";
 import { BrowserRouter } from "react-router-dom";
 import store from "state";
-import { ContractKitProvider } from "@ubeswap/use-contractkit";
+import { ContractKitProvider } from "@celo-tools/use-contractkit";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { DepositListGlobal } from "components/DepositList";
 
-import "@ubeswap/use-contractkit/lib/styles.css";
+import "@celo-tools/use-contractkit/lib/styles.css";
 import "index.css";
 
 declare global {

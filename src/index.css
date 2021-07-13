@@ -23,6 +23,6 @@
 }
 
 /* HACK: Fix title color in wallet modal */
-.tw-text-lg {
+.tw-font-medium {
   color: black;
 }

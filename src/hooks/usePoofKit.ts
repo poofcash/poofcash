@@ -1,5 +1,5 @@
 import React from "react";
-import { useContractKit } from "@ubeswap/use-contractkit";
+import { useContractKit } from "@celo-tools/use-contractkit";
 import { PoofKitV2 } from "@poofcash/poof-kit";
 import { createContainer } from "unstated-next";
 import { CHAIN_ID } from "config";

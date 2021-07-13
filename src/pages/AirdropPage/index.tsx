@@ -1,4 +1,4 @@
-import { useContractKit } from "@ubeswap/use-contractkit";
+import { useContractKit } from "@celo-tools/use-contractkit";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { useAsyncState } from "hooks/useAsyncState";
 import React from "react";

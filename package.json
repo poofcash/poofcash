@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@celo-tools/use-contractkit": "^1.0.1",
     "@celo/contractkit": "^1.2.0",
     "@emotion/styled": "^10.0.27",
     "@ethersproject/contracts": "^5.0.12",
@@ -26,7 +27,6 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/rebass__forms": "^4.0.4",
     "@ubeswap/sdk": "^2.0.1",
-    "@ubeswap/use-contractkit": "1.0.0-ube.7",
     "axios": "^0.21.1",
     "circomlib": "git+https://github.com/tornadocash/circomlib.git#c372f14d324d57339c88451834bf2824e73bbdbc",
     "ethereumjs-wallet": "^1.0.1",

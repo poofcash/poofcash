@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getContract } from "hooks/getContract";
 import ERC20_ABI from "abis/ERC20.json";
 import ERC20_TORNADO_ABI from "abis/ERC20Tornado.json";
-import { useContractKit } from "@ubeswap/use-contractkit";
+import { useContractKit } from "@celo-tools/use-contractkit";
 import { AbiItem, isAddress } from "web3-utils";
 import { useAsyncState } from "./useAsyncState";
+import { ERC20Tornado } from "generated/ERC20Tornado";
 
 export function useTokenBalance(tokenAddress: string, owner?: string | null) {
   const { kit } = useContractKit();
@@ -37,7 +37,10 @@ export function useTornadoDeposits(
     if (!tornadoAddress) {
       return null;
     }
-    return getContract(kit, ERC20_TORNADO_ABI, tornadoAddress);
+    return (new kit.web3.eth.Contract(
+      ERC20_TORNADO_ABI as AbiItem[],
+      tornadoAddress
+    ) as unknown) as ERC20Tornado;
   }, [tornadoAddress, kit]);
   const [deposits, setDeposits] = useState<any>([]);
 
@@ -73,7 +76,10 @@ export function useTornadoWithdraws(
     if (!tornadoAddress) {
       return;
     }
-    return getContract(kit, ERC20_TORNADO_ABI, tornadoAddress);
+    return (new kit.web3.eth.Contract(
+      ERC20_TORNADO_ABI as AbiItem[],
+      tornadoAddress
+    ) as unknown) as ERC20Tornado;
   }, [tornadoAddress, kit]);
   const [withdrawBlocks, setWithdrawBlocks] = useState<any>([]);
   const [withdrawEvents, setWithdrawEvents] = useState<any>([]);

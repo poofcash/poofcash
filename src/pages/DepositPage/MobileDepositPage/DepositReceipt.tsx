@@ -7,7 +7,7 @@ import { LabelWithBalance } from "components/LabelWithBalance";
 import { shortenAccount } from "hooks/accountName";
 import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
 import { SummaryTable } from "components/SummaryTable";
-import { useContractKit } from "@ubeswap/use-contractkit";
+import { useContractKit } from "@celo-tools/use-contractkit";
 import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
