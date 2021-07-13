@@ -33,3 +33,32 @@ export const RELAYERS = {
 export const DECIMAL_PRECISION = 3; // Number of decimals to show
 
 export const supportedCurrencies = ["rCELO", "CELO", "POOF"];
+
+export const STAKE_MAP: Record<ChainId, Record<string, string>> = {
+  [ChainId.Mainnet]: {
+    stakeToken: "0x573bcebd09ff805ed32df2cb1a968418dc74dcf7",
+    stakeTokenName: "POOF-UBE ULP",
+    stakeRewards: "0x969D7653ddBAbb42589d73EfBC2051432332A940",
+    externalStakeRewards: "0xC88B8d622c0322fb59ae4473D7A1798DE60785dD",
+    externalRewardToken: "0x00be915b9dcf56a3cbe739d9b9c202ca692409ec",
+    externalRewardTokenName: "UBE",
+    rewardToken: "0x00400FcbF0816bebB94654259de7273f4A05c762",
+    rewardTokenName: "POOF",
+  },
+  [ChainId.Alfajores]: {
+    stakeToken: "0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9",
+    stakeTokenName: "CELO",
+    stakeRewards: "0x2239262E6f60F4ac3cDBb209554c3F394b5c8DE4",
+    externalStakeRewards: "0x8AFa37B058b492F1dE94BDfccf61e16FE098d064",
+    externalRewardToken: "0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9",
+    externalRewardTokenName: "CELO",
+    rewardToken: "0x00400FcbF0816bebB94654259de7273f4A05c762",
+    rewardTokenName: "POOF",
+  },
+  [ChainId.Baklava]: {
+    stakeToken: "",
+    stakeRewards: "",
+    externalRewardToken: "",
+    rewardToken: "",
+  },
+};

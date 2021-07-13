@@ -15,6 +15,25 @@ import AirdropPage from "pages/AirdropPage";
 import ExchangePage from "pages/ExchangePage";
 import Modal from "react-modal";
 import { PoofAccountGlobal } from "hooks/poofAccount";
+import StakePage from "pages/StakePage";
+
+const PageComponent: React.FC<{ page: Page; Component: React.FC }> = ({
+  page,
+  Component,
+}) => {
+  const currentPage = useSelector(
+    (state: AppState) => state.global.currentPage
+  );
+  return (
+    <Box
+      sx={{
+        display: currentPage === page ? "inherit" : "none",
+      }}
+    >
+      <Component />
+    </Box>
+  );
+};
 
 // pass props and State interface to Component class
 const App: React.FC = () => {
@@ -52,58 +71,15 @@ const App: React.FC = () => {
             maxHeight: "calc(100vh + 64px)",
           }}
         >
-          <Box
-            sx={{
-              display: currentPage === Page.DEPOSIT ? "inherit" : "none",
-            }}
-          >
-            <DepositPage />
-          </Box>
-          <Box
-            sx={{
-              display: currentPage === Page.WITHDRAW ? "inherit" : "none",
-            }}
-          >
-            <WithdrawPage />
-          </Box>
-          <Box
-            sx={{
-              display: currentPage === Page.COMPLIANCE ? "inherit" : "none",
-            }}
-          >
-            <CompliancePage />
-          </Box>
-          <Box sx={{ display: currentPage === Page.MINE ? "inherit" : "none" }}>
-            <MinePage />
-          </Box>
-          <Box
-            sx={{
-              display: currentPage === Page.REDEEM ? "inherit" : "none",
-            }}
-          >
-            <RedeemPage />
-          </Box>
-          <Box
-            sx={{
-              display: currentPage === Page.SETUP ? "inherit" : "none",
-            }}
-          >
-            <SetupAccount />
-          </Box>
-          <Box
-            sx={{
-              display: currentPage === Page.AIRDROP ? "inherit" : "none",
-            }}
-          >
-            <AirdropPage />
-          </Box>
-          <Box
-            sx={{
-              display: currentPage === Page.EXCHANGE ? "inherit" : "none",
-            }}
-          >
-            <ExchangePage />
-          </Box>
+          <PageComponent page={Page.DEPOSIT} Component={DepositPage} />
+          <PageComponent page={Page.WITHDRAW} Component={WithdrawPage} />
+          <PageComponent page={Page.COMPLIANCE} Component={CompliancePage} />
+          <PageComponent page={Page.MINE} Component={MinePage} />
+          <PageComponent page={Page.REDEEM} Component={RedeemPage} />
+          <PageComponent page={Page.SETUP} Component={SetupAccount} />
+          <PageComponent page={Page.AIRDROP} Component={AirdropPage} />
+          <PageComponent page={Page.EXCHANGE} Component={ExchangePage} />
+          <PageComponent page={Page.STAKE} Component={StakePage} />
         </Container>
         {/*TODO footer*/}
       </Container>

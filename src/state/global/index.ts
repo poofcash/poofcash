@@ -10,6 +10,7 @@ export enum Page {
   EXCHANGE = "EXCHANGE",
   COMPLIANCE = "COMPLIANCE",
   AIRDROP = "AIRDROP",
+  STAKE = "STAKE",
 }
 
 interface GlobalState {
@@ -17,7 +18,7 @@ interface GlobalState {
 }
 
 const initialState: GlobalState = {
-  currentPage: Page.DEPOSIT,
+  currentPage: Page.STAKE,
 };
 
 // Actions

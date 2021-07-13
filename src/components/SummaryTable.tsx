@@ -11,7 +11,7 @@ type LabelValuePair = {
 interface IProps {
   title: string;
   lineItems: Array<LabelValuePair>;
-  totalItem: LabelValuePair;
+  totalItem?: LabelValuePair;
 }
 
 export const SummaryTable: React.FC<IProps> = ({
@@ -36,10 +36,14 @@ export const SummaryTable: React.FC<IProps> = ({
           );
         })}
         <TableDivider columns={2} />
-        <Text variant="subtitle">{totalItem.label}</Text>
-        <Text sx={{ textAlign: "right" }} variant="bold">
-          {totalItem.value}
-        </Text>
+        {totalItem && (
+          <>
+            <Text variant="subtitle">{totalItem.label}</Text>
+            <Text sx={{ textAlign: "right" }} variant="bold">
+              {totalItem.value}
+            </Text>
+          </>
+        )}
       </Grid>
     </>
   );

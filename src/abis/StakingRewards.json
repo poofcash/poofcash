@@ -12,42 +12,18 @@
         "type": "address"
       },
       {
-        "internalType": "contract IERC20",
+        "internalType": "address",
         "name": "_rewardsToken",
         "type": "address"
       },
       {
-        "internalType": "contract IStakingRewards",
-        "name": "_externalStakingRewards",
+        "internalType": "address",
+        "name": "_stakingToken",
         "type": "address"
-      },
-      {
-        "internalType": "contract IERC20[]",
-        "name": "_externalRewardsTokens",
-        "type": "address[]"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "reward",
-        "type": "uint256"
-      }
-    ],
-    "name": "ExternalRewardPaid",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -79,25 +55,6 @@
       }
     ],
     "name": "OwnerNominated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "originalFinish",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newFinish",
-        "type": "uint256"
-      }
-    ],
-    "name": "PeriodFinishUpdated",
     "type": "event"
   },
   {
@@ -207,62 +164,6 @@
     "name": "acceptOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "externalRewards",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "externalRewardsTokens",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "externalStakingRewards",
-    "outputs": [
-      {
-        "internalType": "contract IStakingRewards",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -537,25 +438,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "earnedExternal",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "result",
-        "type": "uint256[]"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getRewardForDuration",
     "outputs": [
@@ -666,3 +548,4 @@
     "type": "function"
   }
 ]
+

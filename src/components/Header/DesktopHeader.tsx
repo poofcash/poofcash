@@ -151,6 +151,21 @@ export const DesktopHeader: React.FC = () => {
                 Airdrop
               </Text>
             </StyledLink>
+            <Text>/</Text>
+            <StyledLink
+              to=""
+              onClick={() => dispatch(setCurrentPage({ nextPage: Page.STAKE }))}
+            >
+              <Text
+                sx={{
+                  color: currentPage === Page.STAKE ? "accent" : "text",
+                  mx: 1,
+                }}
+                variant="subtitle"
+              >
+                Stake
+              </Text>
+            </StyledLink>
             <Box ml={4}>
               <AccountProfile />
             </Box>
