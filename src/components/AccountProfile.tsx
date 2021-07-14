@@ -45,7 +45,13 @@ export const AccountProfile: React.FC = () => {
             <>
               <Text
                 sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
-                onClick={destroy}
+                onClick={() => {
+                  try {
+                    destroy();
+                  } catch (e) {
+                    console.debug(e);
+                  }
+                }}
                 variant="form"
               >
                 Disconnect

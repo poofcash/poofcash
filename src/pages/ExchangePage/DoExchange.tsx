@@ -62,11 +62,11 @@ export const DoExchange: React.FC<IProps> = ({
           gasPrice: toWei("0.1", "gwei"),
         });
         setTxHash(await tx.getHash());
-        refetch();
         openReceiptPage();
       } catch (e) {
         console.error(e);
       } finally {
+        refetch();
         setLoading(false);
       }
     });
@@ -84,10 +84,10 @@ export const DoExchange: React.FC<IProps> = ({
           from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),
         });
-        refetch();
       } catch (e) {
         console.error(e);
       } finally {
+        refetch();
         setLoading(false);
       }
     });
