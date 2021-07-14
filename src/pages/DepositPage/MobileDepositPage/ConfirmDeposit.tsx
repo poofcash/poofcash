@@ -45,12 +45,14 @@ export const ConfirmDeposit: React.FC<IProps> = ({
     </Button>
   );
   if (backup && !poofAccount) {
-    <Button
-      onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
-      variant="primary"
-    >
-      Deposit
-    </Button>;
+    button = (
+      <Button
+        onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
+        variant="primary"
+      >
+        Deposit
+      </Button>
+    );
   }
 
   return (
