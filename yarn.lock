@@ -1213,10 +1213,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@celo-tools/use-contractkit@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@celo-tools/use-contractkit/-/use-contractkit-1.0.1.tgz#b522c2a42e144a92fe94c20b5d2efde1a97b32aa"
-  integrity sha512-/YZYXo9y38r8mKQ+c8QX4hRenDRTOEwj8FAWDtS6NOKPe8cG1AZi2lcAzHyRY8TgnSUwHJ7yaDPvlRld9oBsoA==
+"@celo-tools/use-contractkit@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@celo-tools/use-contractkit/-/use-contractkit-1.0.5.tgz#b7d1c9e9af2d086eeb85c6048129236184f3d719"
+  integrity sha512-7jYTi4uegx/ldoqztxCY5Z2sysHORwDcd9/gXcew3zeiWN8pe+SYc0nFC8C6NmhCTeSd/+PfvW02m/F9jaAboQ==
   dependencies:
     "@celo/contractkit" "1.2.0"
     "@celo/utils" "1.2.0"
@@ -1224,6 +1224,7 @@
     "@celo/wallet-ledger" "1.2.0"
     "@celo/wallet-local" "1.2.0"
     "@celo/wallet-remote" "1.2.0"
+    "@ethersproject/providers" "^5.3.0"
     "@ledgerhq/hw-transport-webusb" "^5.43.0"
     "@types/ledgerhq__hw-transport-webusb" "^4.70.1"
     "@types/qrcode.react" "^1.0.2"
@@ -1796,7 +1797,7 @@
   dependencies:
     "@ethersproject/logger" "^5.4.0"
 
-"@ethersproject/providers@^5.0.24":
+"@ethersproject/providers@^5.0.24", "@ethersproject/providers@^5.3.0":
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.4.1.tgz#654267b563b833046b9c9647647cfc8267cb93b4"
   integrity sha512-p06eiFKz8nu/5Ju0kIX024gzEQIgE5pvvGrBCngpyVjpuLtUIWT3097Agw4mTn9/dEA0FMcfByzFqacBMSgCVg==
@@ -2345,10 +2346,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@poofcash/poof-kit@^1.0.24":
-  version "1.0.24"
-  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.24.tgz#89b4809f3da0bead81335eee1336dd5aec8c615b"
-  integrity sha512-nNIKrOmjNgehLpM8T9pJ4Px5vjNBMTs63FgOAKTFosPtM6klr/LidlPJEGc2Oku+IMWpmY61wj7Pyh/yrCKwXw==
+"@poofcash/poof-kit@=1.0.22":
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.22.tgz#33476d3db3d2eb4a87e81ec44c9c1c102dec3dab"
+  integrity sha512-nd4d663OqLLyzRG0nnT5+0Dp0d8dlmLaepM+QaJA4H8/l/+kO4U5AmxLai18fZCLXJc1sjoaJdN8umNoaWVidA==
   dependencies:
     "@celo/contractkit" "^1.1.0"
     "@types/bn.js" "^5.1.0"
