@@ -50,7 +50,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
         variant="primary"
       >
-        Deposit
+        Conect Poof account
       </Button>
     );
   }
