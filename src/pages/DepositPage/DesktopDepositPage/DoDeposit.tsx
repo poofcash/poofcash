@@ -17,7 +17,7 @@ import { NoteString } from "components/NoteString";
 import { useApprove } from "hooks/writeContract";
 import { GrayBox } from "components/GrayBox";
 import { CHAIN_ID, CURRENCY_MAP } from "config";
-import { useTokenBalance } from "hooks/readContract";
+import { useTokenBalance } from "hooks/useTokenBalance";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { toBN, toWei } from "web3-utils";

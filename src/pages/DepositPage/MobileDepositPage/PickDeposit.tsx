@@ -1,7 +1,7 @@
 import React from "react";
 import { CHAIN_ID, CURRENCY_MAP } from "config";
 import { useApprove } from "hooks/writeContract";
-import { useTokenBalance } from "hooks/readContract";
+import { useTokenBalance } from "hooks/useTokenBalance";
 import { Button, Text, Spinner } from "@theme-ui/components";
 import { Box, Divider, Flex, Select } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
