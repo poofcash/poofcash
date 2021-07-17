@@ -1,5 +1,6 @@
+import { useContractKit } from "@celo-tools/use-contractkit";
 import axios from "axios";
-import { NETWORK, RELAYERS } from "config";
+import { RELAYERS } from "config";
 import React from "react";
 
 export type RelayerOption = {
@@ -19,12 +20,13 @@ export const useRelayer = () => {
   const [usingCustomRelayer, setUsingCustomRelayer] = React.useState<boolean>(
     false
   );
+  const { network } = useContractKit();
 
   React.useEffect(() => {
     const fn = async () => {
       const statuses = (
         await Promise.all(
-          RELAYERS[NETWORK].map((relayerUrl: string) => {
+          RELAYERS[network.chainId].map((relayerUrl: string) => {
             return axios.get(relayerUrl + "/status").catch((e) => e);
           })
         )
@@ -52,7 +54,7 @@ export const useRelayer = () => {
       }
     };
     fn();
-  }, [setRelayerOptions, setSelectedRelayer]);
+  }, [setRelayerOptions, setSelectedRelayer, network]);
 
   const relayer = React.useMemo(
     () => (usingCustomRelayer ? customRelayer : selectedRelayer),

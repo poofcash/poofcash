@@ -16,7 +16,7 @@ import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit
 import { NoteString } from "components/NoteString";
 import { useApprove } from "hooks/writeContract";
 import { GrayBox } from "components/GrayBox";
-import { CHAIN_ID, CURRENCY_MAP } from "config";
+import { CURRENCY_MAP } from "config";
 import { useTokenBalance } from "hooks/useTokenBalance";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 import { useContractKit } from "@celo-tools/use-contractkit";
@@ -55,7 +55,7 @@ export const DoDeposit: React.FC<IProps> = ({
   setBackup,
 }) => {
   const { t } = useTranslation();
-  const { address, connect } = useContractKit();
+  const { address, connect, network } = useContractKit();
 
   const [confirmed, setConfirmed] = React.useState(false);
   const [
@@ -64,12 +64,12 @@ export const DoDeposit: React.FC<IProps> = ({
   ] = React.useState(false);
 
   const [allowance, approve, approveLoading] = useApprove(
-    deployments[`netId${CHAIN_ID}`][selectedCurrency.toLowerCase()]
+    deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
       .tokenAddress,
     toWei(selectedAmount)
   );
   const userBalance = useTokenBalance(
-    CURRENCY_MAP[selectedCurrency.toLowerCase()],
+    CURRENCY_MAP[network.chainId][selectedCurrency.toLowerCase()],
     address
   );
   const dispatch = useDispatch();

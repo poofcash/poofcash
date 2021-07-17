@@ -25,7 +25,6 @@
     "@types/react-modal": "^3.12.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/rebass__forms": "^4.0.4",
-    "@ubeswap/sdk": "^2.0.1",
     "axios": "^0.21.1",
     "circomlib": "git+https://github.com/tornadocash/circomlib.git#c372f14d324d57339c88451834bf2824e73bbdbc",
     "ethereumjs-wallet": "^1.0.1",
@@ -52,10 +51,9 @@
   },
   "scripts": {
     "typechain": "typechain --target=web3-v1 ./src/abis/*.json --out-dir src/generated",
-    "start": "REACT_APP_CHAIN_ID=42220 yarn start:alfajores",
-    "start:alfajores": "yarn typechain && react-scripts --max_old_space_size=4096 start",
-    "build": "rm -rf build/ build.zip && REACT_APP_CHAIN_ID=42220 yarn build:alfajores",
-    "build:alfajores": "yarn typechain && react-scripts --max_old_space_size=4096 build",
+    "start": "react-scripts start",
+    "postinstall": "yarn typechain",
+    "build:": "rm -rf build/ build.zip && yarn typechain && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write ."

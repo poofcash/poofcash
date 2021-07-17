@@ -2,12 +2,14 @@ import React from "react";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { PoofKitV2 } from "@poofcash/poof-kit";
 import { createContainer } from "unstated-next";
-import { CHAIN_ID } from "config";
 
 const usePoofKit = () => {
-  const { kit } = useContractKit();
+  const { kit, network } = useContractKit();
   const [initializing, setInitializing] = React.useState(true);
-  const poofKit = new PoofKitV2(kit, CHAIN_ID);
+  const poofKit = React.useMemo(() => new PoofKitV2(kit, network.chainId), [
+    kit,
+    network,
+  ]);
   // Recursively try to initialize
   const tryInit = async (firstTry: boolean) => {
     setTimeout(

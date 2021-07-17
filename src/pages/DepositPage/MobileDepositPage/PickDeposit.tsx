@@ -1,5 +1,5 @@
 import React from "react";
-import { CHAIN_ID, CURRENCY_MAP } from "config";
+import { CURRENCY_MAP } from "config";
 import { useApprove } from "hooks/writeContract";
 import { useTokenBalance } from "hooks/useTokenBalance";
 import { Button, Text, Spinner } from "@theme-ui/components";
@@ -37,7 +37,7 @@ export const PickDeposit: React.FC<IProps> = ({
   poofRate,
   apRate,
 }) => {
-  const { connect, address } = useContractKit();
+  const { connect, address, network } = useContractKit();
   const breakpoint = useBreakpoint();
   const { depositList } = DepositListGlobal.useContainer();
 
@@ -47,28 +47,28 @@ export const PickDeposit: React.FC<IProps> = ({
   ] = React.useState(false);
 
   const [allowance, approve, approveLoading] = useApprove(
-    deployments[`netId${CHAIN_ID}`][selectedCurrency.toLowerCase()]
+    deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
       .tokenAddress,
     toWei(selectedAmount)
   );
 
   const userBalance = useTokenBalance(
-    CURRENCY_MAP[selectedCurrency.toLowerCase()],
+    CURRENCY_MAP[network.chainId][selectedCurrency.toLowerCase()],
     address
   );
   const contractBalance = useTokenBalance(
-    CURRENCY_MAP[selectedCurrency.toLowerCase()],
-    deployments[`netId${CHAIN_ID}`][selectedCurrency.toLowerCase()]
+    CURRENCY_MAP[network.chainId][selectedCurrency.toLowerCase()],
+    deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
       .instanceAddress[selectedAmount.toLowerCase()]
   );
 
   const depositAmounts = React.useMemo(
     () =>
       Object.keys(
-        deployments[`netId${CHAIN_ID}`][selectedCurrency.toLowerCase()]
+        deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
           .instanceAddress
       ).sort(),
-    [selectedCurrency]
+    [selectedCurrency, network]
   );
 
   const loading = approveLoading;

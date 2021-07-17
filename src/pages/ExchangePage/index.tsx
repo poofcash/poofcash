@@ -14,33 +14,37 @@ enum ExchangeStep {
 
 const ExchangePage: React.FC = () => {
   const [step, setStep] = React.useState(ExchangeStep.DO);
-  const { kit, address } = useContractKit();
+  const { kit, address, network } = useContractKit();
   const sCELOBalanceCall = React.useCallback(async () => {
     const savingsCELO = new kit.web3.eth.Contract(
       erc20Abi as AbiItem[],
-      CURRENCY_MAP.scelo
+      CURRENCY_MAP[network.chainId].scelo
     );
     if (!address || !isAddress(address)) {
       return ["0", "0"];
     }
     return await Promise.all([
       savingsCELO.methods.balanceOf(address).call(),
-      savingsCELO.methods.allowance(address, CURRENCY_MAP.rcelo).call(),
+      savingsCELO.methods
+        .allowance(address, CURRENCY_MAP[network.chainId].rcelo)
+        .call(),
     ]);
-  }, [kit, address]);
+  }, [kit, address, network]);
   const rCELOBalanceCall = React.useCallback(async () => {
     const rewardsCELO = new kit.web3.eth.Contract(
       erc20Abi as AbiItem[],
-      CURRENCY_MAP.rcelo
+      CURRENCY_MAP[network.chainId].rcelo
     );
     if (!address || !isAddress(address)) {
       return ["0", "0"];
     }
     return await Promise.all([
       rewardsCELO.methods.balanceOf(address).call(),
-      rewardsCELO.methods.allowance(address, CURRENCY_MAP.rcelo).call(),
+      rewardsCELO.methods
+        .allowance(address, CURRENCY_MAP[network.chainId].rcelo)
+        .call(),
     ]);
-  }, [kit, address]);
+  }, [kit, address, network]);
 
   const [[sCELOBalance, sCELOAllowance], refetchSCELO] = useAsyncState(
     ["0", "0"],

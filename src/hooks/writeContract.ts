@@ -5,7 +5,6 @@ import { useContractKit } from "@celo-tools/use-contractkit";
 import { toWei } from "web3-utils";
 import { PoofKitV2 } from "@poofcash/poof-kit";
 import { Address } from "@celo/base";
-import { CHAIN_ID } from "config";
 import { PoofKitGlobal } from "./usePoofKit";
 import { useAsyncState } from "./useAsyncState";
 
@@ -13,7 +12,7 @@ export function useApprove(
   tokenAddress: Address,
   amountToApprove: string
 ): [string, () => Promise<void>, boolean] {
-  const { address, performActions } = useContractKit();
+  const { address, performActions, network } = useContractKit();
   const { poofKit } = PoofKitGlobal.useContainer();
   const [loading, setLoading] = React.useState(false);
 
@@ -30,7 +29,7 @@ export function useApprove(
     setLoading(true);
     try {
       await performActions(async (kit: ContractKit) => {
-        const poofKit = new PoofKitV2(kit, CHAIN_ID);
+        const poofKit = new PoofKitV2(kit, network.chainId);
         const approveTxo = poofKit.approve(
           tokenAddress,
           useExact ? amountToApprove : MaxUint256.toString()
@@ -46,7 +45,13 @@ export function useApprove(
     } finally {
       setLoading(false);
     }
-  }, [tokenAddress, amountToApprove, performActions, refetchAllowance]);
+  }, [
+    tokenAddress,
+    amountToApprove,
+    performActions,
+    refetchAllowance,
+    network,
+  ]);
 
   return [allowance, approve, loading];
 }
@@ -56,14 +61,14 @@ export function useDeposit(
 ): [string, (privateKey?: string) => Promise<void>, boolean] {
   const [loading, setLoading] = React.useState(false);
   const [txHash, setTxHash] = React.useState("");
-  const { getConnectedKit } = useContractKit();
+  const { getConnectedKit, network } = useContractKit();
 
   const deposit = React.useCallback(
     async (privateKey?: string) => {
       setLoading(true);
       try {
         const kit = await getConnectedKit();
-        const poofKit = new PoofKitV2(kit, CHAIN_ID);
+        const poofKit = new PoofKitV2(kit, network.chainId);
         let depositTxo = poofKit.depositNote(noteString, privateKey);
         const tx = await depositTxo.send(depositTxo, {
           from: kit.defaultAccount,
@@ -77,7 +82,7 @@ export function useDeposit(
         setLoading(false);
       }
     },
-    [getConnectedKit, noteString]
+    [getConnectedKit, noteString, network]
   );
 
   return [txHash, deposit, loading];

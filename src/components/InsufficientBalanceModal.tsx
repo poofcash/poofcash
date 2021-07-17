@@ -1,5 +1,4 @@
-import { ChainId } from "@ubeswap/sdk";
-import { CHAIN_ID } from "config";
+import { ChainId, useContractKit } from "@celo-tools/use-contractkit";
 import React from "react";
 import Modal from "components/Modal";
 
@@ -14,11 +13,12 @@ export const InsufficientBalanceModal: React.FC<IProps> = ({
   onClose,
   show,
 }) => {
+  const { network } = useContractKit();
   return (
     <Modal modalClosed={onClose} show={show}>
       <h2>Insufficient balance</h2>
       <p>You don't have enough CELO tokens. You need {neededAmount} CELO.</p>
-      {CHAIN_ID === ChainId.ALFAJORES && (
+      {network.chainId === ChainId.Alfajores && (
         <p>
           You can get more CELO{" "}
           <a

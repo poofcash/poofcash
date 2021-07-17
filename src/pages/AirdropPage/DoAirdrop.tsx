@@ -4,7 +4,6 @@ import { PoofKitV2 } from "@poofcash/poof-kit";
 import { useTranslation } from "react-i18next";
 import { Box, Button, Container, Flex, Text } from "theme-ui";
 import { toWei } from "web3-utils";
-import { CHAIN_ID } from "config";
 
 interface IProps {
   openReceiptPage: () => void;
@@ -18,11 +17,11 @@ export const DoAirdrop: React.FC<IProps> = ({
   openReceiptPage,
 }) => {
   const { t } = useTranslation();
-  const { performActions } = useContractKit();
+  const { performActions, network } = useContractKit();
 
   const onRedeemClick = () => {
     performActions(async (kit) => {
-      const poofKit = new PoofKitV2(kit, CHAIN_ID);
+      const poofKit = new PoofKitV2(kit, network.chainId);
       const txo = await poofKit.redeem();
       const tx = await kit.sendTransactionObject(txo, {
         from: kit.defaultAccount,

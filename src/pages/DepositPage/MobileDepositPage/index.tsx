@@ -3,9 +3,9 @@ import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import { PickDeposit } from "pages/DepositPage/MobileDepositPage/PickDeposit";
 import { ConfirmDeposit } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
 import { DepositReceipt } from "pages/DepositPage/MobileDepositPage/DepositReceipt";
-import { CHAIN_ID } from "config";
 import { IDepositProps } from "pages/DepositPage";
 import { PoofAccountGlobal } from "hooks/poofAccount";
+import { useContractKit } from "@celo-tools/use-contractkit";
 
 enum DepositStep {
   PICKER = "PICKER",
@@ -35,6 +35,7 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
   setBackup,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
+  const { network } = useContractKit();
   const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
 
   switch (depositStep) {
@@ -93,7 +94,7 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
               getNoteStringAndCommitment(
                 selectedCurrency,
                 selectedAmount,
-                CHAIN_ID
+                network.chainId
               )
             );
             setDepositStep(DepositStep.PICKER);

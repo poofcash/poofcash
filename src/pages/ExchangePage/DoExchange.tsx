@@ -14,7 +14,7 @@ import {
 } from "theme-ui";
 import { toWei, AbiItem, toBN } from "web3-utils";
 import { humanFriendlyWei } from "utils/eth";
-import { CURRENCY_MAP, SCELO_IDX } from "config";
+import { CURRENCY_MAP, SCELO_IDX_MAP } from "config";
 import erc20Abi from "abis/ERC20.json";
 import { GrayBox } from "components/GrayBox";
 import { SummaryTable } from "components/SummaryTable";
@@ -45,17 +45,20 @@ export const DoExchange: React.FC<IProps> = ({
   refetch,
 }) => {
   const { t } = useTranslation();
-  const { performActions, address, connect } = useContractKit();
+  const { performActions, address, connect, network } = useContractKit();
   const [loading, setLoading] = React.useState(false);
 
   const onExchangeClick = () => {
     setLoading(true);
     performActions(async (kit) => {
-      const rewardsKit = new RewardsCeloKit(kit, CURRENCY_MAP.rcelo);
+      const rewardsKit = new RewardsCeloKit(
+        kit,
+        CURRENCY_MAP[network.chainId].rcelo
+      );
       try {
         const txo =
           currencies.from === "sCELO"
-            ? rewardsKit.deposit(toWei(amount), SCELO_IDX)
+            ? rewardsKit.deposit(toWei(amount), SCELO_IDX_MAP[network.chainId])
             : rewardsKit.withdraw(toWei(amount));
         const tx = await txo.send({
           from: kit.defaultAccount,
@@ -76,10 +79,15 @@ export const DoExchange: React.FC<IProps> = ({
     performActions(async (kit) => {
       const erc20 = new kit.web3.eth.Contract(
         erc20Abi as AbiItem[],
-        currencies.from === "sCELO" ? CURRENCY_MAP.scelo : CURRENCY_MAP.rcelo
+        currencies.from === "sCELO"
+          ? CURRENCY_MAP[network.chainId].scelo
+          : CURRENCY_MAP[network.chainId].rcelo
       );
       try {
-        const txo = erc20.methods.approve(CURRENCY_MAP.rcelo, toWei(amount));
+        const txo = erc20.methods.approve(
+          CURRENCY_MAP[network.chainId].rcelo,
+          toWei(amount)
+        );
         await txo.send({
           from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),

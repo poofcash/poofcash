@@ -4,12 +4,12 @@ import DesktopDepositPage from "pages/DepositPage/DesktopDepositPage";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { initialNoteStringCommitment } from "pages/DepositPage/MobileDepositPage";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
-import { CHAIN_ID } from "config";
 import { NoteStringCommitment } from "pages/DepositPage/types";
 import { useDeposit } from "hooks/writeContract";
 import { useAsyncState } from "hooks/useAsyncState";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofAccountGlobal } from "hooks/poofAccount";
+import { useContractKit } from "@celo-tools/use-contractkit";
 
 export const BLOCKS_PER_WEEK = 120960;
 
@@ -32,16 +32,17 @@ export interface IDepositProps {
 const DepositPage: React.FC = () => {
   const [selectedAmount, setSelectedAmount] = React.useState("0");
   const [selectedCurrency, setSelectedCurrency] = React.useState("CELO");
+  const { network } = useContractKit();
   const { poofKit } = PoofKitGlobal.useContainer();
   const getMiningRate = React.useCallback(async () => {
     const { poofRate, apRate } = await poofKit.miningRate(
       selectedCurrency,
       selectedAmount,
-      CHAIN_ID,
+      network.chainId,
       BLOCKS_PER_WEEK
     );
     return { poofRate, apRate };
-  }, [poofKit, selectedCurrency, selectedAmount]);
+  }, [poofKit, selectedCurrency, selectedAmount, network]);
   const [{ poofRate, apRate }] = useAsyncState(
     { poofRate: "0", apRate: "0" },
     getMiningRate
@@ -53,9 +54,13 @@ const DepositPage: React.FC = () => {
 
   React.useEffect(() => {
     setNoteStringCommitment(
-      getNoteStringAndCommitment(selectedCurrency, selectedAmount, CHAIN_ID)
+      getNoteStringAndCommitment(
+        selectedCurrency,
+        selectedAmount,
+        network.chainId
+      )
     );
-  }, [selectedCurrency, selectedAmount]);
+  }, [selectedCurrency, selectedAmount, network]);
 
   const breakpoint = useBreakpoint();
 
