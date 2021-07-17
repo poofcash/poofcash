@@ -6,7 +6,7 @@ import Modal from "react-modal";
 import { Text, Button, Flex, Input, Container, Box } from "theme-ui";
 import { createContainer } from "unstated-next";
 import { setAccount } from "state/user";
-import { Breakpoint, useBreakpoint } from "./breakpoint";
+import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 
 const web3 = new Web3();
 

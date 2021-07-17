@@ -1,7 +1,7 @@
 import React from "react";
 import MobileMinePage from "pages/MinePage/MobileMinePage";
 import DesktopMinePage from "pages/MinePage/DesktopMinePage";
-import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
+import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { NoteInfo } from "@poofcash/poof-kit";
 import { isValidNote } from "utils/snarks-functions";
 import { PoofKitGlobal } from "hooks/usePoofKit";

@@ -1,7 +1,7 @@
 import React from "react";
 import MobileRedeemPage from "pages/RedeemPage/MobileRedeemPage";
 import DesktopRedeemPage from "pages/RedeemPage/DesktopRedeemPage";
-import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
+import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { usePoofAmount } from "hooks/usePoofAmount";
 import { RelayerOption, useRelayer } from "hooks/useRelayer";

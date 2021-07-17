@@ -4,7 +4,7 @@ import { isValidNote, parseNote } from "utils/snarks-functions";
 import { Box, Button, Divider, Flex, Input, Select, Text } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
-import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
+import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { useDebounce } from "hooks/useDebounce";
 import { isValidHttpUrl } from "utils/url.utils";
 import axios from "axios";

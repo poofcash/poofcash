@@ -6,7 +6,7 @@ import { Button, Text, Spinner } from "@theme-ui/components";
 import { Box, Divider, Flex, Select } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
-import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
+import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { toBN, fromWei, toWei } from "web3-utils";

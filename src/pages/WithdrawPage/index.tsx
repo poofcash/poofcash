@@ -1,7 +1,7 @@
 import React from "react";
 import MobileWithdrawPage from "pages/WithdrawPage/MobileWithdrawPage";
 import DesktopWithdrawPage from "pages/WithdrawPage/DesktopWithdrawPage";
-import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
+import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { RelayerOption, useRelayer } from "hooks/useRelayer";
 import { calculateFee, deployments, parseNote } from "@poofcash/poof-kit";
 import { isValidNote } from "utils/snarks-functions";

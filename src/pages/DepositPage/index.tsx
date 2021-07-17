@@ -1,7 +1,7 @@
 import React from "react";
 import MobileDepositPage from "pages/DepositPage/MobileDepositPage";
 import DesktopDepositPage from "pages/DepositPage/DesktopDepositPage";
-import { Breakpoint, useBreakpoint } from "hooks/breakpoint";
+import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { initialNoteStringCommitment } from "pages/DepositPage/MobileDepositPage";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import { CHAIN_ID } from "config";
