@@ -1,2 +1,3 @@
 /// <reference types="react-scripts" />
-declare module "@poofcash/poof-token";
+declare module "circomlib";
+declare module "snarkjs";
