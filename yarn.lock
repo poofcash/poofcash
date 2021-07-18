@@ -1258,7 +1258,7 @@
     debug "^4.1.1"
     utf8 "3.0.0"
 
-"@celo/contractkit@1.2.4", "@celo/contractkit@^1.1.0", "@celo/contractkit@^1.2.0":
+"@celo/contractkit@1.2.4", "@celo/contractkit@^1.2.0", "@celo/contractkit@^1.2.4":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@celo/contractkit/-/contractkit-1.2.4.tgz#63261b600f53d08ec78cd3c4cb6389f99eefc9a3"
   integrity sha512-JciCKqU1xd9Me7ROnIWde4CVOO+jJSK0mAre2RIE07XG6bt77RfIjkioX56YSoxSsm/ulqLWS5bC2mJgCl7iTg==
@@ -2250,12 +2250,12 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@poofcash/poof-kit@=1.0.22":
-  version "1.0.22"
-  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.22.tgz#33476d3db3d2eb4a87e81ec44c9c1c102dec3dab"
-  integrity sha512-nd4d663OqLLyzRG0nnT5+0Dp0d8dlmLaepM+QaJA4H8/l/+kO4U5AmxLai18fZCLXJc1sjoaJdN8umNoaWVidA==
+"@poofcash/poof-kit@=1.0.25":
+  version "1.0.25"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.25.tgz#1976c4e6104622e7c0fef3ec2a5f4f5df98804f5"
+  integrity sha512-w/Ozwpg7vTbVkhLW6AxlwrLMLAosuLLVqx/JFUuyK2E/3S3p9fbY3vxhhtpNK/TuRqOlpTfQA3Nu2TTPph40fg==
   dependencies:
-    "@celo/contractkit" "^1.1.0"
+    "@celo/contractkit" "^1.2.4"
     "@types/bn.js" "^5.1.0"
     "@types/decimal.js" "^7.4.0"
     "@types/eth-sig-util" "^2.1.0"
