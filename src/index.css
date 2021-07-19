@@ -30,3 +30,8 @@
 .tw-font-medium {
   color: black;
 }
+
+/* HACK: Fix title color in wallet modal */
+.tw-text-lg {
+  color: black;
+}
