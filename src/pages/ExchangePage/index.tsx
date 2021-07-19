@@ -6,6 +6,7 @@ import { DoExchange } from "./DoExchange";
 import { CURRENCY_MAP } from "config";
 import erc20Abi from "abis/ERC20.json";
 import { AbiItem, isAddress } from "web3-utils";
+import { useExchange } from "hooks/useExchange";
 
 enum ExchangeStep {
   DO = "DO",
@@ -15,51 +16,45 @@ enum ExchangeStep {
 const ExchangePage: React.FC = () => {
   const [step, setStep] = React.useState(ExchangeStep.DO);
   const { kit, address, network } = useContractKit();
-  const sCELOBalanceCall = React.useCallback(async () => {
-    const savingsCELO = new kit.web3.eth.Contract(
+  const [currencies, setCurrencies] = React.useState({
+    from: "CELO",
+    to: "rCELO",
+  });
+
+  const fromBalanceCall = React.useCallback(async () => {
+    const fromToken = new kit.web3.eth.Contract(
       erc20Abi as AbiItem[],
-      CURRENCY_MAP[network.chainId].scelo
+      CURRENCY_MAP[network.chainId][currencies.from.toLowerCase()]
     );
     if (!address || !isAddress(address)) {
       return ["0", "0"];
     }
+    let spender = CURRENCY_MAP[network.chainId].rcelo;
+    // TODO spender
     return await Promise.all([
-      savingsCELO.methods.balanceOf(address).call(),
-      savingsCELO.methods
-        .allowance(address, CURRENCY_MAP[network.chainId].rcelo)
-        .call(),
-    ]);
-  }, [kit, address, network]);
-  const rCELOBalanceCall = React.useCallback(async () => {
-    const rewardsCELO = new kit.web3.eth.Contract(
-      erc20Abi as AbiItem[],
-      CURRENCY_MAP[network.chainId].rcelo
-    );
-    if (!address || !isAddress(address)) {
-      return ["0", "0"];
-    }
-    return await Promise.all([
-      rewardsCELO.methods.balanceOf(address).call(),
-      rewardsCELO.methods
-        .allowance(address, CURRENCY_MAP[network.chainId].rcelo)
-        .call(),
+      fromToken.methods.balanceOf(address).call(),
+      fromToken.methods.allowance(address, spender).call(),
     ]);
   }, [kit, address, network]);
 
-  const [[sCELOBalance, sCELOAllowance], refetchSCELO] = useAsyncState(
+  const [[fromBalance, fromAllowance], refetchFromBalance] = useAsyncState(
     ["0", "0"],
-    sCELOBalanceCall
+    fromBalanceCall
   );
-  const [[rCELOBalance], refetchRCELO] = useAsyncState(
-    ["0", "0"],
-    rCELOBalanceCall
-  );
-  const [currencies, setCurrencies] = React.useState({
-    from: "sCELO",
-    to: "rCELO",
-  });
-  const [amount, setAmount] = React.useState("0");
+
   const [txHash, setTxHash] = React.useState("");
+
+  const {
+    fromCurrency,
+    setFromCurrency,
+    fromAmount,
+    setFromAmount,
+    toCurrency,
+    setToCurrency,
+    toAmount,
+    setToAmount,
+    exchangeRate,
+  } = useExchange();
 
   switch (step) {
     case ExchangeStep.DO:
@@ -67,21 +62,19 @@ const ExchangePage: React.FC = () => {
         <DoExchange
           openReceiptPage={() => setStep(ExchangeStep.RECEIPT)}
           setTxHash={setTxHash}
-          currencies={currencies}
-          switchCurrencies={() => {
-            setCurrencies({
-              to: currencies.from,
-              from: currencies.to,
-            });
-          }}
-          amount={amount}
-          setAmount={setAmount}
-          sCELOBalance={sCELOBalance}
-          rCELOBalance={rCELOBalance}
-          sCELOAllowance={sCELOAllowance}
+          fromCurrency={fromCurrency}
+          setFromCurrency={setFromCurrency}
+          toCurrency={toCurrency}
+          setToCurrency={setToCurrency}
+          fromAmount={fromAmount}
+          setFromAmount={setFromAmount}
+          toAmount={toAmount}
+          setToAmount={setToAmount}
+          exchangeRate={exchangeRate}
+          fromBalance={fromBalance}
+          fromAllowance={fromAllowance}
           refetch={() => {
-            refetchSCELO();
-            refetchRCELO();
+            refetchFromBalance();
           }}
         />
       );
@@ -89,7 +82,7 @@ const ExchangePage: React.FC = () => {
       return (
         <ExchangeReceipt
           onDoneClick={() => setStep(ExchangeStep.DO)}
-          amount={amount}
+          amount={fromAmount}
           currencies={currencies}
           txHash={txHash}
         />

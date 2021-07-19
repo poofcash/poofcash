@@ -92,7 +92,7 @@
   },
   "exchange": {
     "title": "Exchange rCELO",
-    "subtitle": "Exchange rCELO with 0 slippage.",
+    "subtitle": "Exchange between CELO, wrapped CELO, and rCELO.",
     "review": {
       "title": "Review your exchange"
     },

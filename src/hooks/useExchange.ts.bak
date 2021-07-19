@@ -1,0 +1,40 @@
+import {
+  CELO,
+  ChainId,
+  Pair,
+  TokenAmount,
+  Route,
+  Trade,
+  TradeType,
+} from "@ubeswap/sdk";
+
+export const useExchange = () => {
+  const exchangeCall = React.useCallback(
+    (from: string, to: string, fromAmount: string, toAmount: string) => {
+      if (from.toLowerCase() === "celo") {
+        if (to.toLowerCase() === "rcelo") {
+          const input = new TokenAmount(CELO[ChainId.MAINNET], fromAmount);
+          const output = new TokenAmount(CELO[ChainId.MAINNET], toAmount);
+          const pair = new Pair(input, output);
+          const route = new Route([pair], input.token);
+          const trade = new Trade(route, input, TradeType.EXACT_INPUT);
+        } else {
+          // use rewards kit
+        }
+      } else if (from.toLowerCase() === "rcelo") {
+        if (to.toLowerCase() === "celo") {
+          // use ubeswap
+        } else {
+          // use ubeswap
+        }
+      } else {
+        if (to.toLowerCase() === "celo") {
+          // use ubeswap
+        } else {
+          // use rewards kit
+        }
+      }
+    },
+    []
+  );
+};

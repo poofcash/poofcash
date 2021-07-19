@@ -3,45 +3,57 @@ import { useContractKit } from "@celo-tools/use-contractkit";
 import { RewardsCeloKit } from "@poofcash/rewardscelo";
 import { useTranslation } from "react-i18next";
 import {
+  Box,
   Button,
+  Card,
   Container,
   Flex,
   Grid,
   Input,
+  Link,
   Select,
   Spinner,
   Text,
 } from "theme-ui";
 import { toWei, AbiItem, toBN } from "web3-utils";
 import { humanFriendlyWei } from "utils/eth";
-import { CURRENCY_MAP, SCELO_IDX_MAP } from "config";
+import { CURRENCY_MAP, exchangeCurrencies } from "config";
 import erc20Abi from "abis/ERC20.json";
 import { GrayBox } from "components/GrayBox";
 import { SummaryTable } from "components/SummaryTable";
+import { Swap } from "phosphor-react";
+import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
   openReceiptPage: () => void;
-  currencies: { from: string; to: string };
-  switchCurrencies: () => void;
+  fromCurrency: string;
+  setFromCurrency: (currency: string) => void;
+  toCurrency: string;
+  setToCurrency: (currency: string) => void;
   setTxHash: (txHash: string) => void;
-  amount: string;
-  setAmount: (amount: string) => void;
-  sCELOBalance: string;
-  rCELOBalance: string;
-  sCELOAllowance: string;
+  fromAmount: string;
+  setFromAmount: (amount: string) => void;
+  toAmount: string;
+  setToAmount: (amount: string) => void;
+  fromBalance: string;
+  fromAllowance: string;
+  exchangeRate: string;
   refetch: () => void;
 }
 
 export const DoExchange: React.FC<IProps> = ({
-  setTxHash,
   openReceiptPage,
-  currencies,
-  switchCurrencies,
-  amount,
-  setAmount,
-  sCELOBalance,
-  rCELOBalance,
-  sCELOAllowance,
+  fromCurrency,
+  setFromCurrency,
+  fromAmount,
+  setFromAmount,
+  toCurrency,
+  setToCurrency,
+  exchangeRate,
+  toAmount,
+  setToAmount,
+  fromBalance,
+  fromAllowance,
   refetch,
 }) => {
   const { t } = useTranslation();
@@ -56,15 +68,15 @@ export const DoExchange: React.FC<IProps> = ({
         CURRENCY_MAP[network.chainId].rcelo
       );
       try {
-        const txo =
-          currencies.from === "sCELO"
-            ? rewardsKit.deposit(toWei(amount), SCELO_IDX_MAP[network.chainId])
-            : rewardsKit.withdraw(toWei(amount));
-        const tx = await txo.send({
-          from: kit.defaultAccount,
-          gasPrice: toWei("0.1", "gwei"),
-        });
-        setTxHash(await tx.getHash());
+        // const txo =
+        //   currencies.from === "sCELO"
+        //     ? rewardsKit.deposit(toWei(amount), rCELOMap[network.chainId])
+        //     : rewardsKit.withdraw(toWei(amount));
+        // const tx = await txo.send({
+        //   from: kit.defaultAccount,
+        //   gasPrice: toWei("0.1", "gwei"),
+        // });
+        // setTxHash(await tx.getHash());
         openReceiptPage();
       } catch (e) {
         console.error(e);
@@ -79,14 +91,14 @@ export const DoExchange: React.FC<IProps> = ({
     performActions(async (kit) => {
       const erc20 = new kit.web3.eth.Contract(
         erc20Abi as AbiItem[],
-        currencies.from === "sCELO"
+        fromCurrency === "sCELO"
           ? CURRENCY_MAP[network.chainId].scelo
           : CURRENCY_MAP[network.chainId].rcelo
       );
       try {
         const txo = erc20.methods.approve(
           CURRENCY_MAP[network.chainId].rcelo,
-          toWei(amount)
+          toWei(fromAmount)
         );
         await txo.send({
           from: kit.defaultAccount,
@@ -101,8 +113,6 @@ export const DoExchange: React.FC<IProps> = ({
     });
   };
 
-  const maxBalance = currencies.from === "sCELO" ? sCELOBalance : rCELOBalance;
-
   const connectWalletButton = (
     <Button
       variant="primary"
@@ -116,28 +126,28 @@ export const DoExchange: React.FC<IProps> = ({
   const approveButton = (
     <Button
       onClick={onApproveClick}
-      disabled={!address || Number(amount) <= 0}
+      disabled={!address || Number(fromAmount) <= 0}
       sx={{ width: "100%" }}
     >
-      Approve {currencies.from}
+      Approve {fromCurrency}
     </Button>
   );
 
   const exchangeButton = (
     <Button
       onClick={onExchangeClick}
-      disabled={Number(amount) <= 0 || !address}
+      disabled={Number(fromAmount) <= 0 || !address}
       sx={{ width: "100%" }}
     >
-      Exchange for {currencies.to}
+      Exchange for {toCurrency}
     </Button>
   );
 
   let button = connectWalletButton;
   if (address) {
     if (
-      currencies.from === "sCELO" &&
-      toBN(sCELOAllowance).lt(toBN(toWei(amount === "" ? "0" : amount)))
+      fromCurrency === "sCELO" &&
+      toBN(fromAllowance).lt(toBN(toWei(fromAmount === "" ? "0" : fromAmount)))
     ) {
       button = approveButton;
     } else {
@@ -157,7 +167,7 @@ export const DoExchange: React.FC<IProps> = ({
     </>
   );
 
-  if (address && amount === "0") {
+  if (address && fromAmount === "0") {
     boxContent = (
       <>
         <Text sx={{ mb: 4 }} variant="subtitle">
@@ -179,12 +189,12 @@ export const DoExchange: React.FC<IProps> = ({
           lineItems={[
             {
               label: "Exchange",
-              value: `${amount} ${currencies.from}`,
+              value: `${fromAmount} ${fromCurrency}`,
             },
           ]}
           totalItem={{
             label: "Receive",
-            value: `${amount} ${currencies.to}`,
+            value: `${toAmount} ${toCurrency}`,
           }}
         />
       </>
@@ -201,24 +211,76 @@ export const DoExchange: React.FC<IProps> = ({
         </Text>
         <br />
 
-        <Text variant="form" sx={{ mb: 2 }}>
-          Amount (max: {humanFriendlyWei(maxBalance)})
-        </Text>
-        <Flex>
-          <Input
-            type="number"
-            sx={{ width: "25%" }}
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-          <Select
-            sx={{ minWidth: 100, ml: 2 }}
-            onChange={switchCurrencies}
-            value={currencies.from}
-          >
-            <option value={currencies.from}>{currencies.from}</option>
-            <option value={currencies.to}>{currencies.to}</option>
-          </Select>
+        <Grid columns={[2, "100px 1fr"]}>
+          <Box>
+            <Text variant="form">From</Text>
+            <Select
+              onChange={(e) => setFromCurrency(e.target.value)}
+              value={fromCurrency}
+            >
+              {exchangeCurrencies.map((curr, idx) => {
+                return (
+                  <option value={curr} key={idx}>
+                    {curr}
+                  </option>
+                );
+              })}
+            </Select>
+          </Box>
+          <Box>
+            <Container sx={{ textAlign: "right" }}>
+              <Text variant="form">
+                <Link
+                  onClick={() => setFromAmount(humanFriendlyWei(fromBalance))}
+                >
+                  max: {humanFriendlyWei(fromBalance)} {fromCurrency}
+                </Link>
+              </Text>
+            </Container>
+            <Input
+              type="number"
+              sx={{ width: "100%" }}
+              value={fromAmount}
+              onChange={(e) => setFromAmount(e.target.value)}
+            />
+          </Box>
+          <Box>
+            <Text variant="form">To</Text>
+            <Select
+              onChange={(e) => setToCurrency(e.target.value)}
+              value={toCurrency}
+            >
+              {exchangeCurrencies.map((curr, idx) => {
+                return (
+                  <option value={curr} key={idx}>
+                    {curr}
+                  </option>
+                );
+              })}
+            </Select>
+          </Box>
+          <Flex sx={{ alignItems: "flex-end" }}>
+            <Input
+              type="number"
+              sx={{ width: "100%" }}
+              value={toAmount}
+              onChange={(e) => setToAmount(e.target.value)}
+            />
+          </Flex>
+        </Grid>
+        <Flex
+          sx={{ alignItems: "center", justifyContent: "space-evenly", mt: 4 }}
+        >
+          <Text variant="form">Current Price</Text>
+          <Card variant="warning">
+            <Flex sx={{ alignItems: "center", justifyContent: "space-evenly" }}>
+              <Text mr={2}>1 {fromCurrency}</Text>
+              <Swap size={32} />
+              <Text ml={2}>
+                {humanFriendlyNumber(exchangeRate)} {toCurrency}
+              </Text>
+            </Flex>
+          </Card>
         </Flex>
       </Container>
       <Container>

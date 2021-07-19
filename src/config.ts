@@ -18,10 +18,16 @@ export const CURRENCY_MAP: Record<ChainId, Record<string, string>> = {
   },
 };
 
-export const SCELO_IDX_MAP = {
-  [ChainId.Mainnet]: 0,
-  [ChainId.Alfajores]: 1,
-  [ChainId.Baklava]: 1,
+export const rCELOMap = {
+  [ChainId.Mainnet]: {
+    scelo: 0,
+  },
+  [ChainId.Alfajores]: {
+    scelo: 1,
+  },
+  [ChainId.Baklava]: {
+    scelo: -1,
+  },
 };
 
 export const RELAYERS = {
@@ -65,3 +71,5 @@ export const STAKE_MAP: Record<ChainId, Record<string, string>> = {
     rewardToken: "",
   },
 };
+
+export const exchangeCurrencies = ["CELO", "sCELO", "rCELO"];
