@@ -193,7 +193,9 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
     </Button>
   );
 
-  if (toBN(stakeTokenAllowance).gte(toBN(toWei(amount)))) {
+  if (
+    toBN(stakeTokenAllowance).gte(toBN(toWei(amount === "" ? "0" : amount)))
+  ) {
     button = stakeButton;
   } else {
     button = approveButton;
@@ -366,7 +368,7 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
             >
               <LabelWithBalance
                 label="Total"
-                amount={amount}
+                amount={amount === "" ? "0" : amount}
                 currency={STAKE_MAP[network.chainId].stakeTokenName}
               />
               {button}

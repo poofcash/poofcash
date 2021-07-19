@@ -78,6 +78,14 @@ export const MobileHeader: React.FC = () => {
           >
             Airdrop
           </Button>
+          <Button
+            variant={
+              currentPage === Page.STAKE ? "switcherSelected" : "switcher"
+            }
+            onClick={() => dispatch(setCurrentPage({ nextPage: Page.STAKE }))}
+          >
+            Stake
+          </Button>
         </Flex>
       </Container>
     </Container>
