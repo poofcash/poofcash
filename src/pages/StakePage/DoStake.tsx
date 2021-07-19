@@ -16,6 +16,7 @@ import { useStakeRewards } from "hooks/useStakeRewards";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
+import { MaxUint256 } from "@ethersproject/constants";
 
 interface IProps {
   amount: string;
@@ -125,7 +126,7 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
       try {
         const txo = stakeToken.methods.approve(
           STAKE_MAP[network.chainId].stakeRewards,
-          toWei(amount)
+          MaxUint256.toString()
         );
         await txo.send({
           from: kit.defaultAccount,
