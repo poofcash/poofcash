@@ -16,6 +16,7 @@ import ExchangePage from "pages/ExchangePage";
 import Modal from "react-modal";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import StakePage from "pages/StakePage";
+import { ToastContainer } from "react-toastify";
 
 const PageComponent: React.FC<{ page: Page; Component: React.FC }> = ({
   page,
@@ -84,6 +85,11 @@ const App: React.FC = () => {
         {/*TODO footer*/}
       </Container>
       {passwordModal}
+      <ToastContainer
+        style={{ background: "var(--theme-ui-colors-background)" }}
+        toastClassName="toast-body"
+        bodyClassName="toast-body"
+      />
     </>
   );
 };

@@ -17,6 +17,7 @@ import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { MaxUint256 } from "@ethersproject/constants";
+import { toastTx } from "utils/toastTx";
 
 interface IProps {
   amount: string;
@@ -81,10 +82,11 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
       ) as unknown) as MoolaStakingRewards;
       try {
         const txo = stakingRewards.methods.exit();
-        await txo.send({
+        const tx = await txo.send({
           from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),
         });
+        toastTx(tx.transactionHash);
       } catch (e) {
         console.error(e);
       } finally {
@@ -103,10 +105,11 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
       ) as unknown) as MoolaStakingRewards;
       try {
         const txo = stakingRewards.methods.stake(toWei(amount));
-        await txo.send({
+        const tx = await txo.send({
           from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),
         });
+        toastTx(tx.transactionHash);
       } catch (e) {
         console.error(e);
       } finally {
@@ -128,10 +131,11 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
           STAKE_MAP[network.chainId].stakeRewards,
           MaxUint256.toString()
         );
-        await txo.send({
+        const tx = await txo.send({
           from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),
         });
+        toastTx(tx.transactionHash);
       } catch (e) {
         console.error(e);
       } finally {
@@ -150,10 +154,11 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
       ) as unknown) as MoolaStakingRewards;
       try {
         const txo = stakingRewards.methods.getReward();
-        await txo.send({
+        const tx = await txo.send({
           from: kit.defaultAccount,
           gasPrice: toWei("0.1", "gwei"),
         });
+        toastTx(tx.transactionHash);
       } catch (e) {
         console.error(e);
       } finally {

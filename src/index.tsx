@@ -12,6 +12,7 @@ import { PoofKitGlobal } from "hooks/usePoofKit";
 import { DepositListGlobal } from "components/DepositList";
 
 import "@celo-tools/use-contractkit/lib/styles.css";
+import "react-toastify/dist/ReactToastify.min.css";
 import "index.css";
 
 declare global {
