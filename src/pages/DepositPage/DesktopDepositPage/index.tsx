@@ -19,6 +19,7 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
   usingCustom,
   setUsingCustom,
   customAmount,
+  actualAmount,
   setCustomAmount,
   txHash,
   deposit,
@@ -63,6 +64,7 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
           usingCustom={usingCustom}
           setCustomAmount={setCustomAmount}
           customAmount={customAmount}
+          actualAmount={actualAmount}
           notes={notes}
           depositLoading={depositLoading}
           poofRate={poofRate}
@@ -78,7 +80,7 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
             resetNotes();
             setDepositStep(DepositStep.DO);
           }}
-          amount={usingCustom ? customAmount : selectedAmount}
+          amount={actualAmount}
           selectedCurrency={selectedCurrency}
           txHash={txHash}
         />

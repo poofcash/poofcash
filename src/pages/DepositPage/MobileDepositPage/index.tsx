@@ -27,6 +27,7 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
   usingCustom,
   setUsingCustom,
   customAmount,
+  actualAmount,
   setCustomAmount,
   txHash,
   deposit,
@@ -54,6 +55,7 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
           usingCustom={usingCustom}
           setCustomAmount={setCustomAmount}
           customAmount={customAmount}
+          actualAmount={actualAmount}
           poofRate={poofRate}
           apRate={apRate}
         />
@@ -82,7 +84,7 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
               alert(e);
             }
           }}
-          amount={usingCustom ? customAmount : selectedAmount}
+          amount={actualAmount}
           selectedCurrency={selectedCurrency}
           notes={notes}
           depositLoading={depositLoading}
@@ -98,7 +100,7 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
             resetNotes();
             setDepositStep(DepositStep.PICKER);
           }}
-          amount={usingCustom ? customAmount : selectedAmount}
+          amount={usingCustom ? actualAmount : selectedAmount}
           selectedCurrency={selectedCurrency}
           txHash={txHash}
         />

@@ -24,6 +24,7 @@ interface IProps {
   usingCustom: boolean;
   setCustomAmount: (amount: string) => void;
   customAmount: string;
+  actualAmount: string;
   poofRate: string;
   apRate: string;
 }
@@ -40,6 +41,7 @@ export const PickDeposit: React.FC<IProps> = ({
   usingCustom,
   setUsingCustom,
   customAmount,
+  actualAmount,
   setCustomAmount,
   poofRate,
   apRate,
@@ -51,7 +53,7 @@ export const PickDeposit: React.FC<IProps> = ({
   const [allowance, approve, approveLoading] = useApprove(
     deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
       .tokenAddress,
-    toWei(selectedAmount)
+    toWei(Number(actualAmount).toString())
   );
 
   const userBalance = useTokenBalance(
@@ -96,7 +98,6 @@ export const PickDeposit: React.FC<IProps> = ({
     </Button>
   );
 
-  const amount = usingCustom ? customAmount : selectedAmount;
   const approveButton = (
     <Button
       variant="secondary"
@@ -106,7 +107,7 @@ export const PickDeposit: React.FC<IProps> = ({
           alert(e);
         })
       }
-      disabled={amount === "0"}
+      disabled={Number(actualAmount) === 0}
     >
       Approve
     </Button>
@@ -116,7 +117,7 @@ export const PickDeposit: React.FC<IProps> = ({
     <Button
       variant="secondary"
       onClick={depositHandler}
-      disabled={amount === "0"}
+      disabled={Number(actualAmount) === 0}
     >
       Deposit
     </Button>
@@ -124,9 +125,11 @@ export const PickDeposit: React.FC<IProps> = ({
 
   let button = connectWalletButton;
   if (address) {
-    if (toBN(userBalance).lt(toBN(toWei(amount)))) {
+    if (toBN(userBalance).lt(toBN(toWei(Number(actualAmount).toString())))) {
       button = insufficientBalanceButton;
-    } else if (toBN(allowance).lt(toBN(toWei(amount)))) {
+    } else if (
+      toBN(allowance).lt(toBN(toWei(Number(actualAmount).toString())))
+    ) {
       button = approveButton;
     } else {
       button = depositButton;
@@ -159,7 +162,7 @@ export const PickDeposit: React.FC<IProps> = ({
         <Flex mb={2}>
           <Box sx={{ width: "100%", mr: 2 }}>
             <Select
-              value={amount}
+              value={usingCustom ? "custom" : selectedAmount}
               onChange={(e) => {
                 if (e.target.value === "custom") {
                   setUsingCustom(true);
@@ -190,7 +193,7 @@ export const PickDeposit: React.FC<IProps> = ({
         </Flex>
         {usingCustom && (
           <Text>
-            NOTE: Custom amounts may make multiple deposits. On-chain backups
+            NOTE: Custom amounts may make up to 25 deposits. On-chain backups
             are highly recommended
           </Text>
         )}
@@ -206,7 +209,7 @@ export const PickDeposit: React.FC<IProps> = ({
           <Text variant="regular">active deposits</Text>
         </Flex>
       )}
-      {amount !== "0" && (
+      {actualAmount !== "0" && (
         <>
           <Flex mt={3}>
             <Text sx={{ mr: 1 }} variant="largeNumber">
@@ -241,7 +244,7 @@ export const PickDeposit: React.FC<IProps> = ({
             >
               <LabelWithBalance
                 label="Total"
-                amount={amount}
+                amount={actualAmount}
                 currency={selectedCurrency}
               />
               {button}

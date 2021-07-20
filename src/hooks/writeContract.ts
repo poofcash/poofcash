@@ -35,7 +35,7 @@ export function useApprove(
           useExact ? amountToApprove : MaxUint256.toString()
         );
         await approveTxo.send({
-          from: kit.defaultAccount,
+          from: kit.defaultAccount || address,
           gasPrice: toWei("0.1", "gwei"),
         });
         refetchAllowance();
@@ -51,6 +51,7 @@ export function useApprove(
     performActions,
     refetchAllowance,
     network,
+    address,
   ]);
 
   return [allowance, approve, loading];
@@ -61,7 +62,7 @@ export function useDeposit(
 ): [string, (privateKey?: string) => Promise<void>, boolean] {
   const [loading, setLoading] = React.useState(false);
   const [txHash, setTxHash] = React.useState("");
-  const { getConnectedKit, network } = useContractKit();
+  const { getConnectedKit, network, address } = useContractKit();
 
   const deposit = React.useCallback(
     async (privateKey?: string) => {
@@ -71,7 +72,7 @@ export function useDeposit(
         const poofKit = new PoofKitV2(kit, network.chainId);
         let depositTxo = poofKit.depositNotes(noteStrings, privateKey);
         const tx = await depositTxo.send(depositTxo, {
-          from: kit.defaultAccount,
+          from: kit.defaultAccount || address,
           gasPrice: toWei("0.13", "gwei"),
           value: 0,
         });
@@ -82,7 +83,7 @@ export function useDeposit(
         setLoading(false);
       }
     },
-    [getConnectedKit, noteStrings, network]
+    [getConnectedKit, noteStrings, network, address]
   );
 
   return [txHash, deposit, loading];

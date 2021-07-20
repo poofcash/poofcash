@@ -38,6 +38,7 @@ interface IProps {
   usingCustom: boolean;
   setCustomAmount: (amount: string) => void;
   customAmount: string;
+  actualAmount: string;
   depositLoading: boolean;
   poofRate: string;
   apRate: string;
@@ -56,6 +57,7 @@ export const DoDeposit: React.FC<IProps> = ({
   usingCustom,
   setCustomAmount,
   customAmount,
+  actualAmount,
   depositLoading,
   poofRate,
   apRate,
@@ -74,7 +76,7 @@ export const DoDeposit: React.FC<IProps> = ({
   const [allowance, approve, approveLoading] = useApprove(
     deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
       .tokenAddress,
-    toWei(selectedAmount)
+    toWei(actualAmount)
   );
   const userBalance = useTokenBalance(
     CURRENCY_MAP[network.chainId][selectedCurrency.toLowerCase()],
@@ -108,7 +110,7 @@ export const DoDeposit: React.FC<IProps> = ({
             })
           }
           sx={{ width: "100%" }}
-          disabled={!address || selectedAmount === "0" || !confirmed}
+          disabled={!address || Number(actualAmount) === 0 || !confirmed}
         >
           Approve
         </Button>
@@ -129,7 +131,7 @@ export const DoDeposit: React.FC<IProps> = ({
           variant="primary"
           onClick={onDepositClick}
           sx={{ width: "100%" }}
-          disabled={!address || selectedAmount === "0" || !confirmed}
+          disabled={!address || Number(actualAmount) === 0 || !confirmed}
         >
           Deposit
         </Button>
@@ -173,9 +175,7 @@ export const DoDeposit: React.FC<IProps> = ({
           lineItems={[
             {
               label: "Deposit Amount",
-              value: `${humanFriendlyNumber(
-                usingCustom ? customAmount : selectedAmount
-              )} ${selectedCurrency}`,
+              value: `${humanFriendlyNumber(actualAmount)} ${selectedCurrency}`,
             },
             {
               label: "Est. Network Fee",
@@ -187,11 +187,10 @@ export const DoDeposit: React.FC<IProps> = ({
             value:
               selectedCurrency === "CELO"
                 ? `${humanFriendlyNumber(
-                    Number(usingCustom ? customAmount : selectedAmount) +
-                      Number(NETWORK_COST)
+                    Number(actualAmount) + Number(NETWORK_COST)
                   )} CELO`
                 : `${humanFriendlyNumber(
-                    Number(usingCustom ? customAmount : selectedAmount)
+                    Number(actualAmount)
                   )} ${selectedCurrency} + ${humanFriendlyNumber(
                     NETWORK_COST
                   )} CELO`,
@@ -243,6 +242,7 @@ export const DoDeposit: React.FC<IProps> = ({
             usingCustom={usingCustom}
             setCustomAmount={setCustomAmount}
             customAmount={customAmount}
+            actualAmount={actualAmount}
             poofRate={poofRate}
             apRate={apRate}
           />
