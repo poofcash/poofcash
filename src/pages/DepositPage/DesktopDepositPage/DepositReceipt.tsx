@@ -10,14 +10,14 @@ import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
   onDoneClick: () => void;
-  selectedAmount: string;
+  amount: string;
   selectedCurrency: string;
   txHash: string;
 }
 
 export const DepositReceipt: React.FC<IProps> = ({
   onDoneClick,
-  selectedAmount,
+  amount,
   selectedCurrency,
   txHash,
 }) => {
@@ -55,10 +55,10 @@ export const DepositReceipt: React.FC<IProps> = ({
               value:
                 selectedCurrency === "CELO"
                   ? `${humanFriendlyNumber(
-                      Number(selectedAmount) + Number(NETWORK_COST)
+                      Number(amount) + Number(NETWORK_COST)
                     )} CELO`
                   : `${humanFriendlyNumber(
-                      selectedAmount
+                      amount
                     )} ${selectedCurrency} + ${humanFriendlyNumber(
                       NETWORK_COST
                     )} CELO`,
@@ -66,7 +66,7 @@ export const DepositReceipt: React.FC<IProps> = ({
           ]}
           totalItem={{
             label: "Deposit",
-            value: `${humanFriendlyNumber(selectedAmount)} ${selectedCurrency}`,
+            value: `${humanFriendlyNumber(amount)} ${selectedCurrency}`,
           }}
         />
       </GrayBox>

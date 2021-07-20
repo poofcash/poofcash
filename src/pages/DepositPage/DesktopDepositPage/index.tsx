@@ -1,10 +1,8 @@
 import React from "react";
-import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import { DoDeposit } from "pages/DepositPage/DesktopDepositPage/DoDeposit";
 import { DepositReceipt } from "pages/DepositPage/DesktopDepositPage/DepositReceipt";
 import { IDepositProps } from "pages/DepositPage";
 import { PoofAccountGlobal } from "hooks/poofAccount";
-import { useContractKit } from "@celo-tools/use-contractkit";
 
 enum DepositStep {
   DO = "DO",
@@ -16,8 +14,12 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
   selectedAmount,
   setSelectedCurrency,
   selectedCurrency,
-  setNoteStringCommitment,
-  noteStringCommitment,
+  notes,
+  resetNotes,
+  usingCustom,
+  setUsingCustom,
+  customAmount,
+  setCustomAmount,
   txHash,
   deposit,
   depositLoading,
@@ -27,7 +29,6 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
   setBackup,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.DO);
-  const { network } = useContractKit();
   const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
 
   switch (depositStep) {
@@ -58,7 +59,11 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
           setSelectedAmount={setSelectedAmount}
           selectedCurrency={selectedCurrency}
           setSelectedCurrency={setSelectedCurrency}
-          noteStringCommitment={noteStringCommitment}
+          setUsingCustom={setUsingCustom}
+          usingCustom={usingCustom}
+          setCustomAmount={setCustomAmount}
+          customAmount={customAmount}
+          notes={notes}
           depositLoading={depositLoading}
           poofRate={poofRate}
           apRate={apRate}
@@ -70,16 +75,10 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
       return (
         <DepositReceipt
           onDoneClick={() => {
-            setNoteStringCommitment(
-              getNoteStringAndCommitment(
-                selectedCurrency,
-                selectedAmount,
-                network.chainId
-              )
-            );
+            resetNotes();
             setDepositStep(DepositStep.DO);
           }}
-          selectedAmount={selectedAmount}
+          amount={usingCustom ? customAmount : selectedAmount}
           selectedCurrency={selectedCurrency}
           txHash={txHash}
         />

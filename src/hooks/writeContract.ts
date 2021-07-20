@@ -57,7 +57,7 @@ export function useApprove(
 }
 
 export function useDeposit(
-  noteString: string
+  noteStrings: string[]
 ): [string, (privateKey?: string) => Promise<void>, boolean] {
   const [loading, setLoading] = React.useState(false);
   const [txHash, setTxHash] = React.useState("");
@@ -69,7 +69,7 @@ export function useDeposit(
       try {
         const kit = await getConnectedKit();
         const poofKit = new PoofKitV2(kit, network.chainId);
-        let depositTxo = poofKit.depositNote(noteString, privateKey);
+        let depositTxo = poofKit.depositNotes(noteStrings, privateKey);
         const tx = await depositTxo.send(depositTxo, {
           from: kit.defaultAccount,
           gasPrice: toWei("0.13", "gwei"),
@@ -82,7 +82,7 @@ export function useDeposit(
         setLoading(false);
       }
     },
-    [getConnectedKit, noteString, network]
+    [getConnectedKit, noteStrings, network]
   );
 
   return [txHash, deposit, loading];

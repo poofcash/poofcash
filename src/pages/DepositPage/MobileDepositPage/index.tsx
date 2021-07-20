@@ -1,11 +1,9 @@
 import React from "react";
-import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import { PickDeposit } from "pages/DepositPage/MobileDepositPage/PickDeposit";
 import { ConfirmDeposit } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
 import { DepositReceipt } from "pages/DepositPage/MobileDepositPage/DepositReceipt";
 import { IDepositProps } from "pages/DepositPage";
 import { PoofAccountGlobal } from "hooks/poofAccount";
-import { useContractKit } from "@celo-tools/use-contractkit";
 
 enum DepositStep {
   PICKER = "PICKER",
@@ -24,8 +22,12 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
   selectedAmount,
   setSelectedCurrency,
   selectedCurrency,
-  setNoteStringCommitment,
-  noteStringCommitment,
+  notes,
+  resetNotes,
+  usingCustom,
+  setUsingCustom,
+  customAmount,
+  setCustomAmount,
   txHash,
   deposit,
   depositLoading,
@@ -35,7 +37,6 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
   setBackup,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
-  const { network } = useContractKit();
   const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
 
   switch (depositStep) {
@@ -49,6 +50,10 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
           setSelectedAmount={setSelectedAmount}
           selectedCurrency={selectedCurrency}
           setSelectedCurrency={setSelectedCurrency}
+          setUsingCustom={setUsingCustom}
+          usingCustom={usingCustom}
+          setCustomAmount={setCustomAmount}
+          customAmount={customAmount}
           poofRate={poofRate}
           apRate={apRate}
         />
@@ -77,9 +82,9 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
               alert(e);
             }
           }}
-          selectedAmount={selectedAmount}
+          amount={usingCustom ? customAmount : selectedAmount}
           selectedCurrency={selectedCurrency}
-          noteStringCommitment={noteStringCommitment}
+          notes={notes}
           depositLoading={depositLoading}
           backup={backup}
           setBackup={setBackup}
@@ -90,16 +95,10 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
         <DepositReceipt
           onDoneClick={() => {
             // Generate a new note
-            setNoteStringCommitment(
-              getNoteStringAndCommitment(
-                selectedCurrency,
-                selectedAmount,
-                network.chainId
-              )
-            );
+            resetNotes();
             setDepositStep(DepositStep.PICKER);
           }}
-          selectedAmount={selectedAmount}
+          amount={usingCustom ? customAmount : selectedAmount}
           selectedCurrency={selectedCurrency}
           txHash={txHash}
         />

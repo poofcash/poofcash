@@ -4,19 +4,19 @@ import { NoteStringCommitment } from "pages/DepositPage/types";
 import { BackButton } from "components/BackButton";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
-import { NoteString } from "components/NoteString";
 import { SummaryTable } from "components/SummaryTable";
 import { humanFriendlyNumber } from "utils/number";
 import { useDispatch } from "react-redux";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { Page, setCurrentPage } from "state/global";
+import { NoteList } from "components/NoteList";
 
 interface IProps {
   onBackClick: () => void;
   onConfirmClick: () => void;
-  selectedAmount: string;
+  amount: string;
   selectedCurrency: string;
-  noteStringCommitment: NoteStringCommitment;
+  notes: NoteStringCommitment[];
   depositLoading: boolean;
   backup: boolean;
   setBackup: (backup: boolean) => void;
@@ -27,15 +27,15 @@ export const NETWORK_COST = 0.0001;
 export const ConfirmDeposit: React.FC<IProps> = ({
   onBackClick,
   onConfirmClick,
-  selectedAmount,
+  amount,
   selectedCurrency,
-  noteStringCommitment,
+  notes,
   depositLoading,
   backup,
   setBackup,
 }) => {
   const [confirmed, setConfirmed] = React.useState(false);
-  const totalCost = Number(selectedAmount) + Number(NETWORK_COST);
+  const totalCost = Number(amount) + Number(NETWORK_COST);
   const dispatch = useDispatch();
   const { poofAccount } = PoofAccountGlobal.useContainer();
 
@@ -72,7 +72,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         lineItems={[
           {
             label: "Deposit Amount",
-            value: `${humanFriendlyNumber(selectedAmount)} ${selectedCurrency}`,
+            value: `${humanFriendlyNumber(amount)} ${selectedCurrency}`,
           },
           {
             label: "Est. Network Fee",
@@ -84,10 +84,10 @@ export const ConfirmDeposit: React.FC<IProps> = ({
           value:
             selectedCurrency === "CELO"
               ? `${humanFriendlyNumber(
-                  Number(selectedAmount) + Number(NETWORK_COST)
+                  Number(amount) + Number(NETWORK_COST)
                 )} CELO`
               : `${humanFriendlyNumber(
-                  selectedAmount
+                  Number(amount)
                 )} ${selectedCurrency} + ${humanFriendlyNumber(
                   NETWORK_COST
                 )} CELO`,
@@ -102,7 +102,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         Keep this note safe to withdraw the deposited money later
       </Text>
       <br />
-      <NoteString noteString={noteStringCommitment.noteString} />
+      <NoteList notes={notes.map((note) => note.noteString)} />
       <Flex
         sx={{ mt: 4, alignItems: "center" }}
         onClick={() => setConfirmed(!confirmed)}

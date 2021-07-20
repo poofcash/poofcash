@@ -3,11 +3,10 @@ import { CURRENCY_MAP } from "config";
 import { useApprove } from "hooks/writeContract";
 import { useTokenBalance } from "hooks/useTokenBalance";
 import { Button, Text, Spinner } from "@theme-ui/components";
-import { Box, Divider, Flex, Select } from "theme-ui";
+import { Box, Divider, Flex, Input, Select } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
-import { InsufficientBalanceModal } from "components/InsufficientBalanceModal";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { toBN, fromWei, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
@@ -21,6 +20,10 @@ interface IProps {
   selectedAmount: string;
   setSelectedCurrency: (currency: string) => void;
   selectedCurrency: string;
+  setUsingCustom: (usingCustom: boolean) => void;
+  usingCustom: boolean;
+  setCustomAmount: (amount: string) => void;
+  customAmount: string;
   poofRate: string;
   apRate: string;
 }
@@ -34,17 +37,16 @@ export const PickDeposit: React.FC<IProps> = ({
   setSelectedAmount,
   selectedCurrency,
   setSelectedCurrency,
+  usingCustom,
+  setUsingCustom,
+  customAmount,
+  setCustomAmount,
   poofRate,
   apRate,
 }) => {
   const { connect, address, network } = useContractKit();
   const breakpoint = useBreakpoint();
   const { depositList } = DepositListGlobal.useContainer();
-
-  const [
-    showInsufficientBalanceModal,
-    setShowInsufficientBalanceModal,
-  ] = React.useState(false);
 
   const [allowance, approve, approveLoading] = useApprove(
     deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
@@ -94,6 +96,7 @@ export const PickDeposit: React.FC<IProps> = ({
     </Button>
   );
 
+  const amount = usingCustom ? customAmount : selectedAmount;
   const approveButton = (
     <Button
       variant="secondary"
@@ -103,7 +106,7 @@ export const PickDeposit: React.FC<IProps> = ({
           alert(e);
         })
       }
-      disabled={selectedAmount === "0"}
+      disabled={amount === "0"}
     >
       Approve
     </Button>
@@ -113,7 +116,7 @@ export const PickDeposit: React.FC<IProps> = ({
     <Button
       variant="secondary"
       onClick={depositHandler}
-      disabled={selectedAmount === "0"}
+      disabled={amount === "0"}
     >
       Deposit
     </Button>
@@ -121,9 +124,9 @@ export const PickDeposit: React.FC<IProps> = ({
 
   let button = connectWalletButton;
   if (address) {
-    if (toBN(userBalance).lt(toBN(toWei(selectedAmount)))) {
+    if (toBN(userBalance).lt(toBN(toWei(amount)))) {
       button = insufficientBalanceButton;
-    } else if (toBN(allowance).lt(toBN(toWei(selectedAmount)))) {
+    } else if (toBN(allowance).lt(toBN(toWei(amount)))) {
       button = approveButton;
     } else {
       button = depositButton;
@@ -152,20 +155,48 @@ export const PickDeposit: React.FC<IProps> = ({
       <Text sx={{ mt: 4, mb: 2 }} variant="form">
         Amount (max: {humanFriendlyWei(userBalance)} {selectedCurrency})
       </Text>
-      <Select
-        mb={4}
-        value={selectedAmount}
-        onChange={(e) => setSelectedAmount(e.target.value)}
-      >
-        <option value="0">Select an amount</option>
-        {depositAmounts.map((depositAmount, index) => (
-          <option key={index} value={depositAmount}>
-            {humanFriendlyNumber(depositAmount)} {selectedCurrency}
-          </option>
-        ))}
-      </Select>
+      <Box mb={4}>
+        <Flex mb={2}>
+          <Box sx={{ width: "100%", mr: 2 }}>
+            <Select
+              value={amount}
+              onChange={(e) => {
+                if (e.target.value === "custom") {
+                  setUsingCustom(true);
+                } else {
+                  setUsingCustom(false);
+                  setSelectedAmount(e.target.value);
+                }
+              }}
+            >
+              <option value="0">Select an amount</option>
+              {depositAmounts.map((depositAmount, index) => (
+                <option key={index} value={depositAmount}>
+                  {humanFriendlyNumber(depositAmount)} {selectedCurrency}
+                </option>
+              ))}
+              <option value="custom">Custom</option>
+            </Select>
+          </Box>
+          {usingCustom && (
+            <Input
+              placeholder="Enter a custom amount"
+              onChange={(e) => {
+                setCustomAmount(e.target.value);
+              }}
+              value={customAmount}
+            />
+          )}
+        </Flex>
+        {usingCustom && (
+          <Text>
+            NOTE: Custom amounts may make multiple deposits. On-chain backups
+            are highly recommended
+          </Text>
+        )}
+      </Box>
 
-      {selectedAmount !== "0" && (
+      {!usingCustom && selectedAmount !== "0" && (
         <Flex>
           <Text sx={{ mr: 1 }} variant="largeNumber">
             {(
@@ -175,7 +206,7 @@ export const PickDeposit: React.FC<IProps> = ({
           <Text variant="regular">active deposits</Text>
         </Flex>
       )}
-      {selectedAmount !== "0" && (
+      {amount !== "0" && (
         <>
           <Flex mt={3}>
             <Text sx={{ mr: 1 }} variant="largeNumber">
@@ -195,12 +226,6 @@ export const PickDeposit: React.FC<IProps> = ({
       <Divider my={4} />
       <Box>{depositList}</Box>
 
-      <InsufficientBalanceModal
-        onClose={() => setShowInsufficientBalanceModal(false)}
-        show={showInsufficientBalanceModal}
-        neededAmount={selectedAmount}
-      />
-
       {breakpoint === Breakpoint.MOBILE && (
         <BottomDrawer>
           {loading ? (
@@ -216,7 +241,7 @@ export const PickDeposit: React.FC<IProps> = ({
             >
               <LabelWithBalance
                 label="Total"
-                amount={selectedAmount}
+                amount={amount}
                 currency={selectedCurrency}
               />
               {button}

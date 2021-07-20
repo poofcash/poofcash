@@ -13,7 +13,6 @@ import { PickDeposit } from "pages/DepositPage/MobileDepositPage/PickDeposit";
 import { NoteStringCommitment } from "pages/DepositPage/types";
 import { SummaryTable } from "components/SummaryTable";
 import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
-import { NoteString } from "components/NoteString";
 import { useApprove } from "hooks/writeContract";
 import { GrayBox } from "components/GrayBox";
 import { CURRENCY_MAP } from "config";
@@ -26,6 +25,7 @@ import { deployments } from "@poofcash/poof-kit";
 import { useDispatch } from "react-redux";
 import { Page, setCurrentPage } from "state/global";
 import { PoofAccountGlobal } from "hooks/poofAccount";
+import { NoteList } from "components/NoteList";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -33,7 +33,11 @@ interface IProps {
   selectedAmount: string;
   setSelectedCurrency: (currency: string) => void;
   selectedCurrency: string;
-  noteStringCommitment: NoteStringCommitment;
+  notes: NoteStringCommitment[];
+  setUsingCustom: (usingCustom: boolean) => void;
+  usingCustom: boolean;
+  setCustomAmount: (amount: string) => void;
+  customAmount: string;
   depositLoading: boolean;
   poofRate: string;
   apRate: string;
@@ -47,7 +51,11 @@ export const DoDeposit: React.FC<IProps> = ({
   setSelectedAmount,
   selectedCurrency,
   setSelectedCurrency,
-  noteStringCommitment,
+  notes,
+  setUsingCustom,
+  usingCustom,
+  setCustomAmount,
+  customAmount,
   depositLoading,
   poofRate,
   apRate,
@@ -141,7 +149,7 @@ export const DoDeposit: React.FC<IProps> = ({
     </>
   );
 
-  if (address && selectedAmount === "0") {
+  if (address && notes.length === 0) {
     boxContent = (
       <>
         <Text sx={{ mb: 4 }} variant="subtitle">
@@ -166,7 +174,7 @@ export const DoDeposit: React.FC<IProps> = ({
             {
               label: "Deposit Amount",
               value: `${humanFriendlyNumber(
-                selectedAmount
+                usingCustom ? customAmount : selectedAmount
               )} ${selectedCurrency}`,
             },
             {
@@ -179,10 +187,11 @@ export const DoDeposit: React.FC<IProps> = ({
             value:
               selectedCurrency === "CELO"
                 ? `${humanFriendlyNumber(
-                    Number(selectedAmount) + Number(NETWORK_COST)
+                    Number(usingCustom ? customAmount : selectedAmount) +
+                      Number(NETWORK_COST)
                   )} CELO`
                 : `${humanFriendlyNumber(
-                    selectedAmount
+                    Number(usingCustom ? customAmount : selectedAmount)
                   )} ${selectedCurrency} + ${humanFriendlyNumber(
                     NETWORK_COST
                   )} CELO`,
@@ -193,10 +202,10 @@ export const DoDeposit: React.FC<IProps> = ({
         </Text>
         <br />
         <Text sx={{ mb: 3 }} variant="regularGray">
-          Keep this note safe to withdraw the deposited money later
+          Keep these notes safe to withdraw the deposited money later
         </Text>
         <br />
-        <NoteString noteString={noteStringCommitment.noteString} />
+        <NoteList notes={notes.map((note) => note.noteString)} />
         <Flex
           sx={{ mt: 4, alignItems: "center" }}
           onClick={() => setConfirmed(!confirmed)}
@@ -230,6 +239,10 @@ export const DoDeposit: React.FC<IProps> = ({
             setSelectedAmount={setSelectedAmount}
             selectedCurrency={selectedCurrency}
             setSelectedCurrency={setSelectedCurrency}
+            setUsingCustom={setUsingCustom}
+            usingCustom={usingCustom}
+            setCustomAmount={setCustomAmount}
+            customAmount={customAmount}
             poofRate={poofRate}
             apRate={apRate}
           />
