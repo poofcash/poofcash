@@ -2,7 +2,7 @@ import React from "react";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { useTranslation } from "react-i18next";
 import { Button, Container, Flex, Grid, Input, Spinner, Text } from "theme-ui";
-import { toWei, AbiItem, toBN, isAddress } from "web3-utils";
+import { toWei, AbiItem, toBN, isAddress, fromWei } from "web3-utils";
 import { humanFriendlyWei } from "utils/eth";
 import { STAKE_MAP } from "config";
 import ERC20_ABI from "abis/ERC20.json";
@@ -18,6 +18,11 @@ import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { MaxUint256 } from "@ethersproject/constants";
 import { toastTx } from "utils/toastTx";
+import { usePoofUbeStake } from "hooks/usePoofUbeStake";
+import { usePoofPrice } from "hooks/usePoofPrice";
+import { useUbePrice } from "hooks/useUbePrice";
+import { apr } from "utils/interest";
+import { humanFriendlyNumber } from "utils/number";
 
 interface IProps {
   amount: string;
@@ -59,6 +64,9 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
     [farmTotalSupply, farmBalance, earned, earnedExternal, rewardRate],
     refetchDualStakeRewards,
   ] = useDualStakeRewards(STAKE_MAP[network.chainId].stakeRewards, address);
+  const [poofUbeStake] = usePoofUbeStake(farmBalance.toString());
+  const [poofPrice] = usePoofPrice();
+  const [ubePrice] = useUbePrice();
 
   // Loaders
   const [unstakeLoading, setUnstakeLoading] = React.useState(false);
@@ -266,6 +274,15 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
           .div(externalFarmTotalSupply)
           .div(farmTotalSupply);
 
+  const weeklyRewardUsd = Number(fromWei(weeklyRewardRate)) * poofPrice;
+  const weeklyExternalRewardsUsd =
+    Number(fromWei(weeklyExternalRewardRate)) * ubePrice;
+  const stakeApr = apr(
+    poofUbeStake,
+    weeklyRewardUsd + weeklyExternalRewardsUsd,
+    52
+  );
+
   return (
     <Grid sx={{ gridTemplateColumns: ["1fr", "1fr 1fr"] }}>
       <Container>
@@ -317,6 +334,10 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
             }`}
           </Text>
           <Text variant="regular">Rewards earned</Text>
+          <Text sx={{ textAlign: "right" }} variant="largeNumber">
+            {humanFriendlyNumber(stakeApr * 100)} %
+          </Text>
+          <Text variant="regular">APR</Text>
         </Grid>
         <Flex>
           {unstakeLoading ? (
