@@ -25,7 +25,7 @@ export const useRCeloPrice = () => {
     const rceloPerCelo =
       Number(fromWei(rceloReserve)) / Number(fromWei(celoReserve));
     return celoPrice / rceloPerCelo;
-  }, [kit]);
+  }, [kit, celoPrice]);
 
   return useAsyncState(0, priceCall);
 };

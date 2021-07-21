@@ -13,6 +13,10 @@ import { humanFriendlyNumber } from "utils/number";
 import { humanFriendlyWei } from "utils/eth";
 import { deployments } from "@poofcash/poof-kit";
 import { DepositListGlobal } from "components/DepositList";
+import { useRCeloPrice } from "hooks/useRCeloPrice";
+import { usePoofPrice } from "hooks/usePoofPrice";
+import { useCeloPrice } from "hooks/useCeloPrice";
+import { apr } from "utils/interest";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -74,6 +78,18 @@ export const PickDeposit: React.FC<IProps> = ({
       ).sort(),
     [selectedCurrency, network]
   );
+  const [poofPrice] = usePoofPrice();
+  const [celoPrice] = useCeloPrice();
+  const [rCeloPrice] = useRCeloPrice();
+  const poofRewardsUsd = Number(fromWei(poofRate)) * poofPrice;
+  let depositApr = 0;
+  if (Number(selectedAmount) === 0) {
+    depositApr = 0;
+  } else if (selectedCurrency.toLowerCase() === "celo") {
+    depositApr = apr(Number(selectedAmount) * celoPrice, poofRewardsUsd, 52);
+  } else if (selectedCurrency.toLowerCase() === "rcelo") {
+    depositApr = apr(Number(selectedAmount) * rCeloPrice, poofRewardsUsd, 52);
+  }
 
   const loading = approveLoading;
 
@@ -222,6 +238,12 @@ export const PickDeposit: React.FC<IProps> = ({
               {humanFriendlyWei(poofRate)}
             </Text>
             <Text variant="regular">Est. POOF / week</Text>
+          </Flex>
+          <Flex mt={3}>
+            <Text sx={{ mr: 1 }} variant="largeNumber">
+              {humanFriendlyNumber(depositApr * 100)} %
+            </Text>
+            <Text variant="regular">APR</Text>
           </Flex>
         </>
       )}
