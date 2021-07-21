@@ -2,6 +2,7 @@ export const preset = {
   breakpoints: ["1080px", "1080px"],
   colors: {
     text: "#333333",
+    primaryButtonText: "#FAFAFA",
     accent: "#7C71FD",
     background: "#fff",
     primary: "#5352FC",
@@ -16,6 +17,7 @@ export const preset = {
     modes: {
       dark: {
         text: "#FAFAFA",
+        primaryButtonText: "#FAFAFA",
         accent: "#5352FC",
         background: "#212121",
         primary: "#5352FC",
@@ -180,7 +182,7 @@ export const preset = {
       variant: "bold",
       borderRadius: ["32px", "6px"],
       height: ["48px", "42px"],
-      color: "text",
+      color: "primaryButtonText",
       bg: "primary",
     },
     secondary: {
