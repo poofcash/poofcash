@@ -93,7 +93,7 @@ export const DoDeposit: React.FC<IProps> = ({
     </Button>
   );
   if (address) {
-    if (toBN(userBalance).lt(toBN(toWei(selectedAmount)))) {
+    if (toBN(userBalance).lt(toBN(toWei(actualAmount)))) {
       button = (
         <Button variant="primary" disabled={true} sx={{ width: "100%" }}>
           Insufficient Balance
