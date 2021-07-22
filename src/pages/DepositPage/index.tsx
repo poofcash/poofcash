@@ -11,6 +11,7 @@ import { PoofAccountGlobal } from "hooks/poofAccount";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { useDebounce } from "hooks/useDebounce";
 import { getNotes } from "utils/notes";
+import { fromWei } from "web3-utils";
 
 export const BLOCKS_PER_WEEK = 120960;
 
@@ -65,7 +66,7 @@ const DepositPage: React.FC = () => {
       const { currency, amount, netId } = parseNote(note.noteString);
       if (memo[`${currency}${amount}${netId}`]) {
         const { poofRate, apRate } = memo[`${currency}${amount}${netId}`];
-        totalPoofRate += Number(poofRate);
+        totalPoofRate += Number(fromWei(poofRate));
         totalApRate += Number(apRate);
       } else {
         const { poofRate, apRate } = await poofKit.miningRate(
@@ -75,7 +76,7 @@ const DepositPage: React.FC = () => {
           BLOCKS_PER_WEEK
         );
         memo[`${currency}${amount}${netId}`] = { poofRate, apRate };
-        totalPoofRate += Number(poofRate);
+        totalPoofRate += Number(fromWei(poofRate));
         totalApRate += Number(apRate);
       }
     }

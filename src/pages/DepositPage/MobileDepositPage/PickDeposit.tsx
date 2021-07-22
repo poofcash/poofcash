@@ -81,14 +81,14 @@ export const PickDeposit: React.FC<IProps> = ({
   const [poofPrice] = usePoofPrice();
   const [celoPrice] = useCeloPrice();
   const [rCeloPrice] = useRCeloPrice();
-  const poofRewardsUsd = Number(fromWei(poofRate)) * poofPrice;
+  const poofRewardsUsd = Number(poofRate) * poofPrice;
   let depositApr = 0;
-  if (Number(selectedAmount) === 0) {
+  if (Number(actualAmount) === 0) {
     depositApr = 0;
   } else if (selectedCurrency.toLowerCase() === "celo") {
-    depositApr = apr(Number(selectedAmount) * celoPrice, poofRewardsUsd, 52);
+    depositApr = apr(Number(actualAmount) * celoPrice, poofRewardsUsd, 52);
   } else if (selectedCurrency.toLowerCase() === "rcelo") {
-    depositApr = apr(Number(selectedAmount) * rCeloPrice, poofRewardsUsd, 52);
+    depositApr = apr(Number(actualAmount) * rCeloPrice, poofRewardsUsd, 52);
   }
 
   const loading = approveLoading;
@@ -235,7 +235,7 @@ export const PickDeposit: React.FC<IProps> = ({
           </Flex>
           <Flex mt={3}>
             <Text sx={{ mr: 1 }} variant="largeNumber">
-              {humanFriendlyWei(poofRate)}
+              {humanFriendlyNumber(poofRate)}
             </Text>
             <Text variant="regular">Est. POOF / week</Text>
           </Flex>
