@@ -17,6 +17,7 @@ import { useRCeloPrice } from "hooks/useRCeloPrice";
 import { usePoofPrice } from "hooks/usePoofPrice";
 import { useCeloPrice } from "hooks/useCeloPrice";
 import { apr } from "utils/interest";
+import { MAX_NOTES } from "utils/notes";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -209,8 +210,8 @@ export const PickDeposit: React.FC<IProps> = ({
         </Flex>
         {usingCustom && (
           <Text>
-            NOTE: Custom amounts may make up to 25 deposits. On-chain backups
-            are highly recommended
+            NOTE: Custom amounts may make up to {MAX_NOTES} deposits. On-chain
+            backups are highly recommended
           </Text>
         )}
       </Box>

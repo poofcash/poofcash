@@ -4,7 +4,7 @@ import { NoteStringCommitment } from "pages/DepositPage/types";
 import { getNoteStringAndCommitment } from "utils/snarks-functions";
 import Fraction from "fraction.js";
 
-export const MAX_NOTES = 25;
+export const MAX_NOTES = 10;
 
 export const getNotes = (
   amount: string,
