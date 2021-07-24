@@ -3,7 +3,6 @@ import { NoteInfo } from "@poofcash/poof-kit";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { Box, Button, Card, Flex, Heading, Spinner, Text } from "theme-ui";
-import { isValidNote } from "utils/snarks-functions";
 import { fromWei } from "web3-utils";
 import { formatCurrency } from "utils/currency";
 import { ClipboardIcon } from "icons/ClipboardIcon";
@@ -13,6 +12,8 @@ import { RefreshCw } from "react-feather";
 import { createContainer } from "unstated-next";
 import { EncryptedKeystoreV3Json } from "web3-core";
 import { FixedSizeList } from "react-window";
+import { useEncryptedNoteEvents } from "hooks/useEncryptedNoteEvents";
+import { usePoofEvents } from "hooks/usePoofEvents";
 
 type ExtendedNoteInfo = NoteInfo & { latestBlock: number };
 
@@ -134,31 +135,38 @@ const useDepositList = () => {
   const [loading, setLoading] = React.useState(false);
   const [deposits, setDeposits] = React.useState<ExtendedNoteInfo[]>();
   const [withdrawals, setWithdrawals] = React.useState<ExtendedNoteInfo[]>();
+  const [encryptedNoteEvents] = useEncryptedNoteEvents();
+  const [depositEvents] = usePoofEvents("Deposit");
+  const [withdrawEvents] = usePoofEvents("Withdraw");
 
   const unlockDeposits = React.useCallback(() => {
     setLoading(true);
     refreshLatestBlock();
     actWithPoofAccount(
       (privateKey) => {
-        poofKit.encryptedNotes(privateKey).then((v) => {
-          const notes = v
-            .filter(
-              (note) =>
-                isValidNote(note.noteString) && note.depositBlock != null
-            )
-            .sort(
-              (a, b) =>
-                b.depositBlock!.blockNumber - a.depositBlock!.blockNumber
-            )
-            .map((a) => ({ ...a, latestBlock }));
-          const deposits = notes.filter((v) => v.withdrawBlock == null);
-          const withdrawals = notes.filter(
-            (v) => v.withdrawBlock != null && !v.isMined && v.rate > 0
-          );
-          setDeposits(deposits);
-          setWithdrawals(withdrawals);
-          setLoading(false);
-        });
+        poofKit
+          .decryptedNotes(
+            privateKey,
+            encryptedNoteEvents,
+            depositEvents,
+            withdrawEvents
+          )
+          .then((v) => {
+            const notes = v
+              .filter((note) => note.depositBlock != null)
+              .sort(
+                (a, b) =>
+                  b.depositBlock!.blockNumber - a.depositBlock!.blockNumber
+              )
+              .map((a) => ({ ...a, latestBlock }));
+            const deposits = notes.filter((v) => v.withdrawBlock == null);
+            const withdrawals = notes.filter(
+              (v) => v.withdrawBlock != null && !v.isMined && v.rate > 0
+            );
+            setDeposits(deposits);
+            setWithdrawals(withdrawals);
+            setLoading(false);
+          });
       },
       () => {
         setLoading(false);
@@ -171,6 +179,9 @@ const useDepositList = () => {
     setDeposits,
     refreshLatestBlock,
     latestBlock,
+    encryptedNoteEvents,
+    depositEvents,
+    withdrawEvents,
   ]);
 
   const props = {

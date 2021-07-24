@@ -166,7 +166,18 @@ const usePoofAccount = () => {
     );
   };
 
-  return { poofAccount, actWithPoofAccount, savePoofAccount, passwordModal };
+  const disconnectPoofAccount = () => {
+    dispatch(setAccount({ poofAccount: undefined }));
+    setPrivateKey(undefined);
+  };
+
+  return {
+    poofAccount,
+    actWithPoofAccount,
+    savePoofAccount,
+    passwordModal,
+    disconnectPoofAccount,
+  };
 };
 
 export const PoofAccountGlobal = createContainer(usePoofAccount);

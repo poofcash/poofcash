@@ -2254,10 +2254,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@poofcash/poof-kit@=1.0.27":
-  version "1.0.27"
-  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.27.tgz#35cb3e47ca2ad4a95d69296236cc716bc7d79870"
-  integrity sha512-PHPnjd7b2I97Jyh2JucRQOA5TADpsEzXMHXlZbqV4r+Y72hxKbpu+rCVvAebzm410O4B/bihYibAmcWk4FhiXg==
+"@poofcash/poof-kit@=1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@poofcash/poof-kit/-/poof-kit-1.0.28.tgz#5822df957ee1e8852e9aa68a71be4933e0905a94"
+  integrity sha512-/C3SOGlr3BwYFIChgQlQKiUsZd1YtsVa6pIQ3q+A7IEElQy9G3SRGz46KPcQefdZdJKKlfF5hS4b8U/QegnFgg==
   dependencies:
     "@celo/contractkit" "^1.2.4"
     "@types/bn.js" "^5.1.0"
@@ -8795,6 +8795,11 @@ immediate@^3.2.3:
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.3.0.tgz#1aef225517836bcdf7f2a2de2600c79ff0269266"
   integrity sha512-HR7EVodfFUdQCTIeySw+WDRFJlPcLOJbXfwwZ7Oom6tjsvZ3bOkCDJHehQC3nxJrv7+f9XecwazynjU8e4Vw3Q==
 
+immediate@~3.0.5:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
+  integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
+
 immer@8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz#9c73db683e2b3975c424fb0572af5889877ae656"
@@ -10281,6 +10286,13 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+lie@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
+  integrity sha1-mkNrLMd0bKWd56QfpGmz77dr2H4=
+  dependencies:
+    immediate "~3.0.5"
+
 lilconfig@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/lilconfig/-/lilconfig-2.0.3.tgz#68f3005e921dafbd2a2afb48379986aa6d2579fd"
@@ -10371,6 +10383,13 @@ localStorage@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/localStorage/-/localStorage-1.0.4.tgz#57dfa28084385f81431accb8ae24b196398223f7"
   integrity sha512-r35zrihcDiX+dqWlJSeIwS9nrF95OQTgqMFm3FB2D/+XgdmZtcutZOb7t0xXkhOEM8a9kpuu7cc28g1g36I5DQ==
+
+localforage@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.9.0.tgz#f3e4d32a8300b362b4634cc4e066d9d00d2f09d1"
+  integrity sha512-rR1oyNrKulpe+VM9cYmcFn6tsHuokyVHFaCM3+osEmxaHTbEk8oQu6eGDfS6DQLWi/N67XRmB8ECG37OES368g==
+  dependencies:
+    lie "3.1.1"
 
 locate-path@^2.0.0:
   version "2.0.0"

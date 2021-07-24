@@ -6,12 +6,13 @@ import { useContractKit } from "@celo-tools/use-contractkit";
 import { shortenAccount } from "hooks/accountName";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "state";
-import { setAccount } from "state/user";
 import { Page, setCurrentPage } from "state/global";
+import { PoofAccountGlobal } from "hooks/poofAccount";
 
 export const AccountProfile: React.FC = () => {
   const { address, destroy, connect } = useContractKit();
   const poofAccount = useSelector((state: AppState) => state.user.poofAccount);
+  const { disconnectPoofAccount } = PoofAccountGlobal.useContainer();
   const dispatch = useDispatch();
 
   return (
@@ -89,7 +90,7 @@ export const AccountProfile: React.FC = () => {
             <>
               <Text
                 sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
-                onClick={() => dispatch(setAccount({ poofAccount: undefined }))}
+                onClick={() => disconnectPoofAccount()}
                 variant="form"
               >
                 Logout
