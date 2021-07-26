@@ -28,6 +28,7 @@ interface IProps {
   setUsingCustomRelayer: (usingCustomRelayer: boolean) => void;
   customRelayer?: RelayerOption;
   setCustomRelayer: (relayerOption?: RelayerOption) => void;
+  relayerFee: string;
 }
 
 export const PickMine: React.FC<IProps> = ({
@@ -44,6 +45,7 @@ export const PickMine: React.FC<IProps> = ({
   setUsingCustomRelayer,
   customRelayer,
   setCustomRelayer,
+  relayerFee,
 }) => {
   const breakpoint = useBreakpoint();
   const [customRelayerError, setCustomRelayerError] = React.useState<
@@ -78,6 +80,7 @@ export const PickMine: React.FC<IProps> = ({
   const history = useHistory();
 
   const { poofKitLoading } = PoofKitGlobal.useContainer();
+  const totalMineAmount = Number(estimatedAp) - Number(relayerFee);
 
   if (poofKitLoading) {
     return <PoofKitLoading />;
@@ -107,6 +110,9 @@ export const PickMine: React.FC<IProps> = ({
             if (!customRelayer) {
               return true;
             }
+          }
+          if (totalMineAmount < 0) {
+            return true;
           }
           return false;
         })()}

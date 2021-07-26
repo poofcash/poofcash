@@ -164,6 +164,9 @@ export const DoMine: React.FC<IProps> = ({
               return true;
             }
           }
+          if (totalMineAmount < 0) {
+            return true;
+          }
           return false;
         })()}
       >
@@ -195,6 +198,7 @@ export const DoMine: React.FC<IProps> = ({
           setUsingCustomRelayer={setUsingCustomRelayer}
           customRelayer={customRelayer}
           setCustomRelayer={setCustomRelayer}
+          relayerFee={relayerFee}
         />
       </Container>
       <Container>

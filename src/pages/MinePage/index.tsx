@@ -51,16 +51,15 @@ const MinePage: React.FC = () => {
 
     const noteObject = Note.fromString(
       note,
-      depositEvents[poofAddress],
-      withdrawEvents[poofAddress]
+      depositEvents[poofAddress] || [],
+      withdrawEvents[poofAddress] || []
     );
     const withdrawBlock =
       noteObject.withdrawalBlock?.blockNumber ?? latestBlockNumber;
-    const blocksElapsed = Math.max(
-      withdrawBlock - noteObject.depositBlock.blockNumber,
-      0
-    );
-    estimatedAp = blocksElapsed * Number(miningRates[poofAddress].toString());
+    const depositBlock = noteObject.depositBlock?.blockNumber ?? withdrawBlock;
+    const blocksElapsed = Math.max(withdrawBlock - depositBlock, 0);
+    estimatedAp =
+      blocksElapsed * Number(miningRates[poofAddress]?.toString() ?? 0);
   }
   const {
     relayer,

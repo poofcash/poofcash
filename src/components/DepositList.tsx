@@ -2,7 +2,7 @@ import React from "react";
 import { decryptNotes, Note } from "@poofcash/poof-kit";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { Box, Button, Card, Flex, Heading, Spinner, Text } from "theme-ui";
-import { fromWei, toHex } from "web3-utils";
+import { fromWei } from "web3-utils";
 import { formatCurrency } from "utils/currency";
 import { ClipboardIcon } from "icons/ClipboardIcon";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -14,6 +14,7 @@ import { useMiningRates } from "hooks/useMiningRates";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { getPoofEvents } from "utils/getPoofEvents";
 import { getEncryptedNoteEvents } from "utils/getEncryptedNoteEvents";
+import { toHex } from "utils/snarks-functions";
 
 type RowData = {
   note: Note;

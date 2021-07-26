@@ -45,6 +45,7 @@ const MinePage: React.FC<IMineProps> = ({
           setUsingCustomRelayer={setUsingCustomRelayer}
           customRelayer={customRelayer}
           setCustomRelayer={setCustomRelayer}
+          relayerFee={relayerFee}
         />
       );
     case MineStep.CONFIRM:

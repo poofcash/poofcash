@@ -5,6 +5,7 @@ import { BlockscoutTxLink } from "components/Links";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { Note } from "@poofcash/poof-kit";
 import { usePoofEvents } from "hooks/usePoofEvents";
+import { useAsyncState } from "hooks/useAsyncState";
 
 type NoteDetail = {
   commitment?: string;
@@ -17,9 +18,30 @@ const CompliancePage = () => {
     commitment: "",
     nullifierHash: "",
   });
-  const { poofKit } = PoofKitGlobal.useContainer();
   const [depositEvents] = usePoofEvents("Deposit");
   const [withdrawEvents] = usePoofEvents("Withdrawal");
+  const noteIsValid = isValidNote(note);
+  let noteObject: Note | null = null;
+  if (noteIsValid) {
+    const poofAddress = Note.getInstance(note);
+    noteObject = Note.fromString(
+      note,
+      depositEvents[poofAddress] || [],
+      withdrawEvents[poofAddress] || []
+    );
+  }
+  const { poofKit } = PoofKitGlobal.useContainer();
+  const isMinedCall = React.useCallback(async () => {
+    if (!noteObject) {
+      return "Unknown";
+    }
+    const isMined = await poofKit.isMined(toHex(noteObject.rewardNullifier));
+    if (isMined) {
+      return "true";
+    }
+    return "false";
+  }, [poofKit, noteObject]);
+  const [isMined] = useAsyncState("Unknown", isMinedCall);
 
   React.useEffect(() => {
     if (isValidNote(note)) {
@@ -42,17 +64,6 @@ const CompliancePage = () => {
     }
   };
 
-  const noteIsValid = isValidNote(note);
-  let noteObject;
-  if (noteIsValid) {
-    const poofAddress = Note.getInstance(note);
-    noteObject = Note.fromString(
-      note,
-      depositEvents[poofAddress],
-      withdrawEvents[poofAddress]
-    );
-  }
-
   return (
     <div>
       <Text variant="title">Report</Text>
@@ -73,7 +84,7 @@ const CompliancePage = () => {
       />
       {note && !noteIsValid && <Text>Note is invalid.</Text>}
       <br />
-      {note && noteIsValid && (
+      {noteObject && (
         <Container sx={{ textAlign: "left", width: "100%" }}>
           <h3>Deposit details</h3>
           {noteObject?.depositBlock ? (
@@ -107,6 +118,21 @@ const CompliancePage = () => {
               <Text>
                 <strong>Nullifier hash</strong>:{" "}
                 {noteDetail.nullifierHash?.toString()}
+              </Text>
+            </>
+          ) : (
+            <Text>Note is valid, but no withdraw event was found.</Text>
+          )}
+          <h3>Mine details</h3>
+          {noteObject?.withdrawalBlock ? (
+            <>
+              <Text>
+                <strong>Mined</strong>: {isMined}
+              </Text>
+              <br />
+              <Text>
+                <strong>Reward nullifier hash</strong>:{" "}
+                {toHex(noteObject.rewardNullifier)}
               </Text>
             </>
           ) : (
