@@ -4,7 +4,7 @@ import theme from "theme";
 import App from "App";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "theme-ui";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter as Router } from "react-router-dom";
 import store from "state";
 import { ContractKitProvider } from "@celo-tools/use-contractkit";
 import { PoofAccountGlobal } from "hooks/poofAccount";
@@ -27,7 +27,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
+        <Router>
           <ContractKitProvider
             dapp={{
               name: "Poof.cash",
@@ -43,7 +43,7 @@ ReactDOM.render(
               </PoofAccountGlobal.Provider>
             </PoofKitGlobal.Provider>
           </ContractKitProvider>
-        </BrowserRouter>
+        </Router>
       </ThemeProvider>
     </Provider>
   </React.StrictMode>,

@@ -2,15 +2,15 @@ import { createReducer, createAction } from "@reduxjs/toolkit";
 
 // Typings
 export enum Page {
-  SETUP = "SETUP",
-  DEPOSIT = "DEPOSIT",
-  WITHDRAW = "WITHDRAW",
-  MINE = "MINE",
-  REDEEM = "REDEEM",
-  EXCHANGE = "EXCHANGE",
-  COMPLIANCE = "COMPLIANCE",
-  AIRDROP = "AIRDROP",
-  STAKE = "STAKE",
+  SETUP = "account",
+  DEPOSIT = "deposit",
+  WITHDRAW = "withdraw",
+  MINE = "mine",
+  REDEEM = "redeem",
+  EXCHANGE = "exchange",
+  COMPLIANCE = "report",
+  AIRDROP = "airdrop",
+  STAKE = "stake",
 }
 
 interface GlobalState {

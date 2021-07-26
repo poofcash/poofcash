@@ -1,12 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Box, Container, Flex, Text } from "theme-ui";
 import { Logo } from "components/Logo";
 import { AccountProfile } from "components/AccountProfile";
 import styled from "@emotion/styled";
-import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "state";
-import { Page, setCurrentPage } from "state/global";
+import { Page } from "state/global";
 
 const StyledLink = styled(Link)({
   height: "fit-content",
@@ -14,10 +12,7 @@ const StyledLink = styled(Link)({
 });
 
 export const DesktopHeader: React.FC = () => {
-  const currentPage = useSelector(
-    (state: AppState) => state.global.currentPage
-  );
-  const dispatch = useDispatch();
+  const location = useLocation();
 
   return (
     <>
@@ -35,15 +30,12 @@ export const DesktopHeader: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <StyledLink
-              to=""
-              onClick={() =>
-                dispatch(setCurrentPage({ nextPage: Page.EXCHANGE }))
-              }
-            >
+            <StyledLink to="exchange">
               <Text
                 sx={{
-                  color: currentPage === Page.EXCHANGE ? "accent" : "text",
+                  color: location.pathname.includes(Page.EXCHANGE)
+                    ? "accent"
+                    : "text",
                   mx: 1,
                 }}
                 variant="subtitle"
@@ -52,15 +44,12 @@ export const DesktopHeader: React.FC = () => {
               </Text>
             </StyledLink>
             <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() =>
-                dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }))
-              }
-            >
+            <StyledLink to="deposit">
               <Text
                 sx={{
-                  color: currentPage === Page.DEPOSIT ? "accent" : "text",
+                  color: location.pathname.includes(Page.DEPOSIT)
+                    ? "accent"
+                    : "text",
                   mx: 1,
                 }}
                 variant="subtitle"
@@ -69,15 +58,12 @@ export const DesktopHeader: React.FC = () => {
               </Text>
             </StyledLink>
             <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() =>
-                dispatch(setCurrentPage({ nextPage: Page.WITHDRAW }))
-              }
-            >
+            <StyledLink to="withdraw">
               <Text
                 sx={{
-                  color: currentPage === Page.WITHDRAW ? "accent" : "text",
+                  color: location.pathname.includes(Page.WITHDRAW)
+                    ? "accent"
+                    : "text",
                   mx: 1,
                 }}
                 variant="subtitle"
@@ -86,13 +72,12 @@ export const DesktopHeader: React.FC = () => {
               </Text>
             </StyledLink>
             <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() => dispatch(setCurrentPage({ nextPage: Page.MINE }))}
-            >
+            <StyledLink to="mine">
               <Text
                 sx={{
-                  color: currentPage === Page.MINE ? "accent" : "text",
+                  color: location.pathname.includes(Page.MINE)
+                    ? "accent"
+                    : "text",
                   mx: 1,
                 }}
                 variant="subtitle"
@@ -101,15 +86,12 @@ export const DesktopHeader: React.FC = () => {
               </Text>
             </StyledLink>
             <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() =>
-                dispatch(setCurrentPage({ nextPage: Page.REDEEM }))
-              }
-            >
+            <StyledLink to="redeem">
               <Text
                 sx={{
-                  color: currentPage === Page.REDEEM ? "accent" : "text",
+                  color: location.pathname.includes(Page.REDEEM)
+                    ? "accent"
+                    : "text",
                   mx: 1,
                 }}
                 variant="subtitle"
@@ -118,15 +100,12 @@ export const DesktopHeader: React.FC = () => {
               </Text>
             </StyledLink>
             <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() =>
-                dispatch(setCurrentPage({ nextPage: Page.COMPLIANCE }))
-              }
-            >
+            <StyledLink to="report">
               <Text
                 sx={{
-                  color: currentPage === Page.COMPLIANCE ? "accent" : "text",
+                  color: location.pathname.includes(Page.COMPLIANCE)
+                    ? "accent"
+                    : "text",
                   mx: 1,
                 }}
                 variant="subtitle"
@@ -135,15 +114,12 @@ export const DesktopHeader: React.FC = () => {
               </Text>
             </StyledLink>
             <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() =>
-                dispatch(setCurrentPage({ nextPage: Page.AIRDROP }))
-              }
-            >
+            <StyledLink to="airdrop">
               <Text
                 sx={{
-                  color: currentPage === Page.AIRDROP ? "accent" : "text",
+                  color: location.pathname.includes(Page.AIRDROP)
+                    ? "accent"
+                    : "text",
                   mx: 1,
                 }}
                 variant="subtitle"
@@ -152,13 +128,12 @@ export const DesktopHeader: React.FC = () => {
               </Text>
             </StyledLink>
             <Text>/</Text>
-            <StyledLink
-              to=""
-              onClick={() => dispatch(setCurrentPage({ nextPage: Page.STAKE }))}
-            >
+            <StyledLink to="stake">
               <Text
                 sx={{
-                  color: currentPage === Page.STAKE ? "accent" : "text",
+                  color: location.pathname.includes(Page.STAKE)
+                    ? "accent"
+                    : "text",
                   mx: 1,
                 }}
                 variant="subtitle"

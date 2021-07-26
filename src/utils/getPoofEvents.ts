@@ -2,6 +2,9 @@ import { PoofKitV2 } from "@poofcash/poof-kit";
 import localForage from "localforage";
 import { EventData } from "web3-eth-contract";
 
+// TODO: This is bad for 2 reasons:
+// 1. This doesn't fetch all events if a new pool gets added
+// 2. Calls are staggered, so "latest" might be different per call
 export const getPoofEvents = async (eventName: string, poofKit: PoofKitV2) => {
   let events = await localForage.getItem<Record<string, EventData[]>>(
     eventName

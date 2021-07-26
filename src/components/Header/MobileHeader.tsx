@@ -2,15 +2,12 @@ import React from "react";
 import { Button, Container, Flex } from "theme-ui";
 import { Logo } from "components/Logo";
 import { AccountProfile } from "components/AccountProfile";
-import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "state";
-import { Page, setCurrentPage } from "state/global";
+import { Page } from "state/global";
+import { useHistory, useLocation } from "react-router-dom";
 
 export const MobileHeader: React.FC = () => {
-  const currentPage = useSelector(
-    (state: AppState) => state.global.currentPage
-  );
-  const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
 
   return (
     <Container sx={{ pt: 4, px: 3, width: "auto", backgroundColor: "box" }}>
@@ -28,61 +25,71 @@ export const MobileHeader: React.FC = () => {
         <Flex sx={{ width: "fit-content" }}>
           <Button
             variant={
-              currentPage === Page.EXCHANGE ? "switcherSelected" : "switcher"
+              location.pathname.includes(Page.EXCHANGE)
+                ? "switcherSelected"
+                : "switcher"
             }
-            onClick={() =>
-              dispatch(setCurrentPage({ nextPage: Page.EXCHANGE }))
-            }
+            onClick={() => history.push(Page.EXCHANGE)}
           >
             Exchange
           </Button>
           <Button
             variant={
-              currentPage === Page.DEPOSIT ? "switcherSelected" : "switcher"
+              location.pathname.includes(Page.DEPOSIT)
+                ? "switcherSelected"
+                : "switcher"
             }
-            onClick={() => dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }))}
+            onClick={() => history.push(Page.DEPOSIT)}
           >
             Deposit
           </Button>
           <Button
             variant={
-              currentPage === Page.WITHDRAW ? "switcherSelected" : "switcher"
+              location.pathname.includes(Page.WITHDRAW)
+                ? "switcherSelected"
+                : "switcher"
             }
-            onClick={() =>
-              dispatch(setCurrentPage({ nextPage: Page.WITHDRAW }))
-            }
+            onClick={() => history.push(Page.WITHDRAW)}
           >
             Withdraw
           </Button>
           <Button
             variant={
-              currentPage === Page.MINE ? "switcherSelected" : "switcher"
+              location.pathname.includes(Page.MINE)
+                ? "switcherSelected"
+                : "switcher"
             }
-            onClick={() => dispatch(setCurrentPage({ nextPage: Page.MINE }))}
+            onClick={() => history.push(Page.MINE)}
           >
             Mine
           </Button>
           <Button
             variant={
-              currentPage === Page.REDEEM ? "switcherSelected" : "switcher"
+              location.pathname.includes(Page.REDEEM)
+                ? "switcherSelected"
+                : "switcher"
             }
-            onClick={() => dispatch(setCurrentPage({ nextPage: Page.REDEEM }))}
+            onClick={() => history.push(Page.REDEEM)}
           >
             Redeem
           </Button>
           <Button
             variant={
-              currentPage === Page.AIRDROP ? "switcherSelected" : "switcher"
+              location.pathname.includes(Page.AIRDROP)
+                ? "switcherSelected"
+                : "switcher"
             }
-            onClick={() => dispatch(setCurrentPage({ nextPage: Page.AIRDROP }))}
+            onClick={() => history.push(Page.AIRDROP)}
           >
             Airdrop
           </Button>
           <Button
             variant={
-              currentPage === Page.STAKE ? "switcherSelected" : "switcher"
+              location.pathname.includes(Page.STAKE)
+                ? "switcherSelected"
+                : "switcher"
             }
-            onClick={() => dispatch(setCurrentPage({ nextPage: Page.STAKE }))}
+            onClick={() => history.push(Page.STAKE)}
           >
             Stake
           </Button>

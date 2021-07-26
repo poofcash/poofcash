@@ -1,10 +1,10 @@
 import React from "react";
+import "i18n/config";
 import CompliancePage from "pages/CompliancePage";
 import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
 import { Box, Container } from "theme-ui";
 import { Header } from "components/Header";
-import "i18n/config";
 import { useSelector } from "react-redux";
 import { Page } from "state/global";
 import { AppState } from "state";
@@ -17,24 +17,7 @@ import Modal from "react-modal";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import StakePage from "pages/StakePage";
 import { ToastContainer } from "react-toastify";
-
-const PageComponent: React.FC<{ page: Page; Component: React.FC }> = ({
-  page,
-  Component,
-}) => {
-  const currentPage = useSelector(
-    (state: AppState) => state.global.currentPage
-  );
-  return (
-    <Box
-      sx={{
-        display: currentPage === page ? "inherit" : "none",
-      }}
-    >
-      <Component />
-    </Box>
-  );
-};
+import { Redirect, Route, Switch } from "react-router-dom";
 
 // pass props and State interface to Component class
 const App: React.FC = () => {
@@ -72,15 +55,38 @@ const App: React.FC = () => {
             maxHeight: "calc(100vh + 64px)",
           }}
         >
-          <PageComponent page={Page.DEPOSIT} Component={DepositPage} />
-          <PageComponent page={Page.WITHDRAW} Component={WithdrawPage} />
-          <PageComponent page={Page.COMPLIANCE} Component={CompliancePage} />
-          <PageComponent page={Page.MINE} Component={MinePage} />
-          <PageComponent page={Page.REDEEM} Component={RedeemPage} />
-          <PageComponent page={Page.SETUP} Component={SetupAccount} />
-          <PageComponent page={Page.AIRDROP} Component={AirdropPage} />
-          <PageComponent page={Page.EXCHANGE} Component={ExchangePage} />
-          <PageComponent page={Page.STAKE} Component={StakePage} />
+          <Switch>
+            <Route exact path="/">
+              <Redirect to={`/${Page.DEPOSIT}`} />
+            </Route>
+            <Route exact path={`/${Page.DEPOSIT}`}>
+              <DepositPage />
+            </Route>
+            <Route exact path={`/${Page.WITHDRAW}`}>
+              <WithdrawPage />
+            </Route>
+            <Route exact path={`/${Page.COMPLIANCE}`}>
+              <CompliancePage />
+            </Route>
+            <Route exact path={`/${Page.MINE}`}>
+              <MinePage />
+            </Route>
+            <Route exact path={`/${Page.REDEEM}`}>
+              <RedeemPage />
+            </Route>
+            <Route exact path={`/${Page.SETUP}`}>
+              <SetupAccount />
+            </Route>
+            <Route exact path={`/${Page.AIRDROP}`}>
+              <AirdropPage />
+            </Route>
+            <Route exact path={`/${Page.EXCHANGE}`}>
+              <ExchangePage />
+            </Route>
+            <Route exact path={`/${Page.STAKE}`}>
+              <StakePage />
+            </Route>
+          </Switch>
         </Container>
         {/*TODO footer*/}
       </Container>
