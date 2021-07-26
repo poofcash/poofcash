@@ -1,7 +1,5 @@
 import React from "react";
 import { SelectLogin } from "pages/SetupAccount/SelectLogin";
-import { useDispatch } from "react-redux";
-import { Page, setCurrentPage } from "state/global";
 import { CreateAccount } from "pages/SetupAccount/CreateAccount";
 import { Login } from "pages/SetupAccount/Login";
 import { Flex } from "theme-ui";
@@ -13,13 +11,10 @@ enum SetupStep {
 }
 export const SetupAccount: React.FC = () => {
   const [step, setStep] = React.useState(SetupStep.SELECT_LOGIN);
-  const dispatch = useDispatch();
-
   let page = (
     <SelectLogin
       goCreate={() => setStep(SetupStep.CREATE)}
       goLogin={() => setStep(SetupStep.LOGIN)}
-      goGuest={() => dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }))}
     />
   );
   switch (step) {

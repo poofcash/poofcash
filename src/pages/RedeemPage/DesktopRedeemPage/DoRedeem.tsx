@@ -6,10 +6,10 @@ import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
-import { useDispatch } from "react-redux";
-import { Page, setCurrentPage } from "state/global";
+import { Page } from "state/global";
 import { humanFriendlyNumber } from "utils/number";
 import { RelayerOption } from "hooks/useRelayer";
+import { useHistory } from "react-router-dom";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -53,7 +53,7 @@ export const DoRedeem: React.FC<IProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
-  const dispatch = useDispatch();
+  const history = useHistory();
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
 
   const unlockPoofAccount = async () => {
@@ -149,7 +149,7 @@ export const DoRedeem: React.FC<IProps> = ({
   let button = (
     <Button
       variant="primary"
-      onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
+      onClick={() => history.push(`/${Page.SETUP}`)}
       sx={{ width: "100%" }}
     >
       Connect Poof account

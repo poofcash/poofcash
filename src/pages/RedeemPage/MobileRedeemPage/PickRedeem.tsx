@@ -7,12 +7,12 @@ import { useDebounce } from "hooks/useDebounce";
 import { isValidHttpUrl } from "utils/url.utils";
 import axios from "axios";
 import web3 from "web3";
-import { useDispatch } from "react-redux";
-import { Page, setCurrentPage } from "state/global";
+import { Page } from "state/global";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { RelayerOption } from "hooks/useRelayer";
+import { useHistory } from "react-router-dom";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -85,7 +85,7 @@ export const PickRedeem: React.FC<IProps> = ({
       setCustomRelayerError("Invalid custom relayer url format");
     }
   }, 200);
-  const dispatch = useDispatch();
+  const history = useHistory();
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
   const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
 
@@ -109,10 +109,7 @@ export const PickRedeem: React.FC<IProps> = ({
   };
 
   let button = (
-    <Button
-      variant="secondary"
-      onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
-    >
+    <Button variant="secondary" onClick={() => history.push(`/${Page.SETUP}`)}>
       Connect Poof account
     </Button>
   );

@@ -6,10 +6,10 @@ import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
 import { humanFriendlyNumber } from "utils/number";
-import { useDispatch } from "react-redux";
 import { PoofAccountGlobal } from "hooks/poofAccount";
-import { Page, setCurrentPage } from "state/global";
+import { Page } from "state/global";
 import { NoteList } from "components/NoteList";
+import { useHistory } from "react-router-dom";
 
 interface IProps {
   onBackClick: () => void;
@@ -36,7 +36,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
 }) => {
   const [confirmed, setConfirmed] = React.useState(false);
   const totalCost = Number(amount) + Number(NETWORK_COST);
-  const dispatch = useDispatch();
+  const history = useHistory();
   const { poofAccount } = PoofAccountGlobal.useContainer();
 
   let button = (
@@ -46,10 +46,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
   );
   if (backup && !poofAccount) {
     button = (
-      <Button
-        onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
-        variant="primary"
-      >
+      <Button onClick={() => history.push(`/${Page.SETUP}`)} variant="primary">
         Conect Poof account
       </Button>
     );

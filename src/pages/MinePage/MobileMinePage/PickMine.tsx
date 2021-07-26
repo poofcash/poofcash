@@ -6,13 +6,13 @@ import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { useDebounce } from "hooks/useDebounce";
 import { isValidHttpUrl } from "utils/url.utils";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { Page, setCurrentPage } from "state/global";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { RelayerOption } from "hooks/useRelayer";
 import { DepositListGlobal } from "components/DepositList";
+import { useHistory } from "react-router-dom";
+import { Page } from "state/global";
 
 interface IProps {
   onMineClick: () => void;
@@ -76,7 +76,7 @@ export const PickMine: React.FC<IProps> = ({
     }
   }, 200);
   const { poofAccount } = PoofAccountGlobal.useContainer();
-  const dispatch = useDispatch();
+  const history = useHistory();
 
   const { poofKitLoading } = PoofKitGlobal.useContainer();
 
@@ -85,10 +85,7 @@ export const PickMine: React.FC<IProps> = ({
   }
 
   let button = (
-    <Button
-      variant="secondary"
-      onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
-    >
+    <Button variant="secondary" onClick={() => history.push(`/${Page.SETUP}`)}>
       Connect Poof account
     </Button>
   );

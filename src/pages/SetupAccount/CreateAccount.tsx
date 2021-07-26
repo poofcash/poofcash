@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import Web3 from "web3";
 import { PoofPrivateKey } from "components/PoofPrivateKey";
 import { PoofAccountGlobal } from "hooks/poofAccount";
-import { useDispatch } from "react-redux";
-import { Page, setCurrentPage } from "state/global";
+import { Page } from "state/global";
+import { useHistory } from "react-router-dom";
 
 interface IProps {
   goBack: () => void;
@@ -21,7 +21,7 @@ export const CreateAccount: React.FC<IProps> = ({ goBack }) => {
   );
   const [confirmed, setConfirmed] = React.useState(false);
   const { savePoofAccount } = PoofAccountGlobal.useContainer();
-  const dispatch = useDispatch();
+  const history = useHistory();
 
   return (
     <Flex
@@ -53,7 +53,7 @@ export const CreateAccount: React.FC<IProps> = ({ goBack }) => {
           disabled={!confirmed}
           onClick={() => {
             savePoofAccount(privateKey, () => {
-              dispatch(setCurrentPage({ nextPage: Page.DEPOSIT }));
+              history.push(`/${Page.DEPOSIT}`);
               goBack();
             });
           }}

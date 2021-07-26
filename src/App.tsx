@@ -5,9 +5,7 @@ import WithdrawPage from "pages/WithdrawPage";
 import DepositPage from "pages/DepositPage";
 import { Box, Container } from "theme-ui";
 import { Header } from "components/Header";
-import { useSelector } from "react-redux";
 import { Page } from "state/global";
-import { AppState } from "state";
 import MinePage from "pages/MinePage";
 import RedeemPage from "pages/RedeemPage";
 import { SetupAccount } from "pages/SetupAccount";
@@ -17,7 +15,7 @@ import Modal from "react-modal";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import StakePage from "pages/StakePage";
 import { ToastContainer } from "react-toastify";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 
 // pass props and State interface to Component class
 const App: React.FC = () => {
@@ -25,10 +23,7 @@ const App: React.FC = () => {
   React.useEffect(() => {
     Modal.setAppElement("body");
   });
-
-  const currentPage = useSelector(
-    (state: AppState) => state.global.currentPage
-  );
+  const location = useLocation();
 
   return (
     <>
@@ -42,7 +37,9 @@ const App: React.FC = () => {
       >
         <Box
           sx={{
-            display: currentPage === Page.SETUP ? "none" : "inherit",
+            display: location.pathname.includes(Page.SETUP)
+              ? "none"
+              : "inherit",
           }}
         >
           <Header />

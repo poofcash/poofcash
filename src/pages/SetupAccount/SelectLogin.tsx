@@ -1,18 +1,15 @@
 import React from "react";
 import { Logo } from "components/Logo";
-import { Button, Link } from "theme-ui";
+import { Box, Button } from "theme-ui";
+import { Page } from "state/global";
+import { RouterLink } from "components/RouterLink";
 
 interface IProps {
   goCreate: () => void;
   goLogin: () => void;
-  goGuest: () => void;
 }
 
-export const SelectLogin: React.FC<IProps> = ({
-  goCreate,
-  goLogin,
-  goGuest,
-}) => {
+export const SelectLogin: React.FC<IProps> = ({ goCreate, goLogin }) => {
   return (
     <>
       <Logo />
@@ -22,9 +19,9 @@ export const SelectLogin: React.FC<IProps> = ({
       <Button variant="secondary" mt={2} onClick={goLogin}>
         Log in
       </Button>
-      <Link sx={{ cursor: "pointer" }} mt={6} onClick={goGuest}>
-        Continue as guest
-      </Link>
+      <Box mt={6} sx={{ color: "link", textDecoration: "none" }}>
+        <RouterLink to={`/${Page.DEPOSIT}`}>Continue as guest</RouterLink>
+      </Box>
     </>
   );
 };

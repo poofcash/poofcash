@@ -22,10 +22,10 @@ import { useContractKit } from "@celo-tools/use-contractkit";
 import { toBN, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
 import { deployments } from "@poofcash/poof-kit";
-import { useDispatch } from "react-redux";
-import { Page, setCurrentPage } from "state/global";
+import { Page } from "state/global";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { NoteList } from "components/NoteList";
+import { useHistory } from "react-router-dom";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -77,7 +77,7 @@ export const DoDeposit: React.FC<IProps> = ({
     CURRENCY_MAP[network.chainId][currency.toLowerCase()],
     address
   );
-  const dispatch = useDispatch();
+  const history = useHistory();
   const { poofAccount } = PoofAccountGlobal.useContainer();
 
   const loading = approveLoading || depositLoading;
@@ -114,7 +114,7 @@ export const DoDeposit: React.FC<IProps> = ({
       button = (
         <Button
           variant="primary"
-          onClick={() => dispatch(setCurrentPage({ nextPage: Page.SETUP }))}
+          onClick={() => history.push(`/${Page.SETUP}`)}
           sx={{ width: "100%" }}
         >
           Connect Poof account

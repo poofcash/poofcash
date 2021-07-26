@@ -4,16 +4,17 @@ import { BlockscoutAddressLink } from "components/Links";
 import { Text } from "theme-ui";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { shortenAccount } from "hooks/accountName";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { AppState } from "state";
-import { Page, setCurrentPage } from "state/global";
+import { Page } from "state/global";
 import { PoofAccountGlobal } from "hooks/poofAccount";
+import { useHistory } from "react-router-dom";
 
 export const AccountProfile: React.FC = () => {
   const { address, destroy, connect } = useContractKit();
   const poofAccount = useSelector((state: AppState) => state.user.poofAccount);
   const { disconnectPoofAccount } = PoofAccountGlobal.useContainer();
-  const dispatch = useDispatch();
+  const history = useHistory();
 
   return (
     <Flex sx={{ alignItems: "center", justifyContent: "flex-end" }}>
@@ -100,9 +101,7 @@ export const AccountProfile: React.FC = () => {
             <>
               <Text
                 sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
-                onClick={() =>
-                  dispatch(setCurrentPage({ nextPage: Page.SETUP }))
-                }
+                onClick={() => history.push(`/${Page.SETUP}`)}
                 variant="form"
               >
                 Login
