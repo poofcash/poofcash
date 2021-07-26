@@ -11,9 +11,24 @@ const StyledLink = styled(Link)({
   textDecoration: "none",
 });
 
-export const DesktopHeader: React.FC = () => {
+const HeaderLink: React.FC<{ page: Page }> = ({ page, children }) => {
   const location = useLocation();
+  return (
+    <StyledLink to={page}>
+      <Text
+        sx={{
+          color: location.pathname.includes(page) ? "accent" : "text",
+          mx: 1,
+        }}
+        variant="subtitle"
+      >
+        {children}
+      </Text>
+    </StyledLink>
+  );
+};
 
+export const DesktopHeader: React.FC = () => {
   return (
     <>
       <Container sx={{ width: "auto" }}>
@@ -30,117 +45,21 @@ export const DesktopHeader: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <StyledLink to="exchange">
-              <Text
-                sx={{
-                  color: location.pathname.includes(Page.EXCHANGE)
-                    ? "accent"
-                    : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Exchange
-              </Text>
-            </StyledLink>
+            <HeaderLink page={Page.EXCHANGE}>Exchange</HeaderLink>
             <Text>/</Text>
-            <StyledLink to="deposit">
-              <Text
-                sx={{
-                  color: location.pathname.includes(Page.DEPOSIT)
-                    ? "accent"
-                    : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Deposit
-              </Text>
-            </StyledLink>
+            <HeaderLink page={Page.DEPOSIT}>Deposit</HeaderLink>
             <Text>/</Text>
-            <StyledLink to="withdraw">
-              <Text
-                sx={{
-                  color: location.pathname.includes(Page.WITHDRAW)
-                    ? "accent"
-                    : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Withdraw
-              </Text>
-            </StyledLink>
+            <HeaderLink page={Page.WITHDRAW}>Withdraw</HeaderLink>
             <Text>/</Text>
-            <StyledLink to="mine">
-              <Text
-                sx={{
-                  color: location.pathname.includes(Page.MINE)
-                    ? "accent"
-                    : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Mine
-              </Text>
-            </StyledLink>
+            <HeaderLink page={Page.MINE}>Mine</HeaderLink>
             <Text>/</Text>
-            <StyledLink to="redeem">
-              <Text
-                sx={{
-                  color: location.pathname.includes(Page.REDEEM)
-                    ? "accent"
-                    : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Redeem
-              </Text>
-            </StyledLink>
+            <HeaderLink page={Page.REDEEM}>Redeem</HeaderLink>
             <Text>/</Text>
-            <StyledLink to="report">
-              <Text
-                sx={{
-                  color: location.pathname.includes(Page.COMPLIANCE)
-                    ? "accent"
-                    : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Report
-              </Text>
-            </StyledLink>
+            <HeaderLink page={Page.COMPLIANCE}>Report</HeaderLink>
             <Text>/</Text>
-            <StyledLink to="airdrop">
-              <Text
-                sx={{
-                  color: location.pathname.includes(Page.AIRDROP)
-                    ? "accent"
-                    : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Airdrop
-              </Text>
-            </StyledLink>
+            <HeaderLink page={Page.AIRDROP}>Airdrop</HeaderLink>
             <Text>/</Text>
-            <StyledLink to="stake">
-              <Text
-                sx={{
-                  color: location.pathname.includes(Page.STAKE)
-                    ? "accent"
-                    : "text",
-                  mx: 1,
-                }}
-                variant="subtitle"
-              >
-                Stake
-              </Text>
-            </StyledLink>
+            <HeaderLink page={Page.STAKE}>Stake</HeaderLink>
             <Box ml={4}>
               <AccountProfile />
             </Box>

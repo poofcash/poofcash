@@ -71,9 +71,16 @@ export function useDeposit(
         const kit = await getConnectedKit();
         const poofKit = new PoofKitV2(kit, network.chainId);
         let depositTxo = poofKit.depositNotes(noteStrings, privateKey);
-        const tx = await depositTxo.send(depositTxo, {
+        const gasPrice = toWei("0.13", "gwei");
+        const gas = await depositTxo.estimateGas({
           from: kit.defaultAccount || address,
-          gasPrice: toWei("0.13", "gwei"),
+          gasPrice,
+          value: 0,
+        });
+        const tx = await depositTxo.send({
+          from: kit.defaultAccount || address,
+          gas,
+          gasPrice,
           value: 0,
         });
         setTxHash(tx.transactionHash);
