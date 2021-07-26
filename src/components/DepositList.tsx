@@ -7,9 +7,8 @@ import { formatCurrency } from "utils/currency";
 import { ClipboardIcon } from "icons/ClipboardIcon";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { useLatestBlockNumber } from "hooks/web3";
-import { RefreshCw } from "react-feather";
+import { Edit3, RefreshCw } from "react-feather";
 import { createContainer } from "unstated-next";
-import { EncryptedKeystoreV3Json } from "web3-core";
 import { FixedSizeList } from "react-window";
 import { useMiningRates } from "hooks/useMiningRates";
 import { PoofKitGlobal } from "hooks/usePoofKit";
@@ -19,17 +18,21 @@ import { getEncryptedNoteEvents } from "utils/getEncryptedNoteEvents";
 type RowData = {
   note: Note;
   miningRate: number;
-  latestBlock: number;
 };
 
 interface IItemProps {
   index: number;
-  data: RowData[];
+  data: {
+    rows: RowData[];
+    latestBlock: number;
+    onFill?: (magicPassword: string) => any;
+  };
   style: React.CSSProperties;
 }
 
 const NoteItem: React.FC<IItemProps> = ({ index, data, style }) => {
-  const { note, miningRate, latestBlock } = data[index];
+  const { rows, latestBlock, onFill } = data;
+  const { note, miningRate } = rows[index];
   const noteAmount = `${Number(
     fromWei(note.amount)
   ).toLocaleString()} ${formatCurrency(note.currency)}`;
@@ -61,39 +64,60 @@ const NoteItem: React.FC<IItemProps> = ({ index, data, style }) => {
             </Text>
             <Text>{apEarned.toLocaleString()} AP</Text>
           </Box>
-          <CopyToClipboard
-            onCopy={() => {
-              alert("Magic password copied to clipboard");
-            }}
-            text={note.toNoteString()}
-          >
-            <Button>
-              <ClipboardIcon />
-            </Button>
-          </CopyToClipboard>
+          <Box>
+            {onFill && (
+              <Button onClick={() => onFill(note.toNoteString())} mr={1}>
+                <Edit3 />
+              </Button>
+            )}
+            <CopyToClipboard
+              onCopy={() => {
+                alert("Magic password copied to clipboard");
+              }}
+              text={note.toNoteString()}
+            >
+              <Button>
+                <ClipboardIcon />
+              </Button>
+            </CopyToClipboard>
+          </Box>
         </Flex>
       </Card>
     </Box>
   );
 };
 
-interface IListProps {
-  title: string;
-  poofAccount: EncryptedKeystoreV3Json | undefined;
-  loading: boolean;
-  rows: RowData[] | undefined;
-  unlockDeposits: () => void;
+export enum NoteListMode {
+  DEPOSITS = "DEPOSITS",
+  WITHDRAWS = "WIHTDRAWS",
 }
 
-const NoteList: React.FC<IListProps> = ({
-  title,
-  poofAccount,
-  loading,
-  rows,
-  unlockDeposits,
-}) => {
+interface IListProps {
+  mode: NoteListMode;
+  onFill?: (magicPassword: string) => any;
+}
+
+export const NoteList: React.FC<IListProps> = ({ mode, onFill }) => {
+  const { poofAccount } = PoofAccountGlobal.useContainer();
+  const [latestBlock] = useLatestBlockNumber();
+  const {
+    unlockDeposits,
+    loading,
+    deposits,
+    withdrawals,
+  } = DepositListGlobal.useContainer();
   if (!poofAccount) {
     return null;
+  }
+
+  let rows: RowData[] | undefined;
+  let title;
+  if (mode === NoteListMode.DEPOSITS) {
+    rows = deposits;
+    title = "Deposit List";
+  } else if (mode === NoteListMode.WITHDRAWS) {
+    rows = withdrawals;
+    title = "Withdrawal List";
   }
 
   return (
@@ -119,7 +143,7 @@ const NoteList: React.FC<IListProps> = ({
         <FixedSizeList
           height={240}
           width="100%"
-          itemData={rows}
+          itemData={{ rows, latestBlock, onFill }}
           itemCount={rows.length}
           itemSize={80}
           style={{ marginBottom: "16px" }}
@@ -134,9 +158,8 @@ const NoteList: React.FC<IListProps> = ({
 };
 
 const useDepositList = () => {
-  const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
+  const { actWithPoofAccount } = PoofAccountGlobal.useContainer();
   const { poofKit } = PoofKitGlobal.useContainer();
-  const [latestBlock, refreshLatestBlock] = useLatestBlockNumber();
   const [loading, setLoading] = React.useState(false);
   const [deposits, setDeposits] = React.useState<RowData[]>();
   const [withdrawals, setWithdrawals] = React.useState<RowData[]>();
@@ -144,7 +167,6 @@ const useDepositList = () => {
 
   const unlockDeposits = React.useCallback(() => {
     setLoading(true);
-    refreshLatestBlock();
     actWithPoofAccount(
       async (privateKey) => {
         const [
@@ -167,7 +189,6 @@ const useDepositList = () => {
           );
           return {
             note,
-            latestBlock,
             miningRate,
           };
         });
@@ -196,29 +217,9 @@ const useDepositList = () => {
         setLoading(false);
       }
     );
-  }, [
-    setLoading,
-    actWithPoofAccount,
-    setDeposits,
-    refreshLatestBlock,
-    latestBlock,
-    miningRates,
-    poofKit,
-  ]);
+  }, [setLoading, actWithPoofAccount, setDeposits, miningRates, poofKit]);
 
-  const props = {
-    poofAccount,
-    loading,
-    unlockDeposits,
-  };
-  const depositList = (
-    <NoteList title="Deposit List" rows={deposits} {...props} />
-  );
-  const withdrawList = (
-    <NoteList title="Withdraw List" rows={withdrawals} {...props} />
-  );
-
-  return { depositList, withdrawList };
+  return { unlockDeposits, deposits, withdrawals, loading };
 };
 
 export const DepositListGlobal = createContainer(useDepositList);

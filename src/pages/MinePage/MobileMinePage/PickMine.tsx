@@ -10,7 +10,7 @@ import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { RelayerOption } from "hooks/useRelayer";
-import { DepositListGlobal } from "components/DepositList";
+import { NoteList, NoteListMode } from "components/DepositList";
 import { useHistory } from "react-router-dom";
 import { Page } from "state/global";
 
@@ -46,7 +46,6 @@ export const PickMine: React.FC<IProps> = ({
   setCustomRelayer,
 }) => {
   const breakpoint = useBreakpoint();
-  const { withdrawList } = DepositListGlobal.useContainer();
   const [customRelayerError, setCustomRelayerError] = React.useState<
     string | null
   >(null);
@@ -200,7 +199,9 @@ export const PickMine: React.FC<IProps> = ({
       )}
 
       <Divider my={4} />
-      <Box>{withdrawList}</Box>
+      <Box>
+        <NoteList mode={NoteListMode.WITHDRAWS} onFill={setNote} />
+      </Box>
 
       {breakpoint === Breakpoint.MOBILE && (
         <BottomDrawer>

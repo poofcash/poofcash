@@ -11,7 +11,7 @@ import axios from "axios";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { RelayerOption } from "hooks/useRelayer";
-import { DepositListGlobal } from "components/DepositList";
+import { NoteList, NoteListMode } from "components/DepositList";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -45,7 +45,6 @@ export const PickWithdraw: React.FC<IProps> = ({
   setCustomRelayer,
 }) => {
   const breakpoint = useBreakpoint();
-  const { depositList } = DepositListGlobal.useContainer();
   const [customRelayerError, setCustomRelayerError] = React.useState<
     string | null
   >(null);
@@ -190,7 +189,9 @@ export const PickWithdraw: React.FC<IProps> = ({
       )}
 
       <Divider my={4} />
-      <Box>{depositList}</Box>
+      <Box>
+        <NoteList mode={NoteListMode.DEPOSITS} onFill={setNote} />
+      </Box>
 
       {breakpoint === Breakpoint.MOBILE && (
         <BottomDrawer>

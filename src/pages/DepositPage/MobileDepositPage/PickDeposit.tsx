@@ -12,7 +12,7 @@ import { toBN, fromWei, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
 import { humanFriendlyWei } from "utils/eth";
 import { deployments } from "@poofcash/poof-kit";
-import { DepositListGlobal } from "components/DepositList";
+import { NoteList, NoteListMode } from "components/DepositList";
 import { useRCeloPrice } from "hooks/useRCeloPrice";
 import { usePoofPrice } from "hooks/usePoofPrice";
 import { useCeloPrice } from "hooks/useCeloPrice";
@@ -49,7 +49,6 @@ export const PickDeposit: React.FC<IProps> = ({
 }) => {
   const { connect, address, network } = useContractKit();
   const breakpoint = useBreakpoint();
-  const { depositList } = DepositListGlobal.useContainer();
 
   const [allowance, approve, approveLoading] = useApprove(
     deployments[`netId${network.chainId}`][currency.toLowerCase()].tokenAddress,
@@ -248,7 +247,9 @@ export const PickDeposit: React.FC<IProps> = ({
       )}
 
       <Divider my={4} />
-      <Box>{depositList}</Box>
+      <Box>
+        <NoteList mode={NoteListMode.DEPOSITS} />
+      </Box>
 
       {breakpoint === Breakpoint.MOBILE && (
         <BottomDrawer>
