@@ -16,19 +16,22 @@ export const useDualStakeRewards = (
       DUAL_REWARDS_ABI as AbiItem[],
       address
     ) as unknown) as MoolaStakingRewards;
-    if (!owner || !isAddress(owner)) {
-      return [toBN(0), toBN(0), toBN(0), toBN(0), toBN(0), toBN(0)];
-    }
-    return await Promise.all([
+    const [totalSupply, rewardRate] = await Promise.all([
       stakeRewards.methods.totalSupply().call().then(toBN),
+      stakeRewards.methods.rewardRate().call().then(toBN),
+    ]);
+    if (!owner || !isAddress(owner)) {
+      return [totalSupply, toBN(0), toBN(0), toBN(0), rewardRate];
+    }
+    const [farmBalance, earned, earnedExternal] = await Promise.all([
       stakeRewards.methods.balanceOf(owner).call().then(toBN),
       stakeRewards.methods.earned(owner).call().then(toBN),
       stakeRewards.methods
         .earnedExternal(owner)
         .call()
         .then((v) => toBN(v[0])), // Hardcode: Only 1 external reward
-      stakeRewards.methods.rewardRate().call().then(toBN),
     ]);
+    return [totalSupply, farmBalance, earned, earnedExternal, rewardRate];
   }, [kit, owner, address]);
   return useAsyncState(
     [toBN(0), toBN(0), toBN(0), toBN(0), toBN(0), toBN(0)],

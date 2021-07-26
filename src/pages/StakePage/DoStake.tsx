@@ -24,6 +24,8 @@ import { useUbePrice } from "hooks/useUbePrice";
 import { apr } from "utils/interest";
 import { humanFriendlyNumber } from "utils/number";
 
+const WEEK_IN_SECONDS = 604800;
+
 interface IProps {
   amount: string;
   setAmount: (amount: string) => void;
@@ -64,7 +66,11 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
     [farmTotalSupply, farmBalance, earned, earnedExternal, rewardRate],
     refetchDualStakeRewards,
   ] = useDualStakeRewards(STAKE_MAP[network.chainId].stakeRewards, address);
-  const [poofUbeStake] = usePoofUbeStake(farmBalance.toString());
+  const [poofUbeStake] = usePoofUbeStake(
+    farmBalance.eq(toBN(0))
+      ? farmTotalSupply.toString()
+      : farmBalance.toString()
+  );
   const [poofPrice] = usePoofPrice();
   const [ubePrice] = useUbePrice();
 
@@ -261,18 +267,24 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
     );
   }
 
-  const weeklyRewardRate = farmTotalSupply.eq(toBN(0))
-    ? toBN(0)
-    : rewardRate.mul(toBN(604800)).mul(farmBalance).div(farmTotalSupply);
-  const weeklyExternalRewardRate =
-    farmTotalSupply.eq(toBN(0)) || externalFarmTotalSupply.eq(toBN(0))
-      ? toBN(0)
-      : externalRewardRate
-          .mul(toBN(604800))
+  let weeklyRewardRate = toBN(0);
+  let weeklyExternalRewardRate = toBN(0);
+  if (!farmTotalSupply.eq(toBN(0))) {
+    weeklyRewardRate = rewardRate.mul(toBN(WEEK_IN_SECONDS));
+    if (!farmBalance.eq(toBN(0))) {
+      weeklyRewardRate = weeklyRewardRate.mul(farmBalance).div(farmTotalSupply);
+    }
+    if (!externalFarmTotalSupply.eq(toBN(0))) {
+      weeklyExternalRewardRate = externalRewardRate.mul(toBN(WEEK_IN_SECONDS));
+      if (!farmBalance.eq(toBN(0))) {
+        weeklyExternalRewardRate = weeklyExternalRewardRate
           .mul(externalFarmBalance)
           .mul(farmBalance)
           .div(externalFarmTotalSupply)
           .div(farmTotalSupply);
+      }
+    }
+  }
 
   const weeklyRewardUsd = Number(fromWei(weeklyRewardRate)) * poofPrice;
   const weeklyExternalRewardsUsd =
