@@ -6,6 +6,12 @@ import { RelayerOption, useRelayer } from "hooks/useRelayer";
 import { calculateFee, deployments, parseNote } from "@poofcash/poof-kit";
 import { isValidNote } from "utils/snarks-functions";
 import { fromWei } from "web3-utils";
+import { useRecoilState } from "recoil";
+import {
+  withdrawNote,
+  withdrawRecipient,
+  withdrawTxHash,
+} from "pages/WithdrawPage/state";
 
 export interface IWithdrawProps {
   setNote: (note: string) => void;
@@ -25,9 +31,9 @@ export interface IWithdrawProps {
 }
 
 const WithdrawPage: React.FC = () => {
-  const [note, setNote] = React.useState("");
-  const [recipient, setRecipient] = React.useState("");
-  const [txHash, setTxHash] = React.useState("");
+  const [note, setNote] = useRecoilState(withdrawNote);
+  const [recipient, setRecipient] = useRecoilState(withdrawRecipient);
+  const [txHash, setTxHash] = useRecoilState(withdrawTxHash);
   const breakpoint = useBreakpoint();
   const {
     relayer,
