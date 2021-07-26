@@ -1,9 +1,8 @@
 import React from "react";
-import { NoteInfo } from "@poofcash/poof-kit";
+import { decryptNotes, Note } from "@poofcash/poof-kit";
 import { PoofAccountGlobal } from "hooks/poofAccount";
-import { PoofKitGlobal } from "hooks/usePoofKit";
 import { Box, Button, Card, Flex, Heading, Spinner, Text } from "theme-ui";
-import { fromWei } from "web3-utils";
+import { fromWei, toHex } from "web3-utils";
 import { formatCurrency } from "utils/currency";
 import { ClipboardIcon } from "icons/ClipboardIcon";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -12,29 +11,35 @@ import { RefreshCw } from "react-feather";
 import { createContainer } from "unstated-next";
 import { EncryptedKeystoreV3Json } from "web3-core";
 import { FixedSizeList } from "react-window";
-import { useEncryptedNoteEvents } from "hooks/useEncryptedNoteEvents";
-import { usePoofEvents } from "hooks/usePoofEvents";
+import { useMiningRates } from "hooks/useMiningRates";
+import { PoofKitGlobal } from "hooks/usePoofKit";
+import { getPoofEvents } from "utils/getPoofEvents";
+import { getEncryptedNoteEvents } from "utils/getEncryptedNoteEvents";
 
-type ExtendedNoteInfo = NoteInfo & { latestBlock: number };
+type RowData = {
+  note: Note;
+  miningRate: number;
+  latestBlock: number;
+};
 
 interface IItemProps {
   index: number;
-  data: ExtendedNoteInfo[];
+  data: RowData[];
   style: React.CSSProperties;
 }
 
 const NoteItem: React.FC<IItemProps> = ({ index, data, style }) => {
-  const noteInfo = data[index];
-  const { latestBlock } = noteInfo;
+  const { note, miningRate, latestBlock } = data[index];
   const noteAmount = `${Number(
-    fromWei(noteInfo.note.amount)
-  ).toLocaleString()} ${formatCurrency(noteInfo.note.currency)}`;
-  const depositBlockNumber = noteInfo.depositBlock!.blockNumber;
-  const apEarned =
-    ((noteInfo.withdrawBlock?.blockNumber ??
-      Math.max(latestBlock, depositBlockNumber)) -
-      depositBlockNumber) *
-    noteInfo.rate;
+    fromWei(note.amount)
+  ).toLocaleString()} ${formatCurrency(note.currency)}`;
+  const depositBlockNumber = note.depositBlock?.blockNumber ?? 0;
+  const withdrawalBlockNumber =
+    note.withdrawalBlock?.blockNumber ??
+    Math.max(latestBlock, depositBlockNumber);
+  const apEarned = depositBlockNumber
+    ? (withdrawalBlockNumber - depositBlockNumber) * miningRate
+    : 0;
 
   return (
     <Box style={style}>
@@ -60,7 +65,7 @@ const NoteItem: React.FC<IItemProps> = ({ index, data, style }) => {
             onCopy={() => {
               alert("Magic password copied to clipboard");
             }}
-            text={noteInfo.noteString}
+            text={note.toNoteString()}
           >
             <Button>
               <ClipboardIcon />
@@ -76,7 +81,7 @@ interface IListProps {
   title: string;
   poofAccount: EncryptedKeystoreV3Json | undefined;
   loading: boolean;
-  notes: ExtendedNoteInfo[] | undefined;
+  rows: RowData[] | undefined;
   unlockDeposits: () => void;
 }
 
@@ -84,7 +89,7 @@ const NoteList: React.FC<IListProps> = ({
   title,
   poofAccount,
   loading,
-  notes,
+  rows,
   unlockDeposits,
 }) => {
   if (!poofAccount) {
@@ -99,7 +104,7 @@ const NoteList: React.FC<IListProps> = ({
         <Heading as="h2" mb={2}>
           {title}
         </Heading>
-        {notes && (
+        {rows && (
           <Button
             sx={{ bg: "highlight", color: "text" }}
             onClick={unlockDeposits}
@@ -110,12 +115,12 @@ const NoteList: React.FC<IListProps> = ({
       </Flex>
       {loading ? (
         <Spinner />
-      ) : notes ? (
+      ) : rows ? (
         <FixedSizeList
           height={240}
           width="100%"
-          itemData={notes}
-          itemCount={notes.length}
+          itemData={rows}
+          itemCount={rows.length}
           itemSize={80}
           style={{ marginBottom: "16px" }}
         >
@@ -129,44 +134,63 @@ const NoteList: React.FC<IListProps> = ({
 };
 
 const useDepositList = () => {
-  const { poofKit } = PoofKitGlobal.useContainer();
   const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
+  const { poofKit } = PoofKitGlobal.useContainer();
   const [latestBlock, refreshLatestBlock] = useLatestBlockNumber();
   const [loading, setLoading] = React.useState(false);
-  const [deposits, setDeposits] = React.useState<ExtendedNoteInfo[]>();
-  const [withdrawals, setWithdrawals] = React.useState<ExtendedNoteInfo[]>();
-  const [encryptedNoteEvents] = useEncryptedNoteEvents();
-  const [depositEvents] = usePoofEvents("Deposit");
-  const [withdrawEvents] = usePoofEvents("Withdraw");
+  const [deposits, setDeposits] = React.useState<RowData[]>();
+  const [withdrawals, setWithdrawals] = React.useState<RowData[]>();
+  const [miningRates] = useMiningRates();
 
   const unlockDeposits = React.useCallback(() => {
     setLoading(true);
     refreshLatestBlock();
     actWithPoofAccount(
-      (privateKey) => {
-        poofKit
-          .decryptedNotes(
-            privateKey,
-            encryptedNoteEvents,
-            depositEvents,
-            withdrawEvents
+      async (privateKey) => {
+        const [
+          encryptedNoteEvents,
+          depositEvents,
+          withdrawEvents,
+        ] = await Promise.all([
+          getEncryptedNoteEvents(poofKit),
+          getPoofEvents("Deposit", poofKit),
+          getPoofEvents("Withdrawal", poofKit),
+        ]);
+        const decryptedNotes = decryptNotes(privateKey, encryptedNoteEvents);
+        const rows = decryptedNotes.map((noteString) => {
+          const poofAddress = Note.getInstance(noteString);
+          const miningRate = miningRates[poofAddress] || 0;
+          const note = Note.fromString(
+            noteString,
+            depositEvents ? depositEvents[poofAddress] : [],
+            withdrawEvents ? withdrawEvents[poofAddress] : []
+          );
+          return {
+            note,
+            latestBlock,
+            miningRate,
+          };
+        });
+        const deposits = rows.filter((row) => row.note.withdrawalBlock == null);
+        const withdrawals = (
+          await Promise.all(
+            rows.map(async (row) => {
+              const isMined = await poofKit.isMined(
+                toHex(row.note.rewardNullifier)
+              );
+              return { row, isMined };
+            })
           )
-          .then((v) => {
-            const notes = v
-              .filter((note) => note.depositBlock != null)
-              .sort(
-                (a, b) =>
-                  b.depositBlock!.blockNumber - a.depositBlock!.blockNumber
-              )
-              .map((a) => ({ ...a, latestBlock }));
-            const deposits = notes.filter((v) => v.withdrawBlock == null);
-            const withdrawals = notes.filter(
-              (v) => v.withdrawBlock != null && !v.isMined && v.rate > 0
+        )
+          .filter(({ row, isMined }) => {
+            return (
+              row.note.withdrawalBlock != null && row.miningRate > 0 && !isMined
             );
-            setDeposits(deposits);
-            setWithdrawals(withdrawals);
-            setLoading(false);
-          });
+          })
+          .map(({ row }) => row);
+        setDeposits(deposits);
+        setWithdrawals(withdrawals);
+        setLoading(false);
       },
       () => {
         setLoading(false);
@@ -175,13 +199,11 @@ const useDepositList = () => {
   }, [
     setLoading,
     actWithPoofAccount,
-    poofKit,
     setDeposits,
     refreshLatestBlock,
     latestBlock,
-    encryptedNoteEvents,
-    depositEvents,
-    withdrawEvents,
+    miningRates,
+    poofKit,
   ]);
 
   const props = {
@@ -190,10 +212,10 @@ const useDepositList = () => {
     unlockDeposits,
   };
   const depositList = (
-    <NoteList title="Deposit List" notes={deposits} {...props} />
+    <NoteList title="Deposit List" rows={deposits} {...props} />
   );
   const withdrawList = (
-    <NoteList title="Withdraw List" notes={withdrawals} {...props} />
+    <NoteList title="Withdraw List" rows={withdrawals} {...props} />
   );
 
   return { depositList, withdrawList };

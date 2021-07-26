@@ -2,12 +2,14 @@ import React from "react";
 import MobileMinePage from "pages/MinePage/MobileMinePage";
 import DesktopMinePage from "pages/MinePage/DesktopMinePage";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
-import { NoteInfo } from "@poofcash/poof-kit";
-import { isValidNote } from "utils/snarks-functions";
+import { isValidNote, parseNote } from "utils/snarks-functions";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { useLatestBlockNumber } from "hooks/web3";
 import { RelayerOption, useRelayer } from "hooks/useRelayer";
 import { useAsyncState } from "hooks/useAsyncState";
+import { usePoofEvents } from "hooks/usePoofEvents";
+import { deployments, Note } from "@poofcash/poof-kit";
+import { useMiningRates } from "hooks/useMiningRates";
 
 export interface IMineProps {
   setNote: (note: string) => void;
@@ -29,25 +31,32 @@ export interface IMineProps {
 const MinePage: React.FC = () => {
   const [note, setNote] = React.useState("");
   const noteIsValid = React.useMemo(() => isValidNote(note), [note]);
-  const [noteInfo, setNoteInfo] = React.useState<NoteInfo>();
+  const [depositEvents] = usePoofEvents("Deposit");
+  const [withdrawEvents] = usePoofEvents("Withdrawal");
+  // TODO: Reduce forno calls
+  const [miningRates] = useMiningRates();
   const { poofKit } = PoofKitGlobal.useContainer();
-  React.useEffect(() => {
-    if (noteIsValid) {
-      poofKit?.noteInfo(note).then(setNoteInfo);
-    }
-  }, [noteIsValid, note, poofKit]);
 
   // Calculate estimated AP
   const [latestBlockNumber] = useLatestBlockNumber();
   let estimatedAp = 0;
-  if (isValidNote(note) && noteInfo && noteInfo.depositBlock) {
+  if (isValidNote(note)) {
+    const { netId, currency, amount } = parseNote(note);
+    const poofAddress =
+      deployments[`netId${netId}`][currency].instanceAddress[amount];
+
+    const noteObject = Note.fromString(
+      note,
+      depositEvents[poofAddress],
+      withdrawEvents[poofAddress]
+    );
     const withdrawBlock =
-      noteInfo.withdrawBlock?.blockNumber ?? latestBlockNumber;
+      noteObject.withdrawalBlock?.blockNumber ?? latestBlockNumber;
     const blocksElapsed = Math.max(
-      withdrawBlock - noteInfo.depositBlock.blockNumber,
+      withdrawBlock - noteObject.depositBlock.blockNumber,
       0
     );
-    estimatedAp = blocksElapsed * noteInfo.rate;
+    estimatedAp = blocksElapsed * Number(miningRates[poofAddress].toString());
   }
   const [txHash, setTxHash] = React.useState("");
   const {

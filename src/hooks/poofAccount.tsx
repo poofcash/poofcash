@@ -120,8 +120,8 @@ const usePoofAccount = () => {
   const dispatch = useDispatch();
 
   const actWithPoofAccount = (
-    action: (privateKey: string) => void,
-    cancelAction: () => void
+    action: (privateKey: string) => any,
+    cancelAction: () => any
   ) => {
     if (!poofAccount) {
       return;

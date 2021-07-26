@@ -3,7 +3,8 @@ import { isValidNote, parseNote, toHex } from "utils/snarks-functions";
 import { Container, Input, Text } from "theme-ui";
 import { BlockscoutTxLink } from "components/Links";
 import { PoofKitGlobal } from "hooks/usePoofKit";
-import { EventData } from "web3-eth-contract";
+import { Note } from "@poofcash/poof-kit";
+import { usePoofEvents } from "hooks/usePoofEvents";
 
 type NoteDetail = {
   commitment?: string;
@@ -17,8 +18,8 @@ const CompliancePage = () => {
     nullifierHash: "",
   });
   const { poofKit } = PoofKitGlobal.useContainer();
-  const [depositBlock, setDepositBlock] = React.useState<EventData>();
-  const [withdrawBlock, setWithdrawBlock] = React.useState<EventData>();
+  const [depositEvents] = usePoofEvents("Deposit");
+  const [withdrawEvents] = usePoofEvents("Withdrawal");
 
   React.useEffect(() => {
     if (isValidNote(note)) {
@@ -26,11 +27,6 @@ const CompliancePage = () => {
       setNoteDetail({
         commitment: toHex(deposit.commitment),
         nullifierHash: toHex(deposit.nullifierHash),
-      });
-
-      poofKit.noteInfo(note).then(({ depositBlock, withdrawBlock }) => {
-        setDepositBlock(depositBlock);
-        setWithdrawBlock(withdrawBlock);
       });
     }
   }, [poofKit, note]);
@@ -47,6 +43,15 @@ const CompliancePage = () => {
   };
 
   const noteIsValid = isValidNote(note);
+  let noteObject;
+  if (noteIsValid) {
+    const poofAddress = Note.getInstance(note);
+    noteObject = Note.fromString(
+      note,
+      depositEvents[poofAddress],
+      withdrawEvents[poofAddress]
+    );
+  }
 
   return (
     <div>
@@ -71,12 +76,12 @@ const CompliancePage = () => {
       {note && noteIsValid && (
         <Container sx={{ textAlign: "left", width: "100%" }}>
           <h3>Deposit details</h3>
-          {depositBlock ? (
+          {noteObject?.depositBlock ? (
             <>
               <Text>
                 <strong>Transaction</strong>:{" "}
-                <BlockscoutTxLink tx={depositBlock.transactionHash}>
-                  {depositBlock.transactionHash}
+                <BlockscoutTxLink tx={noteObject.depositBlock.transactionHash}>
+                  {noteObject.depositBlock.transactionHash}
                 </BlockscoutTxLink>
               </Text>
               <br />
@@ -88,12 +93,14 @@ const CompliancePage = () => {
             <Text>Note is valid, but no deposit event was found.</Text>
           )}
           <h3>Withdraw details</h3>
-          {withdrawBlock ? (
+          {noteObject?.withdrawalBlock ? (
             <>
               <Text>
                 <strong>Transaction</strong>:{" "}
-                <BlockscoutTxLink tx={withdrawBlock.transactionHash}>
-                  {withdrawBlock.transactionHash}
+                <BlockscoutTxLink
+                  tx={noteObject.withdrawalBlock.transactionHash}
+                >
+                  {noteObject.withdrawalBlock.transactionHash}
                 </BlockscoutTxLink>
               </Text>
               <br />

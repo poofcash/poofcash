@@ -1,12 +1,12 @@
 import React from "react";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { useAsyncState } from "hooks/useAsyncState";
-import { getEncryptedNoteEvents } from "utils/getEncryptedNoteEvents";
 
-export const useEncryptedNoteEvents = () => {
+// TODO: Reduce rpc usage by having a `useMiningRate`
+export const useMiningRates = () => {
   const { poofKit } = PoofKitGlobal.useContainer();
   const call = React.useCallback(async () => {
-    return await getEncryptedNoteEvents(poofKit);
+    return await poofKit.miningRates();
   }, [poofKit]);
-  return useAsyncState([], call);
+  return useAsyncState<Record<string, number>>({}, call);
 };
