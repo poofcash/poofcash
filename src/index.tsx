@@ -10,6 +10,7 @@ import { ContractKitProvider } from "@celo-tools/use-contractkit";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { DepositListGlobal } from "components/DepositList";
+import { RecoilRoot } from "recoil";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 
@@ -27,23 +28,25 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <Router>
-          <ContractKitProvider
-            dapp={{
-              name: "Poof.cash",
-              description: "Decentralized, private transactions for Celo",
-              url: "https://app.poof.cash",
-            }}
-          >
-            <PoofKitGlobal.Provider>
-              <PoofAccountGlobal.Provider>
-                <DepositListGlobal.Provider>
-                  <App />
-                </DepositListGlobal.Provider>
-              </PoofAccountGlobal.Provider>
-            </PoofKitGlobal.Provider>
-          </ContractKitProvider>
-        </Router>
+        <RecoilRoot>
+          <Router>
+            <ContractKitProvider
+              dapp={{
+                name: "Poof.cash",
+                description: "Decentralized, private transactions for Celo",
+                url: "https://app.poof.cash",
+              }}
+            >
+              <PoofKitGlobal.Provider>
+                <PoofAccountGlobal.Provider>
+                  <DepositListGlobal.Provider>
+                    <App />
+                  </DepositListGlobal.Provider>
+                </PoofAccountGlobal.Provider>
+              </PoofKitGlobal.Provider>
+            </ContractKitProvider>
+          </Router>
+        </RecoilRoot>
       </ThemeProvider>
     </Provider>
   </React.StrictMode>,

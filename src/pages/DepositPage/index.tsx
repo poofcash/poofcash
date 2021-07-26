@@ -7,25 +7,31 @@ import { NoteStringCommitment } from "pages/DepositPage/types";
 import { useDeposit } from "hooks/writeContract";
 import { useAsyncState } from "hooks/useAsyncState";
 import { PoofKitGlobal } from "hooks/usePoofKit";
-import { PoofAccountGlobal } from "hooks/poofAccount";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { useDebounce } from "hooks/useDebounce";
 import { getNotes } from "utils/notes";
 import { fromWei } from "web3-utils";
+import { useRecoilState } from "recoil";
+import {
+  depositActualAmount,
+  depositAmount,
+  depositBackup,
+  depositCurrency,
+  depositNotes,
+  depositUsingCustom,
+} from "pages/DepositPage/state";
 
 export const BLOCKS_PER_WEEK = 120960;
 
 export interface IDepositProps {
-  setSelectedAmount: (amount: string) => void;
-  selectedAmount: string;
-  setSelectedCurrency: (currency: string) => void;
-  selectedCurrency: string;
+  setAmount: (amount: string) => void;
+  amount: string;
+  setCurrency: (currency: string) => void;
+  currency: string;
   notes: NoteStringCommitment[];
   resetNotes: () => void;
   setUsingCustom: (usingCustom: boolean) => void;
   usingCustom: boolean;
-  setCustomAmount: (amount: string) => void;
-  customAmount: string;
   actualAmount: string;
   txHash: string;
   deposit: (privateKey?: string) => Promise<void>;
@@ -37,13 +43,15 @@ export interface IDepositProps {
 }
 
 const DepositPage: React.FC = () => {
-  const [usingCustom, setUsingCustom] = React.useState(false);
-  const [customAmount, setCustomAmount] = React.useState("0");
-  const [amount, setAmount] = React.useState("0");
-  const [actualAmount, setActualAmount] = React.useState("0");
-  const [currency, setCurrency] = React.useState("CELO");
   const { network } = useContractKit();
-  const [notes, setNotes] = React.useState<NoteStringCommitment[]>([]);
+
+  const [amount, setAmount] = useRecoilState(depositAmount);
+  const [actualAmount, setActualAmount] = useRecoilState(depositActualAmount);
+  const [currency, setCurrency] = useRecoilState(depositCurrency);
+  const [usingCustom, setUsingCustom] = useRecoilState(depositUsingCustom);
+  const [notes, setNotes] = useRecoilState(depositNotes);
+  const [backup, setBackup] = useRecoilState(depositBackup);
+
   const updateNotesCall = React.useCallback(
     (amount, currency) => {
       const { notes, amount: actualAmount } = getNotes(
@@ -54,7 +62,7 @@ const DepositPage: React.FC = () => {
       setNotes(notes);
       setActualAmount(actualAmount.toString());
     },
-    [network]
+    [network, setNotes, setActualAmount]
   );
   const updateNotes = useDebounce(updateNotesCall, 1000);
   const { poofKit } = PoofKitGlobal.useContainer();
@@ -96,39 +104,26 @@ const DepositPage: React.FC = () => {
     // Reset the selected amount
     setCurrency(currency);
     setAmount("0");
-    setCustomAmount("0");
     setNotes([]);
   };
   const [txHash, deposit, depositLoading] = useDeposit(
     notes.map((note) => note.noteString)
   );
-  const { poofAccount } = PoofAccountGlobal.useContainer();
-  const [backup, setBackup] = React.useState<boolean>(
-    poofAccount !== undefined
-  );
 
   if (breakpoint === Breakpoint.MOBILE) {
     return (
       <MobileDepositPage
-        setSelectedAmount={(amount) => {
+        setAmount={(amount) => {
           setAmount(amount);
-          setActualAmount(amount);
           updateNotes(amount, currency);
         }}
-        selectedAmount={amount}
-        setSelectedCurrency={onCurrencyChange}
-        selectedCurrency={currency}
+        amount={amount}
+        setCurrency={onCurrencyChange}
+        currency={currency}
         notes={notes}
-        resetNotes={() =>
-          updateNotes(usingCustom ? customAmount : amount, currency)
-        }
+        resetNotes={() => updateNotes(amount, currency)}
         setUsingCustom={setUsingCustom}
         usingCustom={usingCustom}
-        setCustomAmount={(customAmount) => {
-          setCustomAmount(customAmount);
-          updateNotes(customAmount, currency);
-        }}
-        customAmount={customAmount}
         actualAmount={actualAmount}
         txHash={txHash}
         deposit={deposit}
@@ -143,30 +138,21 @@ const DepositPage: React.FC = () => {
 
   return (
     <DesktopDepositPage
-      setSelectedAmount={(amount) => {
+      setAmount={(amount) => {
         setAmount(amount);
-        setActualAmount(amount);
         updateNotes(amount, currency);
       }}
-      selectedAmount={amount}
-      setSelectedCurrency={onCurrencyChange}
-      selectedCurrency={currency}
+      amount={amount}
+      setCurrency={onCurrencyChange}
+      currency={currency}
       notes={notes}
-      resetNotes={() =>
-        updateNotes(usingCustom ? customAmount : amount, currency)
-      }
+      resetNotes={() => updateNotes(amount, currency)}
       setUsingCustom={(custom) => {
         setAmount("0");
-        setCustomAmount("0");
         setNotes([]);
         setUsingCustom(custom);
       }}
       usingCustom={usingCustom}
-      setCustomAmount={(customAmount) => {
-        setCustomAmount(customAmount);
-        updateNotes(customAmount, currency);
-      }}
-      customAmount={customAmount}
       actualAmount={actualAmount}
       txHash={txHash}
       deposit={deposit}

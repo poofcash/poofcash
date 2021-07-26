@@ -15,7 +15,7 @@ interface IProps {
   onBackClick: () => void;
   onConfirmClick: () => void;
   amount: string;
-  selectedCurrency: string;
+  currency: string;
   notes: NoteStringCommitment[];
   depositLoading: boolean;
   backup: boolean;
@@ -28,7 +28,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
   onBackClick,
   onConfirmClick,
   amount,
-  selectedCurrency,
+  currency,
   notes,
   depositLoading,
   backup,
@@ -72,7 +72,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         lineItems={[
           {
             label: "Deposit Amount",
-            value: `${humanFriendlyNumber(amount)} ${selectedCurrency}`,
+            value: `${humanFriendlyNumber(amount)} ${currency}`,
           },
           {
             label: "Est. Network Fee",
@@ -82,15 +82,13 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         totalItem={{
           label: "Est. Total",
           value:
-            selectedCurrency === "CELO"
+            currency === "CELO"
               ? `${humanFriendlyNumber(
                   Number(amount) + Number(NETWORK_COST)
                 )} CELO`
               : `${humanFriendlyNumber(
                   Number(amount)
-                )} ${selectedCurrency} + ${humanFriendlyNumber(
-                  NETWORK_COST
-                )} CELO`,
+                )} ${currency} + ${humanFriendlyNumber(NETWORK_COST)} CELO`,
         }}
       />
 
@@ -127,7 +125,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
             <LabelWithBalance
               label="Total"
               amount={totalCost.toString()}
-              currency={selectedCurrency}
+              currency={currency}
             />
             {button}
           </Flex>

@@ -18,17 +18,15 @@ export const initialNoteStringCommitment = {
 
 // pass props and State interface to Component class
 const MobileDepositPage: React.FC<IDepositProps> = ({
-  setSelectedAmount,
-  selectedAmount,
-  setSelectedCurrency,
-  selectedCurrency,
+  setAmount,
+  amount,
+  setCurrency,
+  currency,
   notes,
   resetNotes,
   usingCustom,
   setUsingCustom,
-  customAmount,
   actualAmount,
-  setCustomAmount,
   txHash,
   deposit,
   depositLoading,
@@ -47,14 +45,12 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
           onDepositClick={() => {
             setDepositStep(DepositStep.CONFIRM);
           }}
-          selectedAmount={selectedAmount}
-          setSelectedAmount={setSelectedAmount}
-          selectedCurrency={selectedCurrency}
-          setSelectedCurrency={setSelectedCurrency}
+          amount={amount}
+          setAmount={setAmount}
+          currency={currency}
+          setCurrency={setCurrency}
           setUsingCustom={setUsingCustom}
           usingCustom={usingCustom}
-          setCustomAmount={setCustomAmount}
-          customAmount={customAmount}
           actualAmount={actualAmount}
           poofRate={poofRate}
           apRate={apRate}
@@ -85,7 +81,7 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
             }
           }}
           amount={actualAmount}
-          selectedCurrency={selectedCurrency}
+          currency={currency}
           notes={notes}
           depositLoading={depositLoading}
           backup={backup}
@@ -100,8 +96,8 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
             resetNotes();
             setDepositStep(DepositStep.PICKER);
           }}
-          amount={usingCustom ? actualAmount : selectedAmount}
-          selectedCurrency={selectedCurrency}
+          amount={usingCustom ? actualAmount : amount}
+          currency={currency}
           txHash={txHash}
         />
       );

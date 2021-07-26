@@ -10,17 +10,15 @@ enum DepositStep {
 }
 
 const DesktopDepositPage: React.FC<IDepositProps> = ({
-  setSelectedAmount,
-  selectedAmount,
-  setSelectedCurrency,
-  selectedCurrency,
+  setAmount,
+  amount,
+  setCurrency,
+  currency,
   notes,
   resetNotes,
   usingCustom,
   setUsingCustom,
-  customAmount,
   actualAmount,
-  setCustomAmount,
   txHash,
   deposit,
   depositLoading,
@@ -56,14 +54,12 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
               alert(e);
             }
           }}
-          selectedAmount={selectedAmount}
-          setSelectedAmount={setSelectedAmount}
-          selectedCurrency={selectedCurrency}
-          setSelectedCurrency={setSelectedCurrency}
+          amount={amount}
+          setAmount={setAmount}
+          currency={currency}
+          setCurrency={setCurrency}
           setUsingCustom={setUsingCustom}
           usingCustom={usingCustom}
-          setCustomAmount={setCustomAmount}
-          customAmount={customAmount}
           actualAmount={actualAmount}
           notes={notes}
           depositLoading={depositLoading}
@@ -81,7 +77,7 @@ const DesktopDepositPage: React.FC<IDepositProps> = ({
             setDepositStep(DepositStep.DO);
           }}
           amount={actualAmount}
-          selectedCurrency={selectedCurrency}
+          currency={currency}
           txHash={txHash}
         />
       );

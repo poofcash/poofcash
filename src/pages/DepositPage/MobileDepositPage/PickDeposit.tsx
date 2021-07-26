@@ -21,14 +21,12 @@ import { MAX_NOTES } from "utils/notes";
 
 interface IProps {
   onDepositClick?: () => void;
-  setSelectedAmount: (amount: string) => void;
-  selectedAmount: string;
-  setSelectedCurrency: (currency: string) => void;
-  selectedCurrency: string;
+  setAmount: (amount: string) => void;
+  amount: string;
+  setCurrency: (currency: string) => void;
+  currency: string;
   setUsingCustom: (usingCustom: boolean) => void;
   usingCustom: boolean;
-  setCustomAmount: (amount: string) => void;
-  customAmount: string;
   actualAmount: string;
   poofRate: string;
   apRate: string;
@@ -39,15 +37,13 @@ const supportedCurrencies = ["CELO", "rCELO"];
 // pass props and State interface to Component class
 export const PickDeposit: React.FC<IProps> = ({
   onDepositClick,
-  selectedAmount,
-  setSelectedAmount,
-  selectedCurrency,
-  setSelectedCurrency,
+  amount,
+  setAmount,
+  currency,
+  setCurrency,
   usingCustom,
   setUsingCustom,
-  customAmount,
   actualAmount,
-  setCustomAmount,
   poofRate,
   apRate,
 }) => {
@@ -56,28 +52,27 @@ export const PickDeposit: React.FC<IProps> = ({
   const { depositList } = DepositListGlobal.useContainer();
 
   const [allowance, approve, approveLoading] = useApprove(
-    deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
-      .tokenAddress,
+    deployments[`netId${network.chainId}`][currency.toLowerCase()].tokenAddress,
     toWei(Number(actualAmount).toString())
   );
 
   const userBalance = useTokenBalance(
-    CURRENCY_MAP[network.chainId][selectedCurrency.toLowerCase()],
+    CURRENCY_MAP[network.chainId][currency.toLowerCase()],
     address
   );
   const contractBalance = useTokenBalance(
-    CURRENCY_MAP[network.chainId][selectedCurrency.toLowerCase()],
-    deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
-      .instanceAddress[selectedAmount.toLowerCase()]
+    CURRENCY_MAP[network.chainId][currency.toLowerCase()],
+    deployments[`netId${network.chainId}`][currency.toLowerCase()]
+      .instanceAddress[amount.toLowerCase()]
   );
 
   const depositAmounts = React.useMemo(
     () =>
       Object.keys(
-        deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
+        deployments[`netId${network.chainId}`][currency.toLowerCase()]
           .instanceAddress
       ).sort(),
-    [selectedCurrency, network]
+    [currency, network]
   );
   const [poofPrice] = usePoofPrice();
   const [celoPrice] = useCeloPrice();
@@ -86,9 +81,9 @@ export const PickDeposit: React.FC<IProps> = ({
   let depositApr = 0;
   if (Number(actualAmount) === 0) {
     depositApr = 0;
-  } else if (selectedCurrency.toLowerCase() === "celo") {
+  } else if (currency.toLowerCase() === "celo") {
     depositApr = apr(Number(actualAmount) * celoPrice, poofRewardsUsd, 52);
-  } else if (selectedCurrency.toLowerCase() === "rcelo") {
+  } else if (currency.toLowerCase() === "rcelo") {
     depositApr = apr(Number(actualAmount) * rCeloPrice, poofRewardsUsd, 52);
   }
 
@@ -160,8 +155,8 @@ export const PickDeposit: React.FC<IProps> = ({
       </Text>
       <Select
         mb={4}
-        value={selectedCurrency}
-        onChange={(e) => setSelectedCurrency(e.target.value)}
+        value={currency}
+        onChange={(e) => setCurrency(e.target.value)}
       >
         {supportedCurrencies.map((currency, idx) => {
           return (
@@ -173,26 +168,26 @@ export const PickDeposit: React.FC<IProps> = ({
       </Select>
 
       <Text sx={{ mt: 4, mb: 2 }} variant="form">
-        Amount (max: {humanFriendlyWei(userBalance)} {selectedCurrency})
+        Amount (max: {humanFriendlyWei(userBalance)} {currency})
       </Text>
       <Box mb={4}>
         <Flex mb={2}>
           <Box sx={{ width: "100%", mr: 2 }}>
             <Select
-              value={usingCustom ? "custom" : selectedAmount}
+              value={usingCustom ? "custom" : amount}
               onChange={(e) => {
                 if (e.target.value === "custom") {
                   setUsingCustom(true);
                 } else {
                   setUsingCustom(false);
-                  setSelectedAmount(e.target.value);
+                  setAmount(e.target.value);
                 }
               }}
             >
               <option value="0">Select an amount</option>
               {depositAmounts.map((depositAmount, index) => (
                 <option key={index} value={depositAmount}>
-                  {humanFriendlyNumber(depositAmount)} {selectedCurrency}
+                  {humanFriendlyNumber(depositAmount)} {currency}
                 </option>
               ))}
               <option value="custom">Custom</option>
@@ -202,9 +197,12 @@ export const PickDeposit: React.FC<IProps> = ({
             <Input
               placeholder="Enter a custom amount"
               onChange={(e) => {
-                setCustomAmount(e.target.value);
+                const input = e.target.value;
+                if (!isNaN(Number(input))) {
+                  setAmount(input);
+                }
               }}
-              value={customAmount}
+              value={amount}
             />
           )}
         </Flex>
@@ -216,11 +214,11 @@ export const PickDeposit: React.FC<IProps> = ({
         )}
       </Box>
 
-      {!usingCustom && selectedAmount !== "0" && (
+      {!usingCustom && amount !== "0" && (
         <Flex>
           <Text sx={{ mr: 1 }} variant="largeNumber">
             {(
-              Number(fromWei(contractBalance)) / Number(selectedAmount)
+              Number(fromWei(contractBalance)) / Number(amount)
             ).toLocaleString()}
           </Text>
           <Text variant="regular">active deposits</Text>
@@ -268,7 +266,7 @@ export const PickDeposit: React.FC<IProps> = ({
               <LabelWithBalance
                 label="Total"
                 amount={actualAmount}
-                currency={selectedCurrency}
+                currency={currency}
               />
               {button}
             </Flex>

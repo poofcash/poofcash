@@ -29,15 +29,13 @@ import { NoteList } from "components/NoteList";
 
 interface IProps {
   onDepositClick?: () => void;
-  setSelectedAmount: (amount: string) => void;
-  selectedAmount: string;
-  setSelectedCurrency: (currency: string) => void;
-  selectedCurrency: string;
+  setAmount: (amount: string) => void;
+  amount: string;
+  setCurrency: (currency: string) => void;
+  currency: string;
   notes: NoteStringCommitment[];
   setUsingCustom: (usingCustom: boolean) => void;
   usingCustom: boolean;
-  setCustomAmount: (amount: string) => void;
-  customAmount: string;
   actualAmount: string;
   depositLoading: boolean;
   poofRate: string;
@@ -48,15 +46,13 @@ interface IProps {
 
 export const DoDeposit: React.FC<IProps> = ({
   onDepositClick,
-  selectedAmount,
-  setSelectedAmount,
-  selectedCurrency,
-  setSelectedCurrency,
+  amount,
+  setAmount,
+  currency,
+  setCurrency,
   notes,
   setUsingCustom,
   usingCustom,
-  setCustomAmount,
-  customAmount,
   actualAmount,
   depositLoading,
   poofRate,
@@ -74,12 +70,11 @@ export const DoDeposit: React.FC<IProps> = ({
   ] = React.useState(false);
 
   const [allowance, approve, approveLoading] = useApprove(
-    deployments[`netId${network.chainId}`][selectedCurrency.toLowerCase()]
-      .tokenAddress,
+    deployments[`netId${network.chainId}`][currency.toLowerCase()].tokenAddress,
     toWei(actualAmount)
   );
   const userBalance = useTokenBalance(
-    CURRENCY_MAP[network.chainId][selectedCurrency.toLowerCase()],
+    CURRENCY_MAP[network.chainId][currency.toLowerCase()],
     address
   );
   const dispatch = useDispatch();
@@ -99,7 +94,7 @@ export const DoDeposit: React.FC<IProps> = ({
           Insufficient Balance
         </Button>
       );
-    } else if (toBN(allowance).lt(toBN(toWei(selectedAmount)))) {
+    } else if (toBN(allowance).lt(toBN(toWei(actualAmount)))) {
       button = (
         <Button
           variant="primary"
@@ -175,7 +170,7 @@ export const DoDeposit: React.FC<IProps> = ({
           lineItems={[
             {
               label: "Deposit Amount",
-              value: `${humanFriendlyNumber(actualAmount)} ${selectedCurrency}`,
+              value: `${humanFriendlyNumber(actualAmount)} ${currency}`,
             },
             {
               label: "Est. Network Fee",
@@ -185,15 +180,13 @@ export const DoDeposit: React.FC<IProps> = ({
           totalItem={{
             label: "Est. Total",
             value:
-              selectedCurrency === "CELO"
+              currency === "CELO"
                 ? `${humanFriendlyNumber(
                     Number(actualAmount) + Number(NETWORK_COST)
                   )} CELO`
                 : `${humanFriendlyNumber(
                     Number(actualAmount)
-                  )} ${selectedCurrency} + ${humanFriendlyNumber(
-                    NETWORK_COST
-                  )} CELO`,
+                  )} ${currency} + ${humanFriendlyNumber(NETWORK_COST)} CELO`,
           }}
         />
         <Text sx={{ mt: 6, mb: 1 }} variant="subtitle">
@@ -234,14 +227,12 @@ export const DoDeposit: React.FC<IProps> = ({
           </Text>
           <br />
           <PickDeposit
-            selectedAmount={selectedAmount}
-            setSelectedAmount={setSelectedAmount}
-            selectedCurrency={selectedCurrency}
-            setSelectedCurrency={setSelectedCurrency}
+            amount={amount}
+            setAmount={setAmount}
+            currency={currency}
+            setCurrency={setCurrency}
             setUsingCustom={setUsingCustom}
             usingCustom={usingCustom}
-            setCustomAmount={setCustomAmount}
-            customAmount={customAmount}
             actualAmount={actualAmount}
             poofRate={poofRate}
             apRate={apRate}
@@ -257,7 +248,7 @@ export const DoDeposit: React.FC<IProps> = ({
       <InsufficientBalanceModal
         onClose={() => setShowInsufficientBalanceModal(false)}
         show={showInsufficientBalanceModal}
-        neededAmount={selectedAmount}
+        neededAmount={amount}
       />
     </>
   );
