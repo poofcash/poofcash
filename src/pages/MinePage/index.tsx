@@ -10,6 +10,8 @@ import { useAsyncState } from "hooks/useAsyncState";
 import { usePoofEvents } from "hooks/usePoofEvents";
 import { deployments, Note } from "@poofcash/poof-kit";
 import { useMiningRates } from "hooks/useMiningRates";
+import { useRecoilState } from "recoil";
+import { mineNote, mineTxHash } from "pages/MinePage/state";
 
 export interface IMineProps {
   setNote: (note: string) => void;
@@ -29,13 +31,15 @@ export interface IMineProps {
 }
 
 const MinePage: React.FC = () => {
-  const [note, setNote] = React.useState("");
-  const noteIsValid = React.useMemo(() => isValidNote(note), [note]);
+  const [note, setNote] = useRecoilState(mineNote);
+  const [txHash, setTxHash] = useRecoilState(mineTxHash);
+
   const [depositEvents] = usePoofEvents("Deposit");
   const [withdrawEvents] = usePoofEvents("Withdrawal");
   // TODO: Reduce forno calls
   const [miningRates] = useMiningRates();
   const { poofKit } = PoofKitGlobal.useContainer();
+  const noteIsValid = React.useMemo(() => isValidNote(note), [note]);
 
   // Calculate estimated AP
   const [latestBlockNumber] = useLatestBlockNumber();
@@ -58,7 +62,6 @@ const MinePage: React.FC = () => {
     );
     estimatedAp = blocksElapsed * Number(miningRates[poofAddress].toString());
   }
-  const [txHash, setTxHash] = React.useState("");
   const {
     relayer,
     setSelectedRelayer,
