@@ -25,7 +25,10 @@ export const SCELO_IDX_MAP = {
 };
 
 export const RELAYERS = {
-  [ChainId.Mainnet]: ["https://adamaris.privatedns.org"],
+  [ChainId.Mainnet]: [
+    "https://adamaris.privatedns.org",
+    "https://bellagio.now.im",
+  ],
   [ChainId.Alfajores]: ["https://relayer-test.poof.cash"],
   [ChainId.Baklava]: [],
 };
