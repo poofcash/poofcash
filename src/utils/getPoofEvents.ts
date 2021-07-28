@@ -2,34 +2,29 @@ import { PoofKitV2 } from "@poofcash/poof-kit";
 import localForage from "localforage";
 import { EventData } from "web3-eth-contract";
 
-// TODO: This is bad for 2 reasons:
-// 1. This doesn't fetch all events if a new pool gets added
-// 2. Calls are staggered, so "latest" might be different per call
-export const getPoofEvents = async (eventName: string, poofKit: PoofKitV2) => {
-  let events = await localForage.getItem<Record<string, EventData[]>>(
-    eventName
-  );
-  if (events) {
-    const lastBlock = Math.max(
-      ...Object.values(events).map((l) => {
-        if (l.length === 0) {
-          return 0;
-        }
-        return l[l.length - 1].blockNumber;
-      })
-    );
-    const latestEvents = await poofKit.poofEvents(lastBlock, eventName);
-    Object.entries(latestEvents).forEach(([addr, l]) => {
-      if (events) {
-        if (!events[addr]) {
-          events[addr] = [];
-        }
-        events[addr] = events[addr].concat(...l);
+export const getPoofEvents = async (
+  eventName: string,
+  poofKit: PoofKitV2
+): Promise<Record<string, EventData[]>> => {
+  const pools = await poofKit.getAllPools();
+  let events =
+    (await localForage.getItem<Record<string, EventData[]>>(eventName)) || {};
+  await Promise.all(
+    pools.map(async (poolAddress) => {
+      let lastBlock = 0;
+      let cachedEvents: EventData[] = [];
+      if (events[poolAddress] && events[poolAddress].length > 0) {
+        cachedEvents = events[poolAddress];
+        lastBlock = cachedEvents[cachedEvents.length - 1].blockNumber;
       }
-    });
-  } else {
-    events = await poofKit.poofEvents(0, eventName);
-  }
+      const latestEvents = await poofKit.poofEvents(
+        lastBlock,
+        poolAddress,
+        eventName
+      );
+      events[poolAddress] = cachedEvents.concat(...latestEvents);
+    })
+  );
   // Allow no async
   localForage.setItem(eventName, events);
   return events;
