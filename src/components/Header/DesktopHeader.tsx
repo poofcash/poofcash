@@ -45,8 +45,6 @@ export const DesktopHeader: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <HeaderLink page={Page.EXCHANGE}>Exchange</HeaderLink>
-            <Text>/</Text>
             <HeaderLink page={Page.DEPOSIT}>Deposit</HeaderLink>
             <Text>/</Text>
             <HeaderLink page={Page.WITHDRAW}>Withdraw</HeaderLink>
@@ -54,6 +52,8 @@ export const DesktopHeader: React.FC = () => {
             <HeaderLink page={Page.MINE}>Mine</HeaderLink>
             <Text>/</Text>
             <HeaderLink page={Page.REDEEM}>Redeem</HeaderLink>
+            <Text>/</Text>
+            <HeaderLink page={Page.EXCHANGE}>Swap</HeaderLink>
             <Text>/</Text>
             <HeaderLink page={Page.COMPLIANCE}>Report</HeaderLink>
             <Text>/</Text>

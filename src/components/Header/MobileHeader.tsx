@@ -35,11 +35,11 @@ export const MobileHeader: React.FC = () => {
       </Flex>
       <Container sx={{ overflow: "scroll" }}>
         <Flex sx={{ width: "fit-content" }}>
-          <HeaderButton page={Page.EXCHANGE}>Exchange</HeaderButton>
           <HeaderButton page={Page.DEPOSIT}>Deposit</HeaderButton>
           <HeaderButton page={Page.WITHDRAW}>Withdraw</HeaderButton>
           <HeaderButton page={Page.MINE}>Mine</HeaderButton>
           <HeaderButton page={Page.REDEEM}>Redeem</HeaderButton>
+          <HeaderButton page={Page.EXCHANGE}>Swap</HeaderButton>
           <HeaderButton page={Page.COMPLIANCE}>Report</HeaderButton>
           <HeaderButton page={Page.AIRDROP}>Airdrop</HeaderButton>
           <HeaderButton page={Page.STAKE}>Stake</HeaderButton>

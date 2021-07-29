@@ -7,7 +7,7 @@ export enum Page {
   WITHDRAW = "withdraw",
   MINE = "mine",
   REDEEM = "redeem",
-  EXCHANGE = "exchange",
+  EXCHANGE = "swap",
   COMPLIANCE = "report",
   AIRDROP = "airdrop",
   STAKE = "stake",
