@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Container, Flex, Spinner, Text } from "theme-ui";
 import { BackButton } from "components/BackButton";
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
 import { PoofAccountGlobal } from "hooks/poofAccount";
@@ -120,7 +120,7 @@ export const ConfirmMine: React.FC<IProps> = ({
           value: `${Number(totalMineAmount).toLocaleString()} AP`,
         }}
       />
-      <BottomDrawer>
+      <ActionDrawer>
         {loading ? (
           <Flex sx={{ justifyContent: "flex-end" }}>
             <Spinner />
@@ -135,7 +135,7 @@ export const ConfirmMine: React.FC<IProps> = ({
             <Button onClick={handleMine}>Mine</Button>
           </Flex>
         )}
-      </BottomDrawer>
+      </ActionDrawer>
     </Container>
   );
 };

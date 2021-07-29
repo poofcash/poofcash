@@ -15,6 +15,7 @@ import { PoofKitGlobal } from "hooks/usePoofKit";
 import { getPoofEvents } from "utils/getPoofEvents";
 import { getEncryptedNoteEvents } from "utils/getEncryptedNoteEvents";
 import { toHex } from "utils/snarks-functions";
+import { toast } from "react-toastify";
 
 type RowData = {
   note: Note;
@@ -73,7 +74,7 @@ const NoteItem: React.FC<IItemProps> = ({ index, data, style }) => {
             )}
             <CopyToClipboard
               onCopy={() => {
-                alert("Magic password copied to clipboard");
+                toast("Magic password copied to clipboard");
               }}
               text={note.toNoteString()}
             >

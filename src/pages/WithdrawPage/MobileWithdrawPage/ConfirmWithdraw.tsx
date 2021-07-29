@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Container, Flex, Spinner, Text } from "theme-ui";
 import { parseNote } from "utils/snarks-functions";
 import { BackButton } from "components/BackButton";
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
 import { formatCurrency } from "utils/currency";
@@ -111,7 +111,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
           )}`,
         }}
       />
-      <BottomDrawer>
+      <ActionDrawer>
         {loading ? (
           <Flex sx={{ justifyContent: "flex-end" }}>
             <Spinner />
@@ -126,7 +126,7 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
             <Button onClick={handleWithdraw}>Withdraw</Button>
           </Flex>
         )}
-      </BottomDrawer>
+      </ActionDrawer>
     </Container>
   );
 };

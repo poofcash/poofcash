@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Button, Divider, Flex, Input, Select, Text } from "theme-ui";
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { useDebounce } from "hooks/useDebounce";
@@ -210,7 +210,7 @@ export const PickMine: React.FC<IProps> = ({
       </Box>
 
       {breakpoint === Breakpoint.MOBILE && (
-        <BottomDrawer>
+        <ActionDrawer>
           <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
             <LabelWithBalance
               label="Total"
@@ -219,7 +219,7 @@ export const PickMine: React.FC<IProps> = ({
             />
             {button}
           </Flex>
-        </BottomDrawer>
+        </ActionDrawer>
       )}
     </div>
   );

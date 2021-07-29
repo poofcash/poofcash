@@ -1,9 +1,12 @@
 import React from "react";
-import { Button, Container, Flex } from "theme-ui";
-import { Logo } from "components/Logo";
-import { AccountProfile } from "components/AccountProfile";
+import { Box, Button, Container, Flex } from "theme-ui";
 import { Page } from "state/global";
 import { useHistory, useLocation } from "react-router-dom";
+import { UserCircle } from "phosphor-react";
+import { WalletCard } from "components/WalletCard";
+import { useRecoilState } from "recoil";
+import { poofAccountDrawerOpen } from "components/PoofAccountDrawer";
+import { walletDrawerOpen } from "components/WalletDrawer";
 
 const HeaderButton: React.FC<{ page: Page }> = ({ page, children }) => {
   const location = useLocation();
@@ -21,20 +24,34 @@ const HeaderButton: React.FC<{ page: Page }> = ({ page, children }) => {
 };
 
 export const MobileHeader: React.FC = () => {
+  const [accountDrawerIsOpen, setAccountDrawerIsOpen] = useRecoilState(
+    poofAccountDrawerOpen
+  );
+  const [, setWalletDrawerIsOpen] = useRecoilState(walletDrawerOpen);
   return (
-    <Container sx={{ pt: 4, px: 3, width: "auto", backgroundColor: "box" }}>
+    <Container sx={{ pt: 4, px: 3, width: "auto" }}>
       <Flex
         sx={{
           mb: 2,
           justifyContent: "space-between",
-          alignItems: "flex-end",
+          alignItems: "center",
         }}
       >
-        <Logo />
-        <AccountProfile />
+        <Box
+          color="primaryText"
+          onClick={() => {
+            if (!accountDrawerIsOpen) {
+              setWalletDrawerIsOpen(false);
+            }
+            setAccountDrawerIsOpen(!accountDrawerIsOpen);
+          }}
+        >
+          <UserCircle size={36} />
+        </Box>
+        <WalletCard />
       </Flex>
-      <Container sx={{ overflow: "scroll" }}>
-        <Flex sx={{ width: "fit-content" }}>
+      <Container sx={{ overflow: "scroll" }} mt={3}>
+        <Flex sx={{ width: "fit-content", borderBottom: "1px solid #E0E0E0" }}>
           <HeaderButton page={Page.DEPOSIT}>Deposit</HeaderButton>
           <HeaderButton page={Page.WITHDRAW}>Withdraw</HeaderButton>
           <HeaderButton page={Page.MINE}>Mine</HeaderButton>

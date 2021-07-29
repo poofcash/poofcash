@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Container, Flex, Spinner, Text } from "theme-ui";
 import { BackButton } from "components/BackButton";
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
 import { PoofKitGlobal } from "hooks/usePoofKit";
@@ -114,7 +114,7 @@ export const ConfirmRedeem: React.FC<IProps> = ({
           value: `${humanFriendlyNumber(poofAmount)} POOF`,
         }}
       />
-      <BottomDrawer>
+      <ActionDrawer>
         {loading ? (
           <Flex sx={{ justifyContent: "flex-end" }}>
             <Spinner />
@@ -129,7 +129,7 @@ export const ConfirmRedeem: React.FC<IProps> = ({
             <Button onClick={handleRedeem}>Redeem</Button>
           </Flex>
         )}
-      </BottomDrawer>
+      </ActionDrawer>
     </Container>
   );
 };

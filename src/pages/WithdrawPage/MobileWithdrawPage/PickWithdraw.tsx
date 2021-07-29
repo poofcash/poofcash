@@ -2,7 +2,7 @@ import React from "react";
 import web3 from "web3";
 import { isValidNote, parseNote } from "utils/snarks-functions";
 import { Box, Button, Divider, Flex, Input, Select, Text } from "theme-ui";
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { useDebounce } from "hooks/useDebounce";
@@ -194,7 +194,7 @@ export const PickWithdraw: React.FC<IProps> = ({
       </Box>
 
       {breakpoint === Breakpoint.MOBILE && (
-        <BottomDrawer>
+        <ActionDrawer>
           <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
             <LabelWithBalance
               label="Total"
@@ -235,7 +235,7 @@ export const PickWithdraw: React.FC<IProps> = ({
               Withdraw
             </Button>
           </Flex>
-        </BottomDrawer>
+        </ActionDrawer>
       )}
     </div>
   );

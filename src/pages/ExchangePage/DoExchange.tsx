@@ -104,7 +104,11 @@ export const DoExchange: React.FC<IProps> = ({
   const maxBalance = currencies.from === "sCELO" ? sCELOBalance : rCELOBalance;
 
   const connectWalletButton = (
-    <Button variant="primary" onClick={connect} sx={{ width: "100%" }}>
+    <Button
+      variant="primary"
+      onClick={() => connect().then(console.warn)}
+      sx={{ width: "100%" }}
+    >
       Connect Wallet
     </Button>
   );

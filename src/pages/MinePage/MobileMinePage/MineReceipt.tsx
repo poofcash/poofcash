@@ -1,4 +1,4 @@
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { BlockscoutTxLink } from "components/Links";
 import moment from "moment";
@@ -55,7 +55,7 @@ export const MineReceipt: React.FC<IProps> = ({
         }}
       />
 
-      <BottomDrawer>
+      <ActionDrawer>
         <Flex sx={{ justifyContent: "space-between" }}>
           <LabelWithBalance
             label="Mined"
@@ -71,7 +71,7 @@ export const MineReceipt: React.FC<IProps> = ({
             Done
           </Button>
         </Flex>
-      </BottomDrawer>
+      </ActionDrawer>
     </Container>
   );
 };

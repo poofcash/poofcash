@@ -13,7 +13,7 @@ import { useAsyncState } from "hooks/useAsyncState";
 import { MoolaStakingRewards } from "generated/MoolaStakingRewards";
 import { useDualStakeRewards } from "hooks/useDualStakeRewards";
 import { useStakeRewards } from "hooks/useStakeRewards";
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { MaxUint256 } from "@ethersproject/constants";
@@ -208,7 +208,11 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
   );
 
   let button = (
-    <Button variant="primary" onClick={connect} sx={{ width: "100%" }}>
+    <Button
+      variant="primary"
+      onClick={() => connect().catch(console.warn)}
+      sx={{ width: "100%" }}
+    >
       Connect Wallet
     </Button>
   );
@@ -393,7 +397,7 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
       )}
 
       {breakpoint === Breakpoint.MOBILE && (
-        <BottomDrawer>
+        <ActionDrawer>
           {stakeLoading ? (
             <Flex sx={{ justifyContent: "flex-end" }}>
               <Spinner />
@@ -413,7 +417,7 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
               {button}
             </Flex>
           )}
-        </BottomDrawer>
+        </ActionDrawer>
       )}
     </Grid>
   );

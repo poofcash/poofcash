@@ -1,4 +1,4 @@
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { BlockscoutTxLink } from "components/Links";
 import moment from "moment";
@@ -65,7 +65,7 @@ export const WithdrawReceipt: React.FC<IProps> = ({
         }}
       />
 
-      <BottomDrawer>
+      <ActionDrawer>
         <Flex sx={{ justifyContent: "space-between" }}>
           <LabelWithBalance
             label="Withdrew"
@@ -81,7 +81,7 @@ export const WithdrawReceipt: React.FC<IProps> = ({
             Done
           </Button>
         </Flex>
-      </BottomDrawer>
+      </ActionDrawer>
     </Container>
   );
 };

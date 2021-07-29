@@ -1,11 +1,21 @@
 export const preset = {
   breakpoints: ["1080px", "1080px"],
   colors: {
+    purple25: "#F5F2FF",
+    purple50: "#ECE6FE",
+    purple100: "#CCC3FC",
+    purple300: "#7C71FC",
+    purple400: "#5352FC",
+    black800: "#363945",
+
+    primaryText: "#5352FC",
+    secondaryBackground: "#F5F2FF",
+    primary: "#5352FC",
+
     text: "#333333",
     primaryButtonText: "#FAFAFA",
     accent: "#7C71FD",
     background: "#fff",
-    primary: "#5352FC",
     secondary: "#bababa",
     muted: "#f6f6f9",
     gray: "#bababa",
@@ -14,15 +24,16 @@ export const preset = {
     box: "#F1F4F4",
     disabled: "#BDBDBD",
     link: "#7C71FC",
-    purple25: "#F5F2FF",
-    purple400: "#5352FC",
     modes: {
       dark: {
+        primaryText: "#CCC3FC",
+        secondaryBackground: "#363945",
+        primary: "#7C71FC",
+
         text: "#FAFAFA",
         primaryButtonText: "#FAFAFA",
         accent: "#5352FC",
         background: "#212121",
-        primary: "#5352FC",
         secondary: "#bababa",
         muted: "#757575",
         gray: "#bababa",
@@ -35,7 +46,7 @@ export const preset = {
     },
   },
   fonts: {
-    heading: "Bold",
+    heading: "Regular",
     regular: "Regular",
     bold: "Bold",
     demiBold: "DemiBold",
@@ -59,6 +70,13 @@ export const preset = {
   text: {
     default: {
       color: "text",
+    },
+    primary: {
+      fontFamily: "Regular",
+      fontWeight: "500",
+      fontSize: [16],
+      lineHeight: "20px",
+      color: "primaryText",
     },
     title: {
       fontFamily: "Medium",
@@ -106,7 +124,7 @@ export const preset = {
       fontStyle: "Regular",
       fontSize: [14],
       lineHeight: "16px",
-      color: "darkgray",
+      color: "text",
     },
     subtitle: {
       fontStyle: "DemiBold",
@@ -177,36 +195,28 @@ export const preset = {
         cursor: "auto",
         bg: "disabled",
       },
-      fontFamily: "Bold",
-      fontSize: 18,
+      fontFamily: "Medium",
+      fontSize: 16,
+      fontWeight: 500,
       lineHeight: "20px",
       cursor: "pointer",
-      variant: "bold",
-      borderRadius: ["32px", "6px"],
+      borderRadius: "6px",
       height: ["48px", "42px"],
       color: "primaryButtonText",
       bg: "primary",
+      px: 4,
+      py: 2,
     },
     secondary: {
       variant: "buttons.primary",
-      ":hover": {
-        variant: "buttons.primary",
-        ":disabled": {
-          color: "gray",
-          bg: "background",
-        },
-      },
       ":disabled": {
         borderColor: "gray",
         color: "gray",
-        bg: "background",
+        bg: "transparent",
       },
-      fontFamily: "Bold",
-      fontSize: 18,
-      lineHeight: "20px",
-      color: "text",
-      bg: "background",
-      border: "4px solid",
+      color: "primary",
+      bg: "transparent",
+      border: "1px solid",
       borderColor: "primary",
     },
     done: {
@@ -215,25 +225,22 @@ export const preset = {
     },
     switcher: {
       bg: "transparent",
-      fontFamily: "DemiBold",
-      fontSize: 20,
-      lineHeight: "16px",
-      letterSpacing: "-0.01rem",
       borderRadius: 0,
-      borderBottom: "3px solid transparent",
-      color: "gray",
+      fontFamily: "Regular",
+      borderBottom: "2px solid transparent",
+      color: "text",
       ":focus": {
         outline: "none",
       },
       cursor: "pointer",
       px: 0,
+      py: 1,
       mr: 3,
-      mt: 2,
     },
     switcherSelected: {
       variant: "buttons.switcher",
-      borderBottom: "3px solid",
-      color: "text",
+      borderBottom: "2px solid",
+      color: "primaryText",
     },
   },
   styles: {
@@ -252,6 +259,9 @@ export const preset = {
       },
       color: "link",
     },
+    h1: {
+      fontSize: 24,
+    },
   },
   cards: {
     primary: {
@@ -267,9 +277,9 @@ export const preset = {
       borderColor: "muted",
     },
     warning: {
-      backgroundColor: "purple25",
+      backgroundColor: "secondaryBackground",
       borderRadius: 4,
-      color: "purple400",
+      color: "primaryText",
       px: 3,
       py: 2,
     },

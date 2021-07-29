@@ -4,6 +4,7 @@ import { Flex, Input, Text } from "theme-ui";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { downloadFile } from "utils/file";
 import { parseNote } from "utils/snarks-functions";
+import { toast } from "react-toastify";
 
 interface IProps {
   noteString: string;
@@ -25,7 +26,7 @@ export const NoteString: React.FC<IProps> = ({ noteString }) => {
       />
       <CopyToClipboard
         onCopy={() => {
-          alert("Copied to clipboard.");
+          toast("Copied to clipboard.");
           downloadFile(
             `${amount.replace(".", "_")} ${currency} Poof note`,
             noteString

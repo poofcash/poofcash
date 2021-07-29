@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Container, Flex, Text } from "theme-ui";
 import moment from "moment";
 import { BlockscoutTxLink } from "components/Links";
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { shortenAccount } from "hooks/accountName";
 import { NETWORK_COST } from "pages/DepositPage/MobileDepositPage/ConfirmDeposit";
@@ -66,7 +66,7 @@ export const DepositReceipt: React.FC<IProps> = ({
         }}
       />
 
-      <BottomDrawer>
+      <ActionDrawer>
         <Flex sx={{ justifyContent: "space-between" }}>
           <LabelWithBalance
             label="Deposited"
@@ -82,7 +82,7 @@ export const DepositReceipt: React.FC<IProps> = ({
             Done
           </Button>
         </Flex>
-      </BottomDrawer>
+      </ActionDrawer>
     </Container>
   );
 };

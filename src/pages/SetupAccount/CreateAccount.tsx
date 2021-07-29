@@ -27,8 +27,6 @@ export const CreateAccount: React.FC<IProps> = ({ goBack }) => {
     <Flex
       sx={{
         flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
       }}
     >
       <Text sx={{ mb: 2 }} variant="title">

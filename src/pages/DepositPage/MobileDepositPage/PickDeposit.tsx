@@ -4,7 +4,7 @@ import { useApprove } from "hooks/writeContract";
 import { useTokenBalance } from "hooks/useTokenBalance";
 import { Button, Text, Spinner } from "@theme-ui/components";
 import { Box, Card, Divider, Flex, Input, Select } from "theme-ui";
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 import { useContractKit } from "@celo-tools/use-contractkit";
@@ -98,7 +98,7 @@ export const PickDeposit: React.FC<IProps> = ({
   };
 
   const connectWalletButton = (
-    <Button variant="secondary" onClick={connect}>
+    <Button variant="secondary" onClick={() => connect().then(console.warn)}>
       Connect Wallet
     </Button>
   );
@@ -252,7 +252,7 @@ export const PickDeposit: React.FC<IProps> = ({
       </Box>
 
       {breakpoint === Breakpoint.MOBILE && (
-        <BottomDrawer>
+        <ActionDrawer>
           {loading ? (
             <Flex sx={{ justifyContent: "flex-end" }}>
               <Spinner />
@@ -272,7 +272,7 @@ export const PickDeposit: React.FC<IProps> = ({
               {button}
             </Flex>
           )}
-        </BottomDrawer>
+        </ActionDrawer>
       )}
     </>
   );

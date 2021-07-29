@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Checkbox, Container, Flex, Spinner, Text } from "theme-ui";
 import { NoteStringCommitment } from "pages/DepositPage/types";
 import { BackButton } from "components/BackButton";
-import { BottomDrawer } from "components/BottomDrawer";
+import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { SummaryTable } from "components/SummaryTable";
 import { humanFriendlyNumber } from "utils/number";
@@ -112,7 +112,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         <Checkbox readOnly checked={backup} />
         <Text sx={{ pt: 1 }}>Create an on-chain backup</Text>
       </Flex>
-      <BottomDrawer>
+      <ActionDrawer>
         {depositLoading ? (
           <Flex sx={{ justifyContent: "flex-end" }}>
             <Spinner />
@@ -127,7 +127,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
             {button}
           </Flex>
         )}
-      </BottomDrawer>
+      </ActionDrawer>
     </Container>
   );
 };

@@ -83,7 +83,11 @@ export const DoDeposit: React.FC<IProps> = ({
   const loading = approveLoading || depositLoading;
 
   let button = (
-    <Button variant="primary" onClick={connect} sx={{ width: "100%" }}>
+    <Button
+      variant="primary"
+      onClick={() => connect().then(console.warn)}
+      sx={{ width: "100%" }}
+    >
       Connect Wallet
     </Button>
   );

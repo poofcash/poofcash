@@ -1,8 +1,8 @@
 {
   "setup": {
     "create": {
-      "title": "Create an account",
-      "subtitle": "Save this private key to manage your anonymity points"
+      "title": "Secure your private key",
+      "subtitle": "Copy this key down in a safe location. This private key will be used to encrypt notes and hide your AP balance. You cannot recover recover your account if this key is lost."
     },
     "login": {
       "title": "Login",

@@ -16,6 +16,8 @@ import { PoofAccountGlobal } from "hooks/poofAccount";
 import StakePage from "pages/StakePage";
 import { ToastContainer } from "react-toastify";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
+import { WalletDrawer } from "components/WalletDrawer";
+import { PoofAccountDrawer } from "components/PoofAccountDrawer";
 
 // pass props and State interface to Component class
 const App: React.FC = () => {
@@ -85,7 +87,6 @@ const App: React.FC = () => {
             </Route>
           </Switch>
         </Container>
-        {/*TODO footer*/}
       </Container>
       {passwordModal}
       <ToastContainer
@@ -93,6 +94,8 @@ const App: React.FC = () => {
         toastClassName="toast-body"
         bodyClassName="toast-body"
       />
+      <WalletDrawer />
+      <PoofAccountDrawer />
     </>
   );
 };
