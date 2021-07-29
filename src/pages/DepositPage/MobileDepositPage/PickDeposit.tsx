@@ -3,7 +3,7 @@ import { CURRENCY_MAP } from "config";
 import { useApprove } from "hooks/writeContract";
 import { useTokenBalance } from "hooks/useTokenBalance";
 import { Button, Text, Spinner } from "@theme-ui/components";
-import { Box, Divider, Flex, Input, Select } from "theme-ui";
+import { Box, Card, Divider, Flex, Input, Select } from "theme-ui";
 import { BottomDrawer } from "components/BottomDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
@@ -206,10 +206,10 @@ export const PickDeposit: React.FC<IProps> = ({
           )}
         </Flex>
         {usingCustom && (
-          <Text>
-            NOTE: Custom amounts may make up to {MAX_NOTES} deposits. On-chain
+          <Card variant="warning">
+            Note: Custom amounts may make up to {MAX_NOTES} deposits. On-chain
             backups are highly recommended
-          </Text>
+          </Card>
         )}
       </Box>
 

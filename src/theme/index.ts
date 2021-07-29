@@ -14,6 +14,8 @@ export const preset = {
     box: "#F1F4F4",
     disabled: "#BDBDBD",
     link: "#7C71FC",
+    purple25: "#F5F2FF",
+    purple400: "#5352FC",
     modes: {
       dark: {
         text: "#FAFAFA",
@@ -263,6 +265,13 @@ export const preset = {
       borderRadius: 2,
       border: "1px solid",
       borderColor: "muted",
+    },
+    warning: {
+      backgroundColor: "purple25",
+      borderRadius: 4,
+      color: "purple400",
+      px: 3,
+      py: 2,
     },
   },
 };
