@@ -27,6 +27,7 @@ export const CreateAccount: React.FC<IProps> = ({ goBack }) => {
     <Flex
       sx={{
         flexDirection: "column",
+        mt: [0, "20%"],
       }}
     >
       <Text sx={{ mb: 2 }} variant="title">

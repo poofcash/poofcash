@@ -16,5 +16,5 @@ export const SetupAccount: React.FC = () => {
       break;
   }
 
-  return <Flex sx={{ flexDirection: "column", mt: ["25%"] }}>{page}</Flex>;
+  return <Flex sx={{ flexDirection: "column", mt: ["25%", 0] }}>{page}</Flex>;
 };

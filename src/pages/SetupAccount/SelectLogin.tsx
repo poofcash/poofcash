@@ -30,7 +30,13 @@ export const SelectLogin: React.FC<IProps> = ({ goCreate }) => {
 
   return (
     <>
-      <Flex sx={{ justifyContent: "space-between", width: "100%", mb: "25%" }}>
+      <Flex
+        sx={{
+          justifyContent: "space-between",
+          width: "100%",
+          mb: ["25%", "10%"],
+        }}
+      >
         <FullLogo />
         <Button
           sx={{
