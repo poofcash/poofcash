@@ -13,12 +13,12 @@ export const depositActualAmount = atom({
 
 export const depositCurrency = atom({
   key: "DEPOSIT_CURRENCY",
-  default: "CELO",
+  default: "rCELO",
 });
 
 export const depositUsingCustom = atom({
   key: "DEPOSIT_USING_CUSTOM",
-  default: false,
+  default: true,
 });
 
 export const depositNotes = atom<NoteStringCommitment[]>({

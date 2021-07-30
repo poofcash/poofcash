@@ -23,7 +23,6 @@ export const preset = {
     highlight: "hsla(205, 100%, 40%, 0.125)",
     box: "#F1F4F4",
     disabled: "#BDBDBD",
-    link: "#7C71FC",
     modes: {
       dark: {
         primaryText: "#CCC3FC",
@@ -41,7 +40,6 @@ export const preset = {
         highlight: "hsla(205, 100%, 40%, 0.125)",
         box: "#363945",
         disabled: "#BDBDBD",
-        link: "#7C71FC",
       },
     },
   },
@@ -164,10 +162,6 @@ export const preset = {
       height: "avatar",
       borderRadius: "circle",
     },
-    link: {
-      color: "link",
-      textDecoration: "none",
-    },
     nav: {
       fontSize: 1,
       fontWeight: "bold",
@@ -255,9 +249,10 @@ export const preset = {
     },
     a: {
       ":visited": {
-        color: "link",
+        color: "primaryText",
       },
-      color: "link",
+      color: "primaryText",
+      cursor: "pointer",
     },
     h1: {
       fontSize: 24,

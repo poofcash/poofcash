@@ -3,7 +3,16 @@ import { CURRENCY_MAP } from "config";
 import { useApprove } from "hooks/writeContract";
 import { useTokenBalance } from "hooks/useTokenBalance";
 import { Button, Text, Spinner } from "@theme-ui/components";
-import { Box, Card, Divider, Flex, Input, Select } from "theme-ui";
+import {
+  Box,
+  Card,
+  Container,
+  Divider,
+  Flex,
+  Input,
+  Link,
+  Select,
+} from "theme-ui";
 import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
@@ -166,12 +175,12 @@ export const PickDeposit: React.FC<IProps> = ({
         })}
       </Select>
 
-      <Text sx={{ mt: 4, mb: 2 }} variant="form">
-        Amount (max: {humanFriendlyWei(userBalance)} {currency})
-      </Text>
       <Box mb={4}>
         <Flex mb={2}>
           <Box sx={{ width: "100%", mr: 2 }}>
+            <Text sx={{ mt: 4, mb: 2 }} variant="form">
+              Amount
+            </Text>
             <Select
               value={usingCustom ? "custom" : amount}
               onChange={(e) => {
@@ -193,20 +202,33 @@ export const PickDeposit: React.FC<IProps> = ({
             </Select>
           </Box>
           {usingCustom && (
-            <Input
-              placeholder="Enter a custom amount"
-              onChange={(e) => {
-                const input = e.target.value;
-                if (!isNaN(Number(input))) {
-                  setAmount(input);
-                }
-              }}
-              value={amount}
-            />
+            <Box>
+              <Container sx={{ textAlign: "right" }}>
+                <Text sx={{ whiteSpace: "nowrap" }} variant="form">
+                  <Link
+                    onClick={() => {
+                      setAmount(fromWei(userBalance));
+                    }}
+                  >
+                    max: {humanFriendlyWei(userBalance)} {currency}
+                  </Link>
+                </Text>
+              </Container>
+              <Input
+                placeholder="Enter a custom amount"
+                onChange={(e) => {
+                  const input = e.target.value;
+                  if (!isNaN(Number(input))) {
+                    setAmount(input);
+                  }
+                }}
+                value={amount}
+              />
+            </Box>
           )}
         </Flex>
         {usingCustom && (
-          <Card variant="warning">
+          <Card variant="warning" mt={4}>
             Note: Custom amounts may make up to {MAX_NOTES} deposits. On-chain
             backups are highly recommended
           </Card>

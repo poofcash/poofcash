@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Flex, Input, Select, Text } from "theme-ui";
+import { Button, Flex, Input, Link, Select, Text } from "theme-ui";
 import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
@@ -149,9 +149,30 @@ export const PickRedeem: React.FC<IProps> = ({
 
   return (
     <div>
-      <Text variant="form" sx={{ mb: 2 }}>
-        AP Amount (max: {Number(maxRedeemAmount || 0).toLocaleString()} AP)
-      </Text>
+      <Flex
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          mt: 3,
+          mb: 1,
+        }}
+      >
+        <Text variant="form">AP Amount</Text>
+        <Text variant="form">
+          <Link
+            onClick={() => {
+              const balance = Number(maxRedeemAmount || 0);
+              // Fee + a 0.001 wiggle
+              const fee =
+                Number(selectedRelayer?.miningServiceFee || 0) + 0.001;
+              const max = balance * (1 - fee / 100);
+              setAmount(max.toString());
+            }}
+          >
+            max: {Number(maxRedeemAmount || 0).toLocaleString()} AP
+          </Link>
+        </Text>
+      </Flex>
       <Input
         mb={2}
         disabled={loading}
