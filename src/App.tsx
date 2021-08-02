@@ -49,7 +49,7 @@ const App: React.FC = () => {
         <Container
           sx={{
             px: [3, 0],
-            py: [4, "5%"],
+            py: location.pathname.includes(Page.SETUP) ? [0, 0] : [4, "5%"],
             mb: "64px",
             maxHeight: "calc(100vh + 64px)",
           }}
