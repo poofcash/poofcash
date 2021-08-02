@@ -1,30 +1,30 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Box, Container, Flex, Text } from "theme-ui";
 import { Logo } from "components/Logo";
 import { AccountProfile } from "components/AccountProfile";
-import styled from "@emotion/styled";
 import { Page } from "state/global";
-
-const StyledLink = styled(Link)({
-  height: "fit-content",
-  textDecoration: "none",
-});
+import { StyledLink } from "components/StyledLink";
 
 const HeaderLink: React.FC<{ page: Page }> = ({ page, children }) => {
   const location = useLocation();
+  const selected = location.pathname.includes(page);
   return (
-    <StyledLink to={page}>
-      <Text
-        sx={{
-          color: location.pathname.includes(page) ? "accent" : "text",
-          mx: 1,
-        }}
-        variant="subtitle"
-      >
-        {children}
-      </Text>
-    </StyledLink>
+    <Box mr={3}>
+      <StyledLink to={page}>
+        <Text
+          sx={{
+            color: selected ? "primary" : "text",
+            borderBottom: selected ? "2px solid" : "none",
+            mx: 1,
+            pb: 1,
+          }}
+          variant="subtitle"
+        >
+          {children}
+        </Text>
+      </StyledLink>
+    </Box>
   );
 };
 
@@ -39,31 +39,26 @@ export const DesktopHeader: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Logo />
           <Flex
             sx={{
               alignItems: "center",
             }}
           >
-            <HeaderLink page={Page.DEPOSIT}>Deposit</HeaderLink>
-            <Text>/</Text>
-            <HeaderLink page={Page.WITHDRAW}>Withdraw</HeaderLink>
-            <Text>/</Text>
-            <HeaderLink page={Page.MINE}>Mine</HeaderLink>
-            <Text>/</Text>
-            <HeaderLink page={Page.REDEEM}>Redeem</HeaderLink>
-            <Text>/</Text>
-            <HeaderLink page={Page.EXCHANGE}>Swap</HeaderLink>
-            <Text>/</Text>
-            <HeaderLink page={Page.COMPLIANCE}>Report</HeaderLink>
-            <Text>/</Text>
-            <HeaderLink page={Page.AIRDROP}>Airdrop</HeaderLink>
-            <Text>/</Text>
-            <HeaderLink page={Page.STAKE}>Stake</HeaderLink>
-            <Box ml={4}>
-              <AccountProfile />
+            <Box mr={4}>
+              <Logo />
             </Box>
+            <HeaderLink page={Page.DEPOSIT}>Deposit</HeaderLink>
+            <HeaderLink page={Page.WITHDRAW}>Withdraw</HeaderLink>
+            <HeaderLink page={Page.MINE}>Mine</HeaderLink>
+            <HeaderLink page={Page.REDEEM}>Redeem</HeaderLink>
+            <HeaderLink page={Page.EXCHANGE}>Swap</HeaderLink>
+            <HeaderLink page={Page.COMPLIANCE}>Report</HeaderLink>
+            <HeaderLink page={Page.AIRDROP}>Airdrop</HeaderLink>
+            <HeaderLink page={Page.STAKE}>Stake</HeaderLink>
           </Flex>
+          <Box ml={4}>
+            <AccountProfile />
+          </Box>
         </Flex>
       </Container>
     </>

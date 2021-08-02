@@ -1,115 +1,121 @@
 import React from "react";
-import { Flex } from "theme-ui";
-import { BlockscoutAddressLink } from "components/Links";
+import styled from "@emotion/styled";
+import { Box, Card, Flex, useColorMode } from "theme-ui";
 import { Text } from "theme-ui";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { shortenAccount } from "hooks/accountName";
-import { useSelector } from "react-redux";
-import { AppState } from "state";
 import { Page } from "state/global";
+import { UserCircle, Wallet } from "phosphor-react";
+import { StyledLink } from "./StyledLink";
+import { WalletDetails } from "./WalletDetails";
 import { PoofAccountGlobal } from "hooks/poofAccount";
-import { useHistory } from "react-router-dom";
+import { CloseOnClickaway } from "./CloseOnClickaway";
+import { PoofAccountDetails } from "./PoofAccountDetails";
+
+const HoverDetails = styled(Box)<{ colorMode: string }>(({ colorMode }) => {
+  return {
+    position: "absolute",
+    backgroundColor:
+      colorMode === "dark"
+        ? "var(--theme-ui-colors-secondaryBackground)"
+        : "var(--theme-ui-colors-background)",
+    padding: "12px",
+    top: 60,
+    right: 0,
+    borderRadius: "6px",
+    color: "var(--theme-ui-colors-primaryText)",
+    border: "1px solid",
+  };
+});
 
 export const AccountProfile: React.FC = () => {
-  const { address, destroy, connect } = useContractKit();
-  const poofAccount = useSelector((state: AppState) => state.user.poofAccount);
-  const { disconnectPoofAccount } = PoofAccountGlobal.useContainer();
-  const history = useHistory();
+  const { address, connect } = useContractKit();
+  const { poofAccount } = PoofAccountGlobal.useContainer();
+  const [colorMode] = useColorMode();
+
+  const [accountDetailsOpen, setAccountDetailsOpen] = React.useState(false);
+  const [walletDetailsOpen, setWalletDetailsOpen] = React.useState(false);
+
+  const accountCard = React.useRef<HTMLDivElement>(null);
+  const walletCard = React.useRef<HTMLDivElement>(null);
 
   return (
-    <Flex sx={{ alignItems: "center", justifyContent: "flex-end" }}>
-      <Flex
-        sx={{
-          flexDirection: "column",
-          maxWidth: "50vw",
-          mr: 2,
-          textAlign: "right",
-        }}
-      >
-        <Flex
-          sx={{
-            alignItems: "baseline",
-            justifyContent: address ? "space-between" : "flex-end",
-          }}
-        >
-          {address ? (
-            <BlockscoutAddressLink address={address}>
-              <Text variant="wallet" mr={2}>
-                {shortenAccount(address)}
+    <Flex sx={{ alignItems: "center" }}>
+      <Box sx={{ position: "relative" }}>
+        {poofAccount ? (
+          <Card
+            ref={accountCard}
+            sx={{ cursor: "pointer" }}
+            variant="warning"
+            ml={5}
+            onClick={() => {
+              setAccountDetailsOpen(!accountDetailsOpen);
+            }}
+          >
+            <Flex sx={{ alignItems: "center", color: "primaryText" }}>
+              <UserCircle size={32} />
+              <Text variant="primary" ml={2} mt={1}>
+                {shortenAccount("0x" + poofAccount.address)}
               </Text>
-            </BlockscoutAddressLink>
-          ) : (
-            <Text variant="wallet" mr={2}>
-              0x????...????
-            </Text>
-          )}
-          {address ? (
-            <>
-              <Text
-                sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
-                onClick={() => {
-                  try {
-                    destroy();
-                  } catch (e) {
-                    console.debug(e);
-                  }
-                }}
-                variant="form"
-              >
-                Disconnect
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text
-                sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
-                onClick={() => connect().then(console.log).catch(console.error)}
-                variant="form"
-              >
-                Connect
-              </Text>
-            </>
-          )}
-        </Flex>
+            </Flex>
+          </Card>
+        ) : (
+          <StyledLink to={Page.SETUP} color="primaryText">
+            Log in
+          </StyledLink>
+        )}
+        {poofAccount && accountDetailsOpen && (
+          <CloseOnClickaway
+            onClickaway={(e) => {
+              if (accountCard?.current?.contains(e.target)) {
+                return;
+              }
+              setAccountDetailsOpen(false);
+            }}
+          >
+            <HoverDetails colorMode={colorMode}>
+              <PoofAccountDetails />
+            </HoverDetails>
+          </CloseOnClickaway>
+        )}
+      </Box>
 
-        <Flex
-          sx={{
-            alignItems: "baseline",
-            justifyContent: address ? "space-between" : "flex-end",
+      <Box sx={{ position: "relative" }}>
+        <Card
+          ref={walletCard}
+          sx={{ cursor: "pointer" }}
+          variant="warning"
+          ml={5}
+          onClick={() => {
+            if (address) {
+              setWalletDetailsOpen(!walletDetailsOpen);
+            } else {
+              connect();
+            }
           }}
         >
-          {poofAccount?.address ? (
-            <Text variant="account" mr={2}>
-              {shortenAccount(poofAccount?.address)}
+          <Flex sx={{ alignItems: "center", color: "primaryText" }}>
+            <Wallet size={32} />
+            <Text variant="primary" ml={2} mt={1}>
+              {address ? shortenAccount(address) : "Connect Wallet"}
             </Text>
-          ) : (
-            <Text variant="account" mr={2}>
-              ????...????
-            </Text>
-          )}
-          {poofAccount?.address ? (
-            <>
-              <Text
-                sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
-                onClick={() => disconnectPoofAccount()}
-                variant="form"
-              >
-                Logout
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text
-                sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
-                onClick={() => history.push(`/${Page.SETUP}`)}
-                variant="form"
-              >
-                Login
-              </Text>
-            </>
-          )}
-        </Flex>
-      </Flex>
+          </Flex>
+        </Card>
+        {address && walletDetailsOpen && (
+          <CloseOnClickaway
+            onClickaway={(e) => {
+              if (walletCard?.current?.contains(e.target)) {
+                return;
+              }
+              setWalletDetailsOpen(false);
+            }}
+          >
+            <HoverDetails colorMode={colorMode}>
+              <WalletDetails />
+            </HoverDetails>
+          </CloseOnClickaway>
+        )}
+      </Box>
     </Flex>
   );
 };
