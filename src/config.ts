@@ -34,6 +34,7 @@ export const RELAYERS = {
   [ChainId.Mainnet]: [
     "https://adamaris.privatedns.org",
     "https://bellagio.now.im",
+    "https://maralago.now.im",
   ],
   [ChainId.Alfajores]: ["https://relayer-test.poof.cash"],
   [ChainId.Baklava]: [],
