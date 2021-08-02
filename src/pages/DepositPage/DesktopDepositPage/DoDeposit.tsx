@@ -224,12 +224,12 @@ export const DoDeposit: React.FC<IProps> = ({
     <>
       <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
         <Container>
-          <Text variant="title">{t("deposit.desktop.title")}</Text>
-          <br />
-          <Text sx={{ mb: 4 }} variant="regularGray">
+          <Text sx={{ display: "block" }} variant="title">
+            {t("deposit.desktop.title")}
+          </Text>
+          <Text sx={{ display: "block", mb: 4 }} variant="regularGray">
             {t("deposit.desktop.subtitle")}
           </Text>
-          <br />
           <PickDeposit
             amount={amount}
             setAmount={setAmount}

@@ -66,13 +66,13 @@ const CompliancePage = () => {
 
   return (
     <div>
-      <Text variant="title">Report</Text>
-      <br />
-      <Text sx={{ mb: 2 }} variant="regularGray">
+      <Text sx={{ display: "block" }} variant="title">
+        Report
+      </Text>
+      <Text sx={{ display: "block", mb: 4 }} variant="regularGray">
         Enter your magic password to generate a report on its related deposit
         and withdrawal events.
       </Text>
-      <br />
       <Text variant="form">Magic password</Text>
       <Input
         name="note"

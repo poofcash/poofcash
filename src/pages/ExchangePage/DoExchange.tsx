@@ -180,12 +180,12 @@ export const DoExchange: React.FC<IProps> = ({
   return (
     <Grid sx={{ gridTemplateColumns: ["1fr", "1fr 1fr"] }}>
       <Container>
-        <Text variant="title">{t("exchange.title")}</Text>
-        <br />
-        <Text sx={{ mb: 4 }} variant="regularGray">
+        <Text sx={{ display: "block" }} variant="title">
+          {t("exchange.title")}
+        </Text>
+        <Text sx={{ display: "block", mb: 4 }} variant="regularGray">
           {t("exchange.subtitle")}
         </Text>
-        <br />
 
         <Grid columns={[2, "100px 1fr"]}>
           <Box>

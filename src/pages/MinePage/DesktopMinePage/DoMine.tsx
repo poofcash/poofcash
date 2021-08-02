@@ -178,12 +178,12 @@ export const DoMine: React.FC<IProps> = ({
   return (
     <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
       <Container>
-        <Text variant="title">{t("mine.desktop.title")}</Text>
-        <br />
-        <Text sx={{ mb: 4 }} variant="regularGray">
+        <Text sx={{ display: "block" }} variant="title">
+          {t("mine.desktop.title")}
+        </Text>
+        <Text sx={{ display: "block", mb: 4 }} variant="regularGray">
           {t("mine.desktop.subtitle")}
         </Text>
-        <br />
         <PickMine
           loading={loading}
           onMineClick={onMineClick}

@@ -302,12 +302,12 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
   return (
     <Grid sx={{ gridTemplateColumns: ["1fr", "1fr 1fr"] }}>
       <Container>
-        <Text variant="title">{t("stake.title")}</Text>
-        <br />
-        <Text sx={{ mb: 4 }} variant="regularGray">
+        <Text sx={{ display: "block" }} variant="title">
+          {t("stake.title")}
+        </Text>
+        <Text sx={{ display: "block", mb: 4 }} variant="regularGray">
           {t("stake.subtitle")}
         </Text>
-        <br />
 
         {/* Stake info */}
         <Text variant="form" sx={{ mb: 2 }}>

@@ -198,12 +198,12 @@ export const DoRedeem: React.FC<IProps> = ({
   return (
     <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
       <Container>
-        <Text variant="title">{t("redeem.desktop.title")}</Text>
-        <br />
-        <Text sx={{ mb: 4 }} variant="regularGray">
+        <Text sx={{ display: "block" }} variant="title">
+          {t("redeem.desktop.title")}
+        </Text>
+        <Text sx={{ display: "block", mb: 4 }} variant="regularGray">
           {t("redeem.desktop.subtitle")}
         </Text>
-        <br />
         <PickRedeem
           loading={loading}
           onRedeemClick={onRedeemClick}

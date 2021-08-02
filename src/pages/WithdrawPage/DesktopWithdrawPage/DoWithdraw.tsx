@@ -137,9 +137,12 @@ export const DoWithdraw: React.FC<IProps> = ({
   return (
     <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
       <Container>
-        <Text variant="title">{t("withdraw.desktop.title")}</Text>
-        <br />
-        <Text variant="regularGray">{t("withdraw.desktop.subtitle")}</Text>
+        <Text sx={{ display: "block" }} variant="title">
+          {t("withdraw.desktop.title")}
+        </Text>
+        <Text sx={{ display: "block", mb: 4 }} variant="regularGray">
+          {t("withdraw.desktop.subtitle")}
+        </Text>
         <PickWithdraw
           loading={loading}
           onWithdrawClick={onWithdrawClick}
