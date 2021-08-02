@@ -16,6 +16,7 @@ export const useDualStakeRewards = (
       DUAL_REWARDS_ABI as AbiItem[],
       address
     ) as unknown) as MoolaStakingRewards;
+    console.log(await stakeRewards.methods.periodFinish().call());
     const [totalSupply, rewardRate] = await Promise.all([
       stakeRewards.methods.totalSupply().call().then(toBN),
       stakeRewards.methods.rewardRate().call().then(toBN),

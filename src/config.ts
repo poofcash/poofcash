@@ -18,7 +18,7 @@ export const CURRENCY_MAP: Record<ChainId, Record<string, string>> = {
   },
 };
 
-export const rCELOMap = {
+export const rCELOMap: Record<ChainId, Record<string, number>> = {
   [ChainId.Mainnet]: {
     scelo: 0,
   },
@@ -73,3 +73,5 @@ export const STAKE_MAP: Record<ChainId, Record<string, string>> = {
 };
 
 export const exchangeCurrencies = ["CELO", "sCELO", "rCELO"];
+
+export const UBESWAP_ROUTER = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";

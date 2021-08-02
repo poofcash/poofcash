@@ -16,33 +16,6 @@ enum ExchangeStep {
 const ExchangePage: React.FC = () => {
   const [step, setStep] = React.useState(ExchangeStep.DO);
   const { kit, address, network } = useContractKit();
-  const [currencies, setCurrencies] = React.useState({
-    from: "CELO",
-    to: "rCELO",
-  });
-
-  const fromBalanceCall = React.useCallback(async () => {
-    const fromToken = new kit.web3.eth.Contract(
-      erc20Abi as AbiItem[],
-      CURRENCY_MAP[network.chainId][currencies.from.toLowerCase()]
-    );
-    if (!address || !isAddress(address)) {
-      return ["0", "0"];
-    }
-    let spender = CURRENCY_MAP[network.chainId].rcelo;
-    // TODO spender
-    return await Promise.all([
-      fromToken.methods.balanceOf(address).call(),
-      fromToken.methods.allowance(address, spender).call(),
-    ]);
-  }, [kit, address, network]);
-
-  const [[fromBalance, fromAllowance], refetchFromBalance] = useAsyncState(
-    ["0", "0"],
-    fromBalanceCall
-  );
-
-  const [txHash, setTxHash] = React.useState("");
 
   const {
     fromCurrency,
@@ -54,7 +27,33 @@ const ExchangePage: React.FC = () => {
     toAmount,
     setToAmount,
     exchangeRate,
+    exchangeCall,
+    allowance,
+    txHash,
+    setTxHash,
+    approveCall,
+    exchangeMode,
   } = useExchange();
+  const fromBalanceCall = React.useCallback(async () => {
+    const fromToken = new kit.web3.eth.Contract(
+      erc20Abi as AbiItem[],
+      CURRENCY_MAP[network.chainId][fromCurrency.toLowerCase()]
+    );
+    if (!address || !isAddress(address)) {
+      return ["0", "0"];
+    }
+    let spender = CURRENCY_MAP[network.chainId].rcelo;
+    // TODO spender
+    return await Promise.all([
+      fromToken.methods.balanceOf(address).call(),
+      fromToken.methods.allowance(address, spender).call(),
+    ]);
+  }, [kit, address, network, fromCurrency]);
+
+  const [[fromBalance, fromAllowance], refetchFromBalance] = useAsyncState(
+    ["0", "0"],
+    fromBalanceCall
+  );
 
   switch (step) {
     case ExchangeStep.DO:
@@ -76,14 +75,20 @@ const ExchangePage: React.FC = () => {
           refetch={() => {
             refetchFromBalance();
           }}
+          exchangeCall={exchangeCall}
+          approveCall={approveCall}
+          allowance={allowance}
+          exchangeMode={exchangeMode}
         />
       );
     case ExchangeStep.RECEIPT:
       return (
         <ExchangeReceipt
           onDoneClick={() => setStep(ExchangeStep.DO)}
-          amount={fromAmount}
-          currencies={currencies}
+          fromCurrency={fromCurrency}
+          fromAmount={fromAmount}
+          toCurrency={toCurrency}
+          toAmount={toAmount}
           txHash={txHash}
         />
       );

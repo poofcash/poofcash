@@ -1,6 +1,5 @@
 import React from "react";
 import { useContractKit } from "@celo-tools/use-contractkit";
-import { RewardsCeloKit } from "@poofcash/rewardscelo";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -15,14 +14,16 @@ import {
   Spinner,
   Text,
 } from "theme-ui";
-import { toWei, AbiItem, toBN } from "web3-utils";
+import { toWei, toBN, fromWei } from "web3-utils";
 import { humanFriendlyWei } from "utils/eth";
-import { CURRENCY_MAP, exchangeCurrencies } from "config";
-import erc20Abi from "abis/ERC20.json";
+import { exchangeCurrencies } from "config";
 import { GrayBox } from "components/GrayBox";
 import { SummaryTable } from "components/SummaryTable";
 import { Swap } from "phosphor-react";
 import { humanFriendlyNumber } from "utils/number";
+import { toast } from "react-toastify";
+import { toastTx } from "utils/toastTx";
+import { ExchangeMode } from "hooks/exchange/useExchangeMode";
 
 interface IProps {
   openReceiptPage: () => void;
@@ -39,6 +40,10 @@ interface IProps {
   fromAllowance: string;
   exchangeRate: string;
   refetch: () => void;
+  exchangeCall: () => Promise<string | undefined>;
+  approveCall: () => any;
+  allowance: string;
+  exchangeMode: ExchangeMode;
 }
 
 export const DoExchange: React.FC<IProps> = ({
@@ -53,58 +58,32 @@ export const DoExchange: React.FC<IProps> = ({
   toAmount,
   setToAmount,
   fromBalance,
-  fromAllowance,
   refetch,
+  exchangeCall,
+  approveCall,
+  allowance,
+  setTxHash,
+  exchangeMode,
 }) => {
   const { t } = useTranslation();
-  const { performActions, address, connect, network } = useContractKit();
+  const { performActions, address, connect } = useContractKit();
   const [loading, setLoading] = React.useState(false);
+  const [inverse, setInverse] = React.useState(false);
 
   const onExchangeClick = () => {
     setLoading(true);
-    performActions(async (kit) => {
-      const rewardsKit = new RewardsCeloKit(
-        kit,
-        CURRENCY_MAP[network.chainId].rcelo
-      );
+    performActions(async () => {
       try {
-        // const txo =
-        //   currencies.from === "sCELO"
-        //     ? rewardsKit.deposit(toWei(amount), rCELOMap[network.chainId])
-        //     : rewardsKit.withdraw(toWei(amount));
-        // const tx = await txo.send({
-        //   from: kit.defaultAccount,
-        //   gasPrice: toWei("0.1", "gwei"),
-        // });
-        // setTxHash(await tx.getHash());
-        openReceiptPage();
+        const txHash = await exchangeCall();
+        if (txHash) {
+          toastTx(txHash);
+          setTxHash(txHash);
+          openReceiptPage();
+        } else {
+          toast("Failed to exchange");
+        }
       } catch (e) {
-        console.error(e);
-      } finally {
-        refetch();
-        setLoading(false);
-      }
-    });
-  };
-  const onApproveClick = () => {
-    setLoading(true);
-    performActions(async (kit) => {
-      const erc20 = new kit.web3.eth.Contract(
-        erc20Abi as AbiItem[],
-        fromCurrency === "sCELO"
-          ? CURRENCY_MAP[network.chainId].scelo
-          : CURRENCY_MAP[network.chainId].rcelo
-      );
-      try {
-        const txo = erc20.methods.approve(
-          CURRENCY_MAP[network.chainId].rcelo,
-          toWei(fromAmount)
-        );
-        await txo.send({
-          from: kit.defaultAccount,
-          gasPrice: toWei("0.1", "gwei"),
-        });
-      } catch (e) {
+        toast(e);
         console.error(e);
       } finally {
         refetch();
@@ -125,7 +104,7 @@ export const DoExchange: React.FC<IProps> = ({
 
   const approveButton = (
     <Button
-      onClick={onApproveClick}
+      onClick={approveCall}
       disabled={!address || Number(fromAmount) <= 0}
       sx={{ width: "100%" }}
     >
@@ -145,10 +124,7 @@ export const DoExchange: React.FC<IProps> = ({
 
   let button = connectWalletButton;
   if (address) {
-    if (
-      fromCurrency === "sCELO" &&
-      toBN(fromAllowance).lt(toBN(toWei(fromAmount === "" ? "0" : fromAmount)))
-    ) {
+    if (toBN(allowance).lt(toBN(toWei(fromAmount === "" ? "0" : fromAmount)))) {
       button = approveButton;
     } else {
       button = exchangeButton;
@@ -189,12 +165,12 @@ export const DoExchange: React.FC<IProps> = ({
           lineItems={[
             {
               label: "Exchange",
-              value: `${fromAmount} ${fromCurrency}`,
+              value: `${humanFriendlyNumber(fromAmount)} ${fromCurrency}`,
             },
           ]}
           totalItem={{
             label: "Receive",
-            value: `${toAmount} ${toCurrency}`,
+            value: `${humanFriendlyNumber(toAmount)} ${toCurrency}`,
           }}
         />
       </>
@@ -230,9 +206,7 @@ export const DoExchange: React.FC<IProps> = ({
           <Box>
             <Container sx={{ textAlign: "right" }}>
               <Text variant="form">
-                <Link
-                  onClick={() => setFromAmount(humanFriendlyWei(fromBalance))}
-                >
+                <Link onClick={() => setFromAmount(fromWei(fromBalance))}>
                   max: {humanFriendlyWei(fromBalance)} {fromCurrency}
                 </Link>
               </Text>
@@ -268,18 +242,39 @@ export const DoExchange: React.FC<IProps> = ({
             />
           </Flex>
         </Grid>
-        <Flex
-          sx={{ alignItems: "center", justifyContent: "space-evenly", mt: 4 }}
-        >
-          <Text variant="form">Current Price</Text>
-          <Card variant="warning">
+        <Flex sx={{ alignItems: "center", justifyContent: "center", mt: 4 }}>
+          <Text variant="form" mr={2}>
+            Current Price
+          </Text>
+          <Card
+            sx={{ cursor: "pointer" }}
+            variant="warning"
+            onClick={() => setInverse(!inverse)}
+          >
             <Flex sx={{ alignItems: "center", justifyContent: "space-evenly" }}>
-              <Text mr={2}>1 {fromCurrency}</Text>
+              <Text mr={2}>1 {inverse ? toCurrency : fromCurrency}</Text>
               <Swap size={32} />
               <Text ml={2}>
-                {humanFriendlyNumber(exchangeRate)} {toCurrency}
+                {humanFriendlyNumber(
+                  inverse ? 1 / Number(exchangeRate) : exchangeRate
+                )}{" "}
+                {inverse ? fromCurrency : toCurrency}
               </Text>
             </Flex>
+          </Card>
+        </Flex>
+        <Flex sx={{ alignItems: "center", justifyContent: "center", mt: 4 }}>
+          <Text variant="form" mr={2}>
+            Exchange mode
+          </Text>
+          <Card
+            sx={{ cursor: "pointer" }}
+            variant="warning"
+            onClick={() => setInverse(!inverse)}
+          >
+            <Text>
+              {exchangeMode === ExchangeMode.UBESWAP ? "Ubeswap" : "Direct"}
+            </Text>
           </Card>
         </Flex>
       </Container>

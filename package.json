@@ -47,6 +47,7 @@
     "react-window": "^1.8.6",
     "recoil": "^0.3.1",
     "redux-localstorage-simple": "^2.4.1",
+    "savingscelo": "^3.3.0",
     "theme-ui": "0.9.1",
     "typechain": "^5.1.1",
     "typescript": "^4.1.2",

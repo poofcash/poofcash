@@ -8,15 +8,19 @@ import { GrayBox } from "components/GrayBox";
 
 interface IProps {
   onDoneClick: () => void;
-  amount: string;
-  currencies: { from: string; to: string };
+  fromCurrency: string;
+  fromAmount: string;
+  toCurrency: string;
+  toAmount: string;
   txHash: string;
 }
 
 export const ExchangeReceipt: React.FC<IProps> = ({
   onDoneClick,
-  amount,
-  currencies,
+  fromCurrency,
+  fromAmount,
+  toCurrency,
+  toAmount,
   txHash,
 }) => {
   const accountName = useAccountName();
@@ -50,12 +54,12 @@ export const ExchangeReceipt: React.FC<IProps> = ({
             },
             {
               label: "Total amount",
-              value: `${Number(amount)} ${currencies.from}`,
+              value: `${Number(fromAmount)} ${fromCurrency}`,
             },
           ]}
           totalItem={{
             label: "Exchanged",
-            value: `${Number(amount)} ${currencies.to}`,
+            value: `${Number(toAmount)} ${toCurrency}`,
           }}
         />
       </GrayBox>
