@@ -1,4 +1,4 @@
-import { UserCircle, X } from "phosphor-react";
+import { Moon, Sun, UserCircle, X } from "phosphor-react";
 import { Box, Button, Flex, Text, useColorMode } from "theme-ui";
 import { shortenAccount } from "hooks/accountName";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -56,7 +56,12 @@ export const PoofAccountDetails: React.FC<Props> = ({ onClose }) => {
             setColorMode(colorMode === "dark" ? "default" : "dark");
           }}
         >
-          {colorMode === "dark" ? "Dark" : "Light"} Mode
+          <Flex sx={{ alignItems: "center" }}>
+            {colorMode === "dark" ? <Moon size={24} /> : <Sun size={24} />}
+            <Text color="primary" ml={3} mt="2px">
+              {colorMode === "dark" ? "Dark" : "Light"} Mode
+            </Text>
+          </Flex>
         </Button>
         {poofAccount ? (
           <Button onClick={disconnectPoofAccount}>Log out</Button>

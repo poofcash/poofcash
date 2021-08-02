@@ -31,7 +31,7 @@ export const WalletDetails: React.FC<Props> = ({ onClose }) => {
         >
           <CopyToClipboard
             text={address}
-            onCopy={() => toast("Copied walet address to clipboard")}
+            onCopy={() => toast("Copied wallet address to clipboard")}
           >
             <Flex sx={{ alignItems: "center" }}>
               <Wallet size={32} />
