@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@celo-tools/use-contractkit": "npm:@ubeswap/use-contractkit@^1.0.0-ube.7",
+    "@celo-tools/use-contractkit": "npm:@ubeswap/use-contractkit@^1.0.0-ube.10",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@ethersproject/contracts": "^5.0.12",
