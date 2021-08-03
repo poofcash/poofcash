@@ -68,7 +68,7 @@ export const PickExchange: React.FC<Props> = ({
           <Container sx={{ textAlign: "right" }}>
             <Text variant="form">
               <Link onClick={() => setFromAmount(fromWei(fromBalance))}>
-                max: {humanFriendlyWei(fromBalance)} {fromCurrency}
+                max: {humanFriendlyWei(fromBalance)}
               </Link>
             </Text>
           </Container>

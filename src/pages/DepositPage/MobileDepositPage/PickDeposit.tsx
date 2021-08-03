@@ -206,11 +206,12 @@ export const PickDeposit: React.FC<IProps> = ({
               <Container sx={{ textAlign: "right" }}>
                 <Text sx={{ whiteSpace: "nowrap" }} variant="form">
                   <Link
+                    sx={{ maxWidth: "100%" }}
                     onClick={() => {
                       setAmount(fromWei(userBalance));
                     }}
                   >
-                    max: {humanFriendlyWei(userBalance)} {currency}
+                    max: {humanFriendlyWei(userBalance)}
                   </Link>
                 </Text>
               </Container>

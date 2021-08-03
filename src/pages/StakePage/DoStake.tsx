@@ -1,7 +1,16 @@
 import React from "react";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { useTranslation } from "react-i18next";
-import { Button, Container, Flex, Grid, Input, Spinner, Text } from "theme-ui";
+import {
+  Button,
+  Container,
+  Flex,
+  Grid,
+  Input,
+  Link,
+  Spinner,
+  Text,
+} from "theme-ui";
 import { toWei, AbiItem, toBN, isAddress, fromWei } from "web3-utils";
 import { humanFriendlyWei } from "utils/eth";
 import { STAKE_MAP } from "config";
@@ -310,18 +319,24 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
         </Text>
 
         {/* Stake info */}
-        <Text variant="form" sx={{ mb: 2 }}>
-          Amount (balance: {humanFriendlyWei(stakeTokenBalance)}
-          {" " + STAKE_MAP[network.chainId].stakeTokenName})
-        </Text>
-        <Flex mb={5}>
-          <Input
-            type="number"
-            sx={{ width: "33%" }}
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
+        <Flex sx={{ justifyContent: "space-between" }} mb={1}>
+          <Text variant="form">Amount</Text>
+          <Text sx={{ whiteSpace: "nowrap" }} variant="form">
+            <Link
+              onClick={() => {
+                setAmount(fromWei(stakeTokenBalance));
+              }}
+            >
+              max: {humanFriendlyWei(stakeTokenBalance)}
+            </Link>
+          </Text>
         </Flex>
+        <Input
+          type="number"
+          sx={{ width: ["100%", "33%"], mb: 5 }}
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
         <Grid
           sx={{ alignItems: "center" }}
           columns={[2, "auto 1fr"]}
