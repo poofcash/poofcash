@@ -106,7 +106,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         <Text sx={{ pt: 1 }}>I backed up the Magic Password</Text>
       </Flex>
       <Flex
-        sx={{ mt: 4, alignItems: "center" }}
+        sx={{ my: 4, alignItems: "center" }}
         onClick={() => setBackup(!backup)}
       >
         <Checkbox readOnly checked={backup} />
