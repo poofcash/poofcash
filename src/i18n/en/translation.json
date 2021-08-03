@@ -91,14 +91,14 @@
     }
   },
   "exchange": {
-    "title": "Exchange rCELO",
-    "subtitle": "Exchange between CELO, wrapped CELO, and rCELO.",
+    "title": "Swap",
+    "subtitle": "Swap between CELO, wrapped CELO, and rCELO.",
     "review": {
-      "title": "Review your exchange"
+      "title": "Review your swap"
     },
     "select": {
       "title": "Enter an amount and select a currency",
-      "subtitle": "Select an amount and currency to exchange from"
+      "subtitle": "Select an amount and currency to swap between"
     }
   }
 }

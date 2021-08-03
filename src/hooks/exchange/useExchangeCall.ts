@@ -92,7 +92,7 @@ export const useExchangeCall = (
           CURRENCY_MAP[network.chainId].rcelo
         ) as unknown) as RewardsCELO;
         const tx = await rewards.methods
-          .withdraw(fromAmount)
+          .withdraw(toWei(fromAmount))
           .send({ from: kit.defaultAccount, gasPrice: toWei("0.13", "gwei") });
         return tx.transactionHash;
       }

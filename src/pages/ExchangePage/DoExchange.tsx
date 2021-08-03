@@ -1,29 +1,18 @@
 import React from "react";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { useTranslation } from "react-i18next";
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Flex,
-  Grid,
-  Input,
-  Link,
-  Select,
-  Spinner,
-  Text,
-} from "theme-ui";
-import { toWei, toBN, fromWei } from "web3-utils";
-import { humanFriendlyWei } from "utils/eth";
-import { exchangeCurrencies } from "config";
+import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
+import { toWei, toBN } from "web3-utils";
 import { GrayBox } from "components/GrayBox";
 import { SummaryTable } from "components/SummaryTable";
-import { Swap } from "phosphor-react";
 import { humanFriendlyNumber } from "utils/number";
 import { toast } from "react-toastify";
 import { toastTx } from "utils/toastTx";
 import { ExchangeMode } from "hooks/exchange/useExchangeMode";
+import { PickExchange } from "./PickExchange";
+import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
+import { ActionDrawer } from "components/ActionDrawer";
+import { LabelWithBalance } from "components/LabelWithBalance";
 
 interface IProps {
   openReceiptPage: () => void;
@@ -68,7 +57,7 @@ export const DoExchange: React.FC<IProps> = ({
   const { t } = useTranslation();
   const { performActions, address, connect } = useContractKit();
   const [loading, setLoading] = React.useState(false);
-  const [inverse, setInverse] = React.useState(false);
+  const breakpoint = useBreakpoint();
 
   const onExchangeClick = () => {
     setLoading(true);
@@ -96,7 +85,7 @@ export const DoExchange: React.FC<IProps> = ({
     <Button
       variant="primary"
       onClick={() => connect().then(console.warn)}
-      sx={{ width: "100%" }}
+      sx={{ width: ["auto", "100%"] }}
     >
       Connect Wallet
     </Button>
@@ -106,7 +95,7 @@ export const DoExchange: React.FC<IProps> = ({
     <Button
       onClick={approveCall}
       disabled={!address || Number(fromAmount) <= 0}
-      sx={{ width: "100%" }}
+      sx={{ width: ["auto", "100%"] }}
     >
       Approve {fromCurrency}
     </Button>
@@ -116,9 +105,9 @@ export const DoExchange: React.FC<IProps> = ({
     <Button
       onClick={onExchangeClick}
       disabled={Number(fromAmount) <= 0 || !address}
-      sx={{ width: "100%" }}
+      sx={{ width: ["auto", "100%"] }}
     >
-      Exchange for {toCurrency}
+      Swap
     </Button>
   );
 
@@ -186,104 +175,45 @@ export const DoExchange: React.FC<IProps> = ({
         <Text sx={{ display: "block", mb: 4 }} variant="regularGray">
           {t("exchange.subtitle")}
         </Text>
-
-        <Grid columns={[2, "100px 1fr"]}>
-          <Box>
-            <Text variant="form">From</Text>
-            <Select
-              onChange={(e) => setFromCurrency(e.target.value)}
-              value={fromCurrency}
-            >
-              {exchangeCurrencies.map((curr, idx) => {
-                return (
-                  <option value={curr} key={idx}>
-                    {curr}
-                  </option>
-                );
-              })}
-            </Select>
-          </Box>
-          <Box>
-            <Container sx={{ textAlign: "right" }}>
-              <Text variant="form">
-                <Link onClick={() => setFromAmount(fromWei(fromBalance))}>
-                  max: {humanFriendlyWei(fromBalance)} {fromCurrency}
-                </Link>
-              </Text>
-            </Container>
-            <Input
-              type="number"
-              sx={{ width: "100%" }}
-              value={fromAmount}
-              onChange={(e) => setFromAmount(e.target.value)}
-            />
-          </Box>
-          <Box>
-            <Text variant="form">To</Text>
-            <Select
-              onChange={(e) => setToCurrency(e.target.value)}
-              value={toCurrency}
-            >
-              {exchangeCurrencies.map((curr, idx) => {
-                return (
-                  <option value={curr} key={idx}>
-                    {curr}
-                  </option>
-                );
-              })}
-            </Select>
-          </Box>
-          <Flex sx={{ alignItems: "flex-end" }}>
-            <Input
-              type="number"
-              sx={{ width: "100%" }}
-              value={toAmount}
-              onChange={(e) => setToAmount(e.target.value)}
-            />
+        <PickExchange
+          fromCurrency={fromCurrency}
+          setFromCurrency={setFromCurrency}
+          toCurrency={toCurrency}
+          setToCurrency={setToCurrency}
+          fromAmount={fromAmount}
+          setFromAmount={setFromAmount}
+          fromBalance={fromBalance}
+          toAmount={toAmount}
+          setToAmount={setToAmount}
+          exchangeMode={exchangeMode}
+          exchangeRate={exchangeRate}
+        />
+      </Container>
+      {breakpoint === Breakpoint.DESKTOP && (
+        <Container>
+          <GrayBox>{boxContent}</GrayBox>
+          <Flex sx={{ justifyContent: "center" }}>
+            {loading ? <Spinner /> : button}
           </Flex>
-        </Grid>
-        <Flex sx={{ alignItems: "center", justifyContent: "center", mt: 4 }}>
-          <Text variant="form" mr={2}>
-            Current Price
-          </Text>
-          <Card
-            sx={{ cursor: "pointer" }}
-            variant="warning"
-            onClick={() => setInverse(!inverse)}
+        </Container>
+      )}
+      {breakpoint === Breakpoint.MOBILE && (
+        <ActionDrawer>
+          <Flex
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
           >
-            <Flex sx={{ alignItems: "center", justifyContent: "space-evenly" }}>
-              <Text mr={2}>1 {inverse ? toCurrency : fromCurrency}</Text>
-              <Swap size={32} />
-              <Text ml={2}>
-                {humanFriendlyNumber(
-                  inverse ? 1 / Number(exchangeRate) : exchangeRate
-                )}{" "}
-                {inverse ? fromCurrency : toCurrency}
-              </Text>
-            </Flex>
-          </Card>
-        </Flex>
-        <Flex sx={{ alignItems: "center", justifyContent: "center", mt: 4 }}>
-          <Text variant="form" mr={2}>
-            Exchange mode
-          </Text>
-          <Card
-            sx={{ cursor: "pointer" }}
-            variant="warning"
-            onClick={() => setInverse(!inverse)}
-          >
-            <Text>
-              {exchangeMode === ExchangeMode.UBESWAP ? "Ubeswap" : "Direct"}
-            </Text>
-          </Card>
-        </Flex>
-      </Container>
-      <Container>
-        <GrayBox>{boxContent}</GrayBox>
-        <Flex sx={{ justifyContent: "center" }}>
-          {loading ? <Spinner /> : button}
-        </Flex>
-      </Container>
+            <LabelWithBalance
+              label="Total"
+              amount={fromAmount === "" ? "0" : fromAmount}
+              currency={fromCurrency}
+            />
+            {button}
+          </Flex>
+        </ActionDrawer>
+      )}
     </Grid>
   );
 };
