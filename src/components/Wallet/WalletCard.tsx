@@ -3,8 +3,8 @@ import { Wallet } from "phosphor-react";
 import { shortenAccount } from "hooks/accountName";
 import { useContractKit } from "@celo-tools/use-contractkit";
 import { useRecoilState } from "recoil";
-import { walletDrawerOpen } from "components/WalletDrawer";
-import { poofAccountDrawerOpen } from "components/PoofAccountDrawer";
+import { walletDrawerOpen } from "components/Wallet/WalletDrawer";
+import { poofAccountDrawerOpen } from "components/PoofAccount/PoofAccountDrawer";
 
 export const WalletCard: React.FC = () => {
   const { address, connect } = useContractKit();

@@ -333,7 +333,7 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
         </Flex>
         <Input
           type="number"
-          sx={{ width: ["100%", "33%"], mb: 5 }}
+          sx={{ width: ["100%"], mb: 5 }}
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />

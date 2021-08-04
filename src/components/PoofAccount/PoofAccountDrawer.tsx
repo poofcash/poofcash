@@ -1,6 +1,6 @@
 import { atom, useRecoilState } from "recoil";
-import { InfoDrawer } from "./InfoDrawer";
-import { PoofAccountDetails } from "./PoofAccountDetails";
+import { InfoDrawer } from "components/InfoDrawer";
+import { PoofAccountDetails } from "components/PoofAccount/PoofAccountDetails";
 
 export const poofAccountDrawerOpen = atom({
   key: "POOF_ACCOUNT_DRAWER_OPEN",

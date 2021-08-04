@@ -16,8 +16,8 @@ import { PoofAccountGlobal } from "hooks/poofAccount";
 import StakePage from "pages/StakePage";
 import { ToastContainer } from "react-toastify";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
-import { WalletDrawer } from "components/WalletDrawer";
-import { PoofAccountDrawer } from "components/PoofAccountDrawer";
+import { WalletDrawer } from "components/Wallet/WalletDrawer";
+import { PoofAccountDrawer } from "components/PoofAccount/PoofAccountDrawer";
 
 // pass props and State interface to Component class
 const App: React.FC = () => {

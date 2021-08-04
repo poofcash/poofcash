@@ -6,11 +6,11 @@ import { useContractKit } from "@celo-tools/use-contractkit";
 import { shortenAccount } from "hooks/accountName";
 import { Page } from "state/global";
 import { UserCircle, Wallet } from "phosphor-react";
-import { StyledLink } from "./StyledLink";
-import { WalletDetails } from "./WalletDetails";
+import { StyledLink } from "components/StyledLink";
+import { WalletDetails } from "components/Wallet/WalletDetails";
 import { PoofAccountGlobal } from "hooks/poofAccount";
-import { CloseOnClickaway } from "./CloseOnClickaway";
-import { PoofAccountDetails } from "./PoofAccountDetails";
+import { CloseOnClickaway } from "components/CloseOnClickaway";
+import { PoofAccountDetails } from "components/PoofAccount/PoofAccountDetails";
 
 const HoverDetails = styled(Box)<{ colorMode: string }>(({ colorMode }) => {
   return {

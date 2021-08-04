@@ -3,10 +3,10 @@ import { Box, Button, Container, Flex } from "theme-ui";
 import { Page } from "state/global";
 import { useHistory, useLocation } from "react-router-dom";
 import { UserCircle } from "phosphor-react";
-import { WalletCard } from "components/WalletCard";
+import { WalletCard } from "components/Wallet/WalletCard";
 import { useRecoilState } from "recoil";
-import { poofAccountDrawerOpen } from "components/PoofAccountDrawer";
-import { walletDrawerOpen } from "components/WalletDrawer";
+import { poofAccountDrawerOpen } from "components/PoofAccount/PoofAccountDrawer";
+import { walletDrawerOpen } from "components/Wallet/WalletDrawer";
 
 const HeaderButton: React.FC<{ page: Page }> = ({ page, children }) => {
   const location = useLocation();

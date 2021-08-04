@@ -1,6 +1,6 @@
 import { atom, useRecoilState } from "recoil";
-import { InfoDrawer } from "./InfoDrawer";
-import { WalletDetails } from "./WalletDetails";
+import { InfoDrawer } from "components/InfoDrawer";
+import { WalletDetails } from "components/Wallet/WalletDetails";
 
 export const walletDrawerOpen = atom({
   key: "WALLET_DRAWER_OPEN",
