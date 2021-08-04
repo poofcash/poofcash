@@ -1,19 +1,15 @@
 import React from "react";
+import Web3 from "web3";
 import { Button, Checkbox, Flex, Text } from "theme-ui";
 import { useTranslation } from "react-i18next";
-import Web3 from "web3";
 import { PoofPrivateKey } from "components/PoofPrivateKey";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { Page } from "state/global";
-import { useHistory } from "react-router-dom";
-
-interface IProps {
-  goBack: () => void;
-}
+import { useHistory, Link } from "react-router-dom";
 
 const web3 = new Web3();
 
-export const CreateAccount: React.FC<IProps> = ({ goBack }) => {
+export const CreateAccount: React.FC = () => {
   const { t } = useTranslation();
   const privateKey = React.useMemo(
     () => web3.eth.accounts.create().privateKey.slice(2),
@@ -45,15 +41,16 @@ export const CreateAccount: React.FC<IProps> = ({ goBack }) => {
         <Text sx={{ pt: 1 }}>I backed up my private key</Text>
       </Flex>
       <Flex sx={{ justifyContent: "center", mt: 4 }}>
-        <Button variant="secondary" mr={2} onClick={goBack}>
-          Back
-        </Button>
+        <Link to={`/${Page.SETUP}`}>
+          <Button variant="secondary" mr={2}>
+            Back
+          </Button>
+        </Link>
         <Button
           disabled={!confirmed}
           onClick={() => {
             savePoofAccount(privateKey, () => {
               history.push(`/${Page.DEPOSIT}`);
-              goBack();
             });
           }}
         >

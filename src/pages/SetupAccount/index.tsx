@@ -1,20 +1,43 @@
 import React from "react";
-import { SelectLogin } from "pages/SetupAccount/SelectLogin";
+import { Login } from "pages/SetupAccount/Login";
 import { CreateAccount } from "pages/SetupAccount/CreateAccount";
-import { Flex } from "theme-ui";
+import { Box, Flex, Grid } from "theme-ui";
+import { Route, Switch } from "react-router-dom";
+import { Page } from "state/global";
+import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
 
-enum SetupStep {
-  SELECT_LOGIN = "SELECT_LOGIN",
-  CREATE = "CREATE",
-}
 export const SetupAccount: React.FC = () => {
-  const [step, setStep] = React.useState(SetupStep.SELECT_LOGIN);
-  let page = <SelectLogin goCreate={() => setStep(SetupStep.CREATE)} />;
-  switch (step) {
-    case SetupStep.CREATE:
-      page = <CreateAccount goBack={() => setStep(SetupStep.SELECT_LOGIN)} />;
-      break;
-  }
+  const breakpoint = useBreakpoint();
 
-  return <Flex sx={{ flexDirection: "column", mt: ["25%", 0] }}>{page}</Flex>;
+  return (
+    <Grid
+      sx={{
+        gridGap: 4,
+        gridTemplateColumns: ["100%", "50% 50%"],
+        mt: ["15%", 0],
+      }}
+    >
+      <Flex sx={{ flexDirection: "column", mr: [0, 4] }}>
+        <Switch>
+          <Route exact path={`/${Page.SETUP}`}>
+            <Login />
+          </Route>
+          <Route exact path={`/${Page.SETUP_CREATE}`}>
+            <CreateAccount />
+          </Route>
+        </Switch>
+      </Flex>
+      <Box
+        sx={{
+          display: breakpoint === Breakpoint.MOBILE ? "none" : "auto",
+          left: "50vw",
+          position: "absolute",
+          height: "100vh",
+          width: "50vw",
+          backgroundColor: "secondaryBackground",
+          my: -4,
+        }}
+      />
+    </Grid>
+  );
 };

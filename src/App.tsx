@@ -73,7 +73,7 @@ const App: React.FC = () => {
             <Route exact path={`/${Page.REDEEM}`}>
               <RedeemPage />
             </Route>
-            <Route exact path={`/${Page.SETUP}`}>
+            <Route path={`/${Page.SETUP}`}>
               <SetupAccount />
             </Route>
             <Route exact path={`/${Page.AIRDROP}`}>
