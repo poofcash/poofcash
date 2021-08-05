@@ -123,7 +123,7 @@ export const NoteList: React.FC<IListProps> = ({ mode, onFill }) => {
     title = "Active Notes";
   } else if (mode === NoteListMode.WITHDRAWS) {
     rows = withdrawals;
-    title = "Withdrawn Notes";
+    title = "Mineable Notes";
   }
 
   return (

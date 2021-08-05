@@ -41,8 +41,8 @@
   },
   "mine": {
     "desktop": {
-      "title": "Mine AP",
-      "subtitle": "Enter your magic password to privately claim AP for your deposit.",
+      "title": "Mine",
+      "subtitle": "Mine points for a withdrawn magic password.",
       "specify": {
         "title": "Mine AP",
         "subtitle": "Specify the withdrawn magic password"

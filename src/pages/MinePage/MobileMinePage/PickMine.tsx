@@ -1,5 +1,15 @@
 import React from "react";
-import { Box, Button, Divider, Flex, Input, Select, Text } from "theme-ui";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Flex,
+  Input,
+  Select,
+  Spinner,
+  Text,
+} from "theme-ui";
 import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
@@ -87,14 +97,13 @@ export const PickMine: React.FC<IProps> = ({
   }
 
   let button = (
-    <Button variant="secondary" onClick={() => history.push(`/${Page.SETUP}`)}>
+    <Button onClick={() => history.push(`/${Page.SETUP}`)}>
       Connect Poof account
     </Button>
   );
   if (poofAccount) {
     button = (
       <Button
-        variant="secondary"
         onClick={() => {
           if (!noteIsValid) {
             alert("Note is not valid");
@@ -204,22 +213,29 @@ export const PickMine: React.FC<IProps> = ({
         </>
       )}
 
-      <Divider my={4} />
-      <Box>
-        <NoteList mode={NoteListMode.WITHDRAWS} onFill={setNote} />
-      </Box>
+      {breakpoint === Breakpoint.DESKTOP && (
+        <Container mt={4}>{loading ? <Spinner /> : button}</Container>
+      )}
 
       {breakpoint === Breakpoint.MOBILE && (
-        <ActionDrawer>
-          <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
-            <LabelWithBalance
-              label="Total"
-              amount={estimatedAp}
-              currency="AP"
-            />
-            {button}
-          </Flex>
-        </ActionDrawer>
+        <>
+          <Divider my={4} />
+          <Box>
+            <NoteList mode={NoteListMode.WITHDRAWS} onFill={setNote} />
+          </Box>
+          <ActionDrawer>
+            <Flex
+              sx={{ justifyContent: "space-between", alignItems: "center" }}
+            >
+              <LabelWithBalance
+                label="Total"
+                amount={estimatedAp}
+                currency="AP"
+              />
+              {button}
+            </Flex>
+          </ActionDrawer>
+        </>
       )}
     </div>
   );

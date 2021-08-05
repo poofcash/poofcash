@@ -1,14 +1,13 @@
 import React from "react";
 import { PickMine } from "pages/MinePage/MobileMinePage/PickMine";
-import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
+import { Box, Container, Grid, Text } from "theme-ui";
 import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { RelayerOption } from "hooks/useRelayer";
-import { useHistory } from "react-router-dom";
-import { Page } from "state/global";
+import { NoteList, NoteListMode } from "components/DepositList";
 
 interface IProps {
   onMineClick: () => void;
@@ -46,9 +45,8 @@ export const DoMine: React.FC<IProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
-  const history = useHistory();
 
-  const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
+  const { actWithPoofAccount } = PoofAccountGlobal.useContainer();
 
   const totalMineAmount = Number(estimatedAp) - Number(relayerFee);
 
@@ -137,44 +135,6 @@ export const DoMine: React.FC<IProps> = ({
     );
   }
 
-  let button = (
-    <Button
-      variant="primary"
-      onClick={() => history.push(`/${Page.SETUP}`)}
-      sx={{ width: "100%" }}
-    >
-      Connect Poof account
-    </Button>
-  );
-  if (poofAccount) {
-    button = (
-      <Button
-        variant="primary"
-        onClick={handleMine}
-        sx={{ width: "100%" }}
-        disabled={(() => {
-          if (poofKitLoading) {
-            return true;
-          }
-          if (!noteIsValid) {
-            return true;
-          }
-          if (usingCustomRelayer) {
-            if (!customRelayer) {
-              return true;
-            }
-          }
-          if (totalMineAmount < 0) {
-            return true;
-          }
-          return false;
-        })()}
-      >
-        Mine
-      </Button>
-    );
-  }
-
   return (
     <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
       <Container>
@@ -186,7 +146,7 @@ export const DoMine: React.FC<IProps> = ({
         </Text>
         <PickMine
           loading={loading}
-          onMineClick={onMineClick}
+          onMineClick={handleMine}
           setNote={setNote}
           note={note}
           noteIsValid={noteIsValid}
@@ -203,9 +163,9 @@ export const DoMine: React.FC<IProps> = ({
       </Container>
       <Container>
         <GrayBox>{boxContent}</GrayBox>
-        <Flex sx={{ justifyContent: "center" }}>
-          {loading ? <Spinner /> : button}
-        </Flex>
+        <Box>
+          <NoteList mode={NoteListMode.WITHDRAWS} onFill={setNote} />
+        </Box>
       </Container>
     </Grid>
   );

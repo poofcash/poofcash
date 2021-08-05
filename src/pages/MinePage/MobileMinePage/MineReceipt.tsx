@@ -57,11 +57,7 @@ export const MineReceipt: React.FC<IProps> = ({
 
       <ActionDrawer>
         <Flex sx={{ justifyContent: "space-between" }}>
-          <LabelWithBalance
-            label="Mined"
-            amount={Number(estimatedAp).toLocaleString()}
-            currency="AP"
-          />
+          <LabelWithBalance label="Mined" amount={estimatedAp} currency="AP" />
           <Button
             onClick={() => {
               onDoneClick();
