@@ -5,6 +5,7 @@ import { Box, Flex, Grid } from "theme-ui";
 import { Route, Switch } from "react-router-dom";
 import { Page } from "state/global";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
+import { LoginIllustration } from "assets/LoginIllustration";
 
 export const SetupAccount: React.FC = () => {
   const breakpoint = useBreakpoint();
@@ -29,15 +30,19 @@ export const SetupAccount: React.FC = () => {
       </Flex>
       <Box
         sx={{
-          display: breakpoint === Breakpoint.MOBILE ? "none" : "auto",
+          display: breakpoint === Breakpoint.MOBILE ? "none" : "flex",
           left: "50vw",
           position: "absolute",
           height: "100vh",
           width: "50vw",
           backgroundColor: "secondaryBackground",
           my: -4,
+          justifyContent: "center",
+          alignItems: "center",
         }}
-      />
+      >
+        <LoginIllustration />
+      </Box>
     </Grid>
   );
 };
