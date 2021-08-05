@@ -82,11 +82,7 @@ export const DoExchange: React.FC<IProps> = ({
   };
 
   const connectWalletButton = (
-    <Button
-      variant="primary"
-      onClick={() => connect().then(console.warn)}
-      sx={{ width: ["auto", "100%"] }}
-    >
+    <Button variant="primary" onClick={() => connect().then(console.warn)}>
       Connect Wallet
     </Button>
   );
@@ -95,7 +91,6 @@ export const DoExchange: React.FC<IProps> = ({
     <Button
       onClick={approveCall}
       disabled={!address || Number(fromAmount) <= 0}
-      sx={{ width: ["auto", "100%"] }}
     >
       Approve {fromCurrency}
     </Button>
@@ -105,7 +100,6 @@ export const DoExchange: React.FC<IProps> = ({
     <Button
       onClick={onExchangeClick}
       disabled={Number(fromAmount) <= 0 || !address}
-      sx={{ width: ["auto", "100%"] }}
     >
       Swap
     </Button>
@@ -188,13 +182,13 @@ export const DoExchange: React.FC<IProps> = ({
           exchangeMode={exchangeMode}
           exchangeRate={exchangeRate}
         />
+        {breakpoint === Breakpoint.DESKTOP && (
+          <Container mt={4}>{loading ? <Spinner /> : button}</Container>
+        )}
       </Container>
       {breakpoint === Breakpoint.DESKTOP && (
         <Container>
           <GrayBox>{boxContent}</GrayBox>
-          <Flex sx={{ justifyContent: "center" }}>
-            {loading ? <Spinner /> : button}
-          </Flex>
         </Container>
       )}
       {breakpoint === Breakpoint.MOBILE && (
