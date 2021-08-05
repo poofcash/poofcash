@@ -1,15 +1,15 @@
 import React from "react";
-import web3 from "web3";
 import { PickWithdraw } from "pages/WithdrawPage/MobileWithdrawPage/PickWithdraw";
-import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
+import { Box, Container, Grid, Text } from "theme-ui";
 import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
 import { isValidNote, parseNote } from "utils/snarks-functions";
-import { PoofKitGlobal } from "hooks/usePoofKit";
 import { humanFriendlyNumber } from "utils/number";
 import { formatCurrency } from "utils/currency";
 import { RelayerOption } from "hooks/useRelayer";
+import { NoteList, NoteListMode } from "components/DepositList";
+import { PoofKitGlobal } from "hooks/usePoofKit";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -104,10 +104,7 @@ export const DoWithdraw: React.FC<IProps> = ({
   if (isValidNote(note)) {
     boxContent = (
       <>
-        <Text variant="subtitle">{t("withdraw.desktop.review.title")}</Text>
-        <br />
         <SummaryTable
-          title="Summary"
           lineItems={[
             {
               label: "Withdrawal Amount",
@@ -145,7 +142,7 @@ export const DoWithdraw: React.FC<IProps> = ({
         </Text>
         <PickWithdraw
           loading={loading}
-          onWithdrawClick={onWithdrawClick}
+          onWithdrawClick={handleWithdraw}
           setNote={setNote}
           note={note}
           setRecipient={setRecipient}
@@ -161,33 +158,9 @@ export const DoWithdraw: React.FC<IProps> = ({
       </Container>
       <Container>
         <GrayBox>{boxContent}</GrayBox>
-        <Flex sx={{ justifyContent: "center" }}>
-          {loading ? (
-            <Spinner />
-          ) : (
-            <Button
-              variant="primary"
-              onClick={handleWithdraw}
-              sx={{ width: "100%" }}
-              disabled={(() => {
-                if (!isValidNote(note)) {
-                  return true;
-                }
-                if (!web3.utils.isAddress(recipient)) {
-                  return true;
-                }
-                if (usingCustomRelayer) {
-                  if (!customRelayer) {
-                    return true;
-                  }
-                }
-                return false;
-              })()}
-            >
-              Withdraw
-            </Button>
-          )}
-        </Flex>
+        <Box>
+          <NoteList mode={NoteListMode.DEPOSITS} onFill={setNote} />
+        </Box>
       </Container>
     </Grid>
   );

@@ -68,7 +68,11 @@ const NoteItem: React.FC<IItemProps> = ({ index, data, style }) => {
           </Box>
           <Box>
             {onFill && (
-              <Button onClick={() => onFill(note.toNoteString())} mr={1}>
+              <Button
+                sx={{ px: [2, 3] }}
+                onClick={() => onFill(note.toNoteString())}
+                mr={1}
+              >
                 <Edit3 />
               </Button>
             )}
@@ -78,7 +82,7 @@ const NoteItem: React.FC<IItemProps> = ({ index, data, style }) => {
               }}
               text={note.toNoteString()}
             >
-              <Button>
+              <Button sx={{ px: [2, 3] }}>
                 <ClipboardIcon />
               </Button>
             </CopyToClipboard>

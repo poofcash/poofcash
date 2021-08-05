@@ -9,7 +9,7 @@ export const TableDivider: React.FC<IProps> = ({ columns }) => {
   return (
     <Box
       sx={{
-        height: "1.5px",
+        height: "1px",
         gridColumnStart: 1,
         gridColumnEnd: columns + 1,
         backgroundColor: "primaryText",

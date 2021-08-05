@@ -33,7 +33,7 @@ export const SummaryTable: React.FC<IProps> = ({
           return (
             <React.Fragment key={idx}>
               <Text variant="form">{label}</Text>
-              <Text sx={{ textAlign: "right" }} variant="bold">
+              <Text sx={{ textAlign: "right" }} variant="primary">
                 {value}
               </Text>
             </React.Fragment>
@@ -43,7 +43,7 @@ export const SummaryTable: React.FC<IProps> = ({
         {totalItem && (
           <>
             <Text variant="subtitle">{totalItem.label}</Text>
-            <Text sx={{ textAlign: "right" }} variant="bold">
+            <Text sx={{ textAlign: "right" }} variant="primary">
               {totalItem.value}
             </Text>
           </>

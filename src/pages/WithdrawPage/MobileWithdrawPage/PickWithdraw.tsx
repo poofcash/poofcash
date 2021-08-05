@@ -1,7 +1,17 @@
 import React from "react";
 import web3 from "web3";
 import { isValidNote, parseNote } from "utils/snarks-functions";
-import { Box, Button, Divider, Flex, Input, Select, Text } from "theme-ui";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Flex,
+  Input,
+  Select,
+  Spinner,
+  Text,
+} from "theme-ui";
 import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
@@ -84,6 +94,41 @@ export const PickWithdraw: React.FC<IProps> = ({
   if (poofKitLoading) {
     return <PoofKitLoading />;
   }
+
+  const withdrawButton = (
+    <Button
+      onClick={() => {
+        if (!validNote) {
+          alert("Note is not valid");
+          return;
+        }
+        if (!validRecipient) {
+          alert("Recipient address is not valid");
+          return;
+        }
+        onWithdrawClick();
+      }}
+      disabled={(() => {
+        if (poofKitLoading) {
+          return true;
+        }
+        if (!isValidNote) {
+          return true;
+        }
+        if (!web3.utils.isAddress(recipient)) {
+          return true;
+        }
+        if (usingCustomRelayer) {
+          if (!customRelayer) {
+            return true;
+          }
+        }
+        return false;
+      })()}
+    >
+      Withdraw
+    </Button>
+  );
 
   return (
     <div>
@@ -188,54 +233,29 @@ export const PickWithdraw: React.FC<IProps> = ({
         </>
       )}
 
-      <Divider my={4} />
-      <Box>
-        <NoteList mode={NoteListMode.DEPOSITS} onFill={setNote} />
-      </Box>
+      {breakpoint === Breakpoint.DESKTOP && (
+        <Container mt={4}>{loading ? <Spinner /> : withdrawButton}</Container>
+      )}
 
       {breakpoint === Breakpoint.MOBILE && (
-        <ActionDrawer>
-          <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
-            <LabelWithBalance
-              label="Total"
-              amount={isValidNote(note) ? amount : ""}
-              currency={isValidNote(note) ? currency : ""}
-            />
-            <Button
-              variant="secondary"
-              onClick={() => {
-                if (!validNote) {
-                  alert("Note is not valid");
-                  return;
-                }
-                if (!validRecipient) {
-                  alert("Recipient address is not valid");
-                  return;
-                }
-                onWithdrawClick();
-              }}
-              disabled={(() => {
-                if (poofKitLoading) {
-                  return true;
-                }
-                if (!isValidNote) {
-                  return true;
-                }
-                if (!web3.utils.isAddress(recipient)) {
-                  return true;
-                }
-                if (usingCustomRelayer) {
-                  if (!customRelayer) {
-                    return true;
-                  }
-                }
-                return false;
-              })()}
+        <>
+          <Divider my={4} />
+          <Box>
+            <NoteList mode={NoteListMode.DEPOSITS} onFill={setNote} />
+          </Box>
+          <ActionDrawer>
+            <Flex
+              sx={{ justifyContent: "space-between", alignItems: "center" }}
             >
-              Withdraw
-            </Button>
-          </Flex>
-        </ActionDrawer>
+              <LabelWithBalance
+                label="Total"
+                amount={isValidNote(note) ? amount : ""}
+                currency={isValidNote(note) ? currency : ""}
+              />
+              {withdrawButton}
+            </Flex>
+          </ActionDrawer>
+        </>
       )}
     </div>
   );

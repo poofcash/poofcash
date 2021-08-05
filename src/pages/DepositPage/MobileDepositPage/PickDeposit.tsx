@@ -270,7 +270,7 @@ export const PickDeposit: React.FC<IProps> = ({
               </Flex>
             </>
           )}
-          <Box mt={4}>{button}</Box>
+          <Box mt={4}>{loading ? <Spinner /> : button}</Box>
         </Container>
       )}
 

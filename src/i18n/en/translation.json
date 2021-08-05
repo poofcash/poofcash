@@ -11,8 +11,8 @@
   },
   "deposit": {
     "desktop": {
-      "title": "Make a deposit",
-      "subtitle": "Deposit cryptocurrency into poof for secure transactions and anonymous withdrawals later",
+      "title": "Deposit",
+      "subtitle": "Deposit into Poof to create a private balance. This balance can be withdrawn at any time to send crypto privately.",
       "connectWallet": {
         "title": "Connect Wallet",
         "subtitle": "Connect your wallet to access funds"
@@ -28,8 +28,8 @@
   },
   "withdraw": {
     "desktop": {
-      "title": "Make a withdrawal",
-      "subtitle": "Withdraw cryptocurrency anonymously with a magic password and wallet address",
+      "title": "Withdraw",
+      "subtitle": "Send crypto privately to any Celo user.",
       "specify": {
         "title": "Make a withdrawal",
         "subtitle": "Specify a magic password and recipient"
