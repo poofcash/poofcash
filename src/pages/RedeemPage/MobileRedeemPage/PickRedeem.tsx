@@ -1,5 +1,14 @@
 import React from "react";
-import { Button, Flex, Input, Link, Select, Text } from "theme-ui";
+import {
+  Button,
+  Container,
+  Flex,
+  Input,
+  Link,
+  Select,
+  Spinner,
+  Text,
+} from "theme-ui";
 import { ActionDrawer } from "components/ActionDrawer";
 import { LabelWithBalance } from "components/LabelWithBalance";
 import { Breakpoint, useBreakpoint } from "hooks/useBreakpoint";
@@ -13,6 +22,8 @@ import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { RelayerOption } from "hooks/useRelayer";
 import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { redeemMaxAmount } from "../state";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -21,8 +32,6 @@ interface IProps {
   poofAmount: string;
   setRecipient: (recipient: string) => void;
   recipient: string;
-  setMaxRedeemAmount?: (maxRedeemAmount: string) => void;
-  maxRedeemAmount?: string;
   loading?: boolean;
   selectedRelayer?: RelayerOption;
   setSelectedRelayer: (relayer?: RelayerOption) => void;
@@ -41,8 +50,6 @@ export const PickRedeem: React.FC<IProps> = ({
   poofAmount,
   setRecipient,
   recipient,
-  setMaxRedeemAmount,
-  maxRedeemAmount,
   loading,
   selectedRelayer,
   setSelectedRelayer,
@@ -54,6 +61,7 @@ export const PickRedeem: React.FC<IProps> = ({
   relayerFee,
 }) => {
   const breakpoint = useBreakpoint();
+  const [maxRedeemAmount, setMaxRedeemAmount] = useRecoilState(redeemMaxAmount);
   const [customRelayerError, setCustomRelayerError] = React.useState<
     string | null
   >(null);
@@ -88,6 +96,7 @@ export const PickRedeem: React.FC<IProps> = ({
   const history = useHistory();
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
   const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
+  const [unlockLoading, setUnlockLoading] = React.useState(false);
 
   if (poofKitLoading) {
     return <PoofKitLoading />;
@@ -96,33 +105,27 @@ export const PickRedeem: React.FC<IProps> = ({
   const unlockPoofAccount = async () => {
     actWithPoofAccount(
       (privateKey) => {
+        setUnlockLoading(true);
         poofKit
           ?.apBalance(privateKey)
-          .then(
-            (apBalance) =>
-              setMaxRedeemAmount && setMaxRedeemAmount(apBalance.toString())
-          )
-          .catch(console.error);
+          .then((apBalance) => setMaxRedeemAmount(apBalance.toString()))
+          .catch(console.error)
+          .finally(() => setUnlockLoading(false));
       },
       () => {}
     );
   };
 
   let button = (
-    <Button variant="secondary" onClick={() => history.push(`/${Page.SETUP}`)}>
+    <Button onClick={() => history.push(`/${Page.SETUP}`)}>
       Connect Poof account
     </Button>
   );
   if (poofAccount) {
-    button = (
-      <Button variant="secondary" onClick={unlockPoofAccount}>
-        Unlock Poof account
-      </Button>
-    );
+    button = <Button onClick={unlockPoofAccount}>Unlock Poof account</Button>;
     if (maxRedeemAmount != null) {
       button = (
         <Button
-          variant="secondary"
           onClick={() => {
             onRedeemClick();
           }}
@@ -165,7 +168,7 @@ export const PickRedeem: React.FC<IProps> = ({
               // Fee + a 0.001 wiggle
               const fee =
                 Number(selectedRelayer?.miningServiceFee || 0) + 0.001;
-              const max = balance * (1 - fee / 100);
+              const max = Math.floor(balance * (1 - fee / 100));
               setAmount(max.toString());
             }}
           >
@@ -185,7 +188,8 @@ export const PickRedeem: React.FC<IProps> = ({
         max={maxRedeemAmount || 0}
         step="1"
       />
-      {amount !== "" &&
+      {maxRedeemAmount != null &&
+        amount !== "" &&
         Number(amount) + Number(relayerFee) > Number(maxRedeemAmount) && (
           <>
             <Text sx={{ mt: 2, color: "red" }} variant="form">
@@ -271,6 +275,12 @@ export const PickRedeem: React.FC<IProps> = ({
             {customRelayerError}
           </Text>
         </>
+      )}
+
+      {breakpoint === Breakpoint.DESKTOP && (
+        <Container mt={4}>
+          {loading || unlockLoading ? <Spinner /> : button}
+        </Container>
       )}
 
       {breakpoint === Breakpoint.MOBILE && (

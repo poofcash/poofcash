@@ -13,8 +13,6 @@ export interface IRedeemProps {
   poofAmount: string;
   setRecipient: (recipient: string) => void;
   recipient: string;
-  setMaxRedeemAmount: (amount: string) => void;
-  maxRedeemAmount?: string;
   setTxHash: (txHash: string) => void;
   txHash: string;
   selectedRelayer?: RelayerOption;
@@ -32,9 +30,6 @@ const RedeemPage: React.FC = () => {
   const poofAmount = usePoofAmount(amount);
   const [recipient, setRecipient] = React.useState("");
   const [txHash, setTxHash] = React.useState("");
-  const [maxRedeemAmount, setMaxRedeemAmount] = React.useState<
-    string | undefined
-  >();
   const {
     relayer,
     setSelectedRelayer,
@@ -67,8 +62,6 @@ const RedeemPage: React.FC = () => {
         poofAmount={poofAmount}
         setRecipient={setRecipient}
         recipient={recipient}
-        setMaxRedeemAmount={setMaxRedeemAmount}
-        maxRedeemAmount={maxRedeemAmount}
         setTxHash={setTxHash}
         txHash={txHash}
         selectedRelayer={relayer}
@@ -90,8 +83,6 @@ const RedeemPage: React.FC = () => {
       poofAmount={poofAmount}
       setRecipient={setRecipient}
       recipient={recipient}
-      setMaxRedeemAmount={setMaxRedeemAmount}
-      maxRedeemAmount={maxRedeemAmount}
       setTxHash={setTxHash}
       txHash={txHash}
       selectedRelayer={relayer}

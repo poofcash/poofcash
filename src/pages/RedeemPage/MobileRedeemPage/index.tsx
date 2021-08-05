@@ -16,8 +16,6 @@ const RedeemPage: React.FC<IRedeemProps> = ({
   poofAmount,
   setRecipient,
   recipient,
-  setMaxRedeemAmount,
-  maxRedeemAmount,
   setTxHash,
   txHash,
   selectedRelayer,
@@ -40,8 +38,6 @@ const RedeemPage: React.FC<IRedeemProps> = ({
           setAmount={setAmount}
           amount={amount}
           poofAmount={poofAmount}
-          setMaxRedeemAmount={setMaxRedeemAmount}
-          maxRedeemAmount={maxRedeemAmount}
           setRecipient={setRecipient}
           recipient={recipient}
           selectedRelayer={selectedRelayer}

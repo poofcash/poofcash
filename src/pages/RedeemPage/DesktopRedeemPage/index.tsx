@@ -14,8 +14,6 @@ const DesktopRedeemPage: React.FC<IRedeemProps> = ({
   poofAmount,
   setRecipient,
   recipient,
-  setMaxRedeemAmount,
-  maxRedeemAmount,
   setTxHash,
   txHash,
   selectedRelayer,
@@ -40,8 +38,6 @@ const DesktopRedeemPage: React.FC<IRedeemProps> = ({
           poofAmount={poofAmount}
           setRecipient={setRecipient}
           recipient={recipient}
-          setMaxRedeemAmount={setMaxRedeemAmount}
-          maxRedeemAmount={maxRedeemAmount}
           setTxHash={setTxHash}
           selectedRelayer={selectedRelayer}
           setSelectedRelayer={setSelectedRelayer}

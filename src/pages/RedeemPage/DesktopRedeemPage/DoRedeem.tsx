@@ -1,15 +1,13 @@
 import React from "react";
 import { PickRedeem } from "pages/RedeemPage/MobileRedeemPage/PickRedeem";
-import { Button, Container, Flex, Grid, Spinner, Text } from "theme-ui";
+import { Container, Grid, Text } from "theme-ui";
 import { GrayBox } from "components/GrayBox";
 import { useTranslation } from "react-i18next";
 import { SummaryTable } from "components/SummaryTable";
 import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
-import { Page } from "state/global";
 import { humanFriendlyNumber } from "utils/number";
 import { RelayerOption } from "hooks/useRelayer";
-import { useHistory } from "react-router-dom";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -18,8 +16,6 @@ interface IProps {
   poofAmount: string;
   setRecipient: (recipient: string) => void;
   recipient: string;
-  setMaxRedeemAmount: (amount: string) => void;
-  maxRedeemAmount?: string;
   setTxHash: (txHash: string) => void;
   selectedRelayer?: RelayerOption;
   setSelectedRelayer: (relayer?: RelayerOption) => void;
@@ -38,8 +34,6 @@ export const DoRedeem: React.FC<IProps> = ({
   poofAmount,
   setRecipient,
   recipient,
-  setMaxRedeemAmount,
-  maxRedeemAmount,
   setTxHash,
   selectedRelayer,
   setSelectedRelayer,
@@ -52,21 +46,8 @@ export const DoRedeem: React.FC<IProps> = ({
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
-  const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
-  const history = useHistory();
+  const { actWithPoofAccount } = PoofAccountGlobal.useContainer();
   const { poofKit, poofKitLoading } = PoofKitGlobal.useContainer();
-
-  const unlockPoofAccount = async () => {
-    actWithPoofAccount(
-      (privateKey) => {
-        poofKit
-          ?.apBalance(privateKey)
-          .then((apBalance) => setMaxRedeemAmount(apBalance.toString()))
-          .catch(console.error);
-      },
-      () => {}
-    );
-  };
 
   const handleRedeem = async () => {
     if (!selectedRelayer) {
@@ -146,55 +127,6 @@ export const DoRedeem: React.FC<IProps> = ({
     );
   }
 
-  let button = (
-    <Button
-      variant="primary"
-      onClick={() => history.push(`/${Page.SETUP}`)}
-      sx={{ width: "100%" }}
-    >
-      Connect Poof account
-    </Button>
-  );
-  if (poofAccount) {
-    button = (
-      <Button
-        variant="primary"
-        onClick={unlockPoofAccount}
-        sx={{ width: "100%" }}
-      >
-        Unlock Poof account
-      </Button>
-    );
-    if (maxRedeemAmount != null) {
-      button = (
-        <Button
-          variant="primary"
-          onClick={handleRedeem}
-          sx={{ width: "100%" }}
-          disabled={(() => {
-            if (poofKitLoading) {
-              return true;
-            }
-            if (amount === "" || recipient === "") {
-              return true;
-            }
-            if (Number(amount) + Number(relayerFee) > Number(maxRedeemAmount)) {
-              return true;
-            }
-            if (usingCustomRelayer) {
-              if (!customRelayer) {
-                return true;
-              }
-            }
-            return false;
-          })()}
-        >
-          Redeem
-        </Button>
-      );
-    }
-  }
-
   return (
     <Grid sx={{ gridTemplateColumns: "1fr 1fr" }}>
       <Container>
@@ -206,13 +138,12 @@ export const DoRedeem: React.FC<IProps> = ({
         </Text>
         <PickRedeem
           loading={loading}
-          onRedeemClick={onRedeemClick}
+          onRedeemClick={handleRedeem}
           setAmount={setAmount}
           amount={amount}
           poofAmount={poofAmount}
           setRecipient={setRecipient}
           recipient={recipient}
-          maxRedeemAmount={maxRedeemAmount}
           selectedRelayer={selectedRelayer}
           setSelectedRelayer={setSelectedRelayer}
           relayerOptions={relayerOptions}
@@ -225,9 +156,6 @@ export const DoRedeem: React.FC<IProps> = ({
       </Container>
       <Container>
         <GrayBox>{boxContent}</GrayBox>
-        <Flex sx={{ justifyContent: "center" }}>
-          {loading ? <Spinner /> : button}
-        </Flex>
       </Container>
     </Grid>
   );

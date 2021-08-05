@@ -42,7 +42,7 @@
   "mine": {
     "desktop": {
       "title": "Mine",
-      "subtitle": "Mine points for a withdrawn magic password.",
+      "subtitle": "Mine anonymity points (AP) for a withdrawn magic password.",
       "specify": {
         "title": "Mine AP",
         "subtitle": "Specify the withdrawn magic password"
@@ -54,8 +54,8 @@
   },
   "redeem": {
     "desktop": {
-      "title": "Redeem POOF with AP",
-      "subtitle": "Enter the amount of AP you'd like to convert to POOF",
+      "title": "Redeem",
+      "subtitle": "Redeem your anonymity points (AP) for POOF tokens.",
       "specify": {
         "title": "Redeem POOF",
         "subtitle": "Enter the amount of AP you'd like to convert to POOF"
