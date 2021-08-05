@@ -6,8 +6,8 @@ import { Button, Text, Spinner } from "@theme-ui/components";
 import {
   Box,
   Card,
+  Checkbox,
   Container,
-  Divider,
   Flex,
   Input,
   Link,
@@ -21,12 +21,13 @@ import { toBN, fromWei, toWei } from "web3-utils";
 import { humanFriendlyNumber } from "utils/number";
 import { humanFriendlyWei } from "utils/eth";
 import { deployments } from "@poofcash/poof-kit";
-import { NoteList, NoteListMode } from "components/DepositList";
-import { useRCeloPrice } from "hooks/useRCeloPrice";
-import { usePoofPrice } from "hooks/usePoofPrice";
-import { useCeloPrice } from "hooks/useCeloPrice";
-import { apr } from "utils/interest";
 import { MAX_NOTES } from "utils/notes";
+import { DepositStats } from "components/Deposit/DepositStats";
+import { NoteList } from "components/NoteList";
+import { NoteStringCommitment } from "pages/DepositPage/types";
+import { useMiningRate } from "hooks/useMiningRate";
+import { useRecoilState } from "recoil";
+import { depositBackup } from "../state";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -37,8 +38,7 @@ interface IProps {
   setUsingCustom: (usingCustom: boolean) => void;
   usingCustom: boolean;
   actualAmount: string;
-  poofRate: string;
-  apRate: string;
+  notes?: NoteStringCommitment[];
 }
 
 const supportedCurrencies = ["CELO", "rCELO"];
@@ -53,10 +53,11 @@ export const PickDeposit: React.FC<IProps> = ({
   usingCustom,
   setUsingCustom,
   actualAmount,
-  poofRate,
-  apRate,
+  notes,
 }) => {
+  const [backup, setBackup] = useRecoilState(depositBackup);
   const { connect, address, network } = useContractKit();
+  const { poofRate, apRate, depositApr } = useMiningRate();
   const breakpoint = useBreakpoint();
 
   const [allowance, approve, approveLoading] = useApprove(
@@ -73,6 +74,7 @@ export const PickDeposit: React.FC<IProps> = ({
     deployments[`netId${network.chainId}`][currency.toLowerCase()]
       .instanceAddress[amount.toLowerCase()]
   );
+  const [confirmed, setConfirmed] = React.useState(false);
 
   const depositAmounts = React.useMemo(
     () =>
@@ -82,19 +84,6 @@ export const PickDeposit: React.FC<IProps> = ({
       ).sort(),
     [currency, network]
   );
-  const [poofPrice] = usePoofPrice();
-  const [celoPrice] = useCeloPrice();
-  const [rCeloPrice] = useRCeloPrice();
-  const poofRewardsUsd = Number(poofRate) * poofPrice;
-  let depositApr = 0;
-  if (Number(actualAmount) === 0) {
-    depositApr = 0;
-  } else if (currency.toLowerCase() === "celo") {
-    depositApr = apr(Number(actualAmount) * celoPrice, poofRewardsUsd, 52);
-  } else if (currency.toLowerCase() === "rcelo") {
-    depositApr = apr(Number(actualAmount) * rCeloPrice, poofRewardsUsd, 52);
-  }
-
   const loading = approveLoading;
 
   const depositHandler = async () => {
@@ -107,20 +96,15 @@ export const PickDeposit: React.FC<IProps> = ({
   };
 
   const connectWalletButton = (
-    <Button variant="secondary" onClick={() => connect().then(console.warn)}>
-      Connect Wallet
-    </Button>
+    <Button onClick={() => connect().then(console.warn)}>Connect Wallet</Button>
   );
 
   const insufficientBalanceButton = (
-    <Button variant="secondary" disabled={true}>
-      Insufficient Balance
-    </Button>
+    <Button disabled={true}>Insufficient Balance</Button>
   );
 
   const approveButton = (
     <Button
-      variant="secondary"
       onClick={() =>
         approve().catch((e) => {
           console.error(e);
@@ -135,9 +119,16 @@ export const PickDeposit: React.FC<IProps> = ({
 
   const depositButton = (
     <Button
-      variant="secondary"
       onClick={depositHandler}
-      disabled={Number(actualAmount) === 0}
+      disabled={(() => {
+        if (Number(actualAmount) === 0) {
+          return true;
+        }
+        if (breakpoint === Breakpoint.DESKTOP && !confirmed) {
+          return true;
+        }
+        return false;
+      })()}
     >
       Deposit
     </Button>
@@ -246,33 +237,42 @@ export const PickDeposit: React.FC<IProps> = ({
           <Text variant="regular">active deposits</Text>
         </Flex>
       )}
-      {actualAmount !== "0" && (
-        <>
-          <Flex mt={3}>
-            <Text sx={{ mr: 1 }} variant="largeNumber">
-              {Number(apRate).toLocaleString()}
-            </Text>
-            <Text variant="regular">AP / block</Text>
-          </Flex>
-          <Flex mt={3}>
-            <Text sx={{ mr: 1 }} variant="largeNumber">
-              {humanFriendlyNumber(poofRate)}
-            </Text>
-            <Text variant="regular">Est. POOF / week</Text>
-          </Flex>
-          <Flex mt={3}>
-            <Text sx={{ mr: 1 }} variant="largeNumber">
-              {humanFriendlyNumber(depositApr * 100)} %
-            </Text>
-            <Text variant="regular">APR</Text>
-          </Flex>
-        </>
+
+      {breakpoint === Breakpoint.MOBILE && actualAmount !== "0" && (
+        <DepositStats
+          apRate={apRate}
+          poofRate={poofRate}
+          depositApr={depositApr}
+        />
       )}
 
-      <Divider my={4} />
-      <Box>
-        <NoteList mode={NoteListMode.DEPOSITS} />
-      </Box>
+      {breakpoint === Breakpoint.DESKTOP && (
+        <Container mt={4}>
+          {notes && notes.length > 0 && (
+            <>
+              <Text sx={{ display: "block" }} variant="form">
+                Magic Password
+              </Text>
+              <NoteList notes={notes.map((note) => note.noteString)} />
+              <Flex
+                sx={{ mt: 4, alignItems: "center" }}
+                onClick={() => setConfirmed(!confirmed)}
+              >
+                <Checkbox readOnly checked={confirmed} />
+                <Text sx={{ pt: 1 }}>I backed up the Magic Password(s)</Text>
+              </Flex>
+              <Flex
+                sx={{ mt: 4, alignItems: "center" }}
+                onClick={() => setBackup(!backup)}
+              >
+                <Checkbox readOnly checked={backup} />
+                <Text sx={{ pt: 1 }}>Create an on-chain backup</Text>
+              </Flex>
+            </>
+          )}
+          <Box mt={4}>{button}</Box>
+        </Container>
+      )}
 
       {breakpoint === Breakpoint.MOBILE && (
         <ActionDrawer>

@@ -68,12 +68,13 @@ export const preset = {
   text: {
     default: {
       color: "text",
-    },
-    primary: {
       fontFamily: "Regular",
       fontWeight: "500",
-      fontSize: [16],
+      fontSize: [18],
       lineHeight: "20px",
+    },
+    primary: {
+      variant: "text.default",
       color: "primaryText",
     },
     title: {

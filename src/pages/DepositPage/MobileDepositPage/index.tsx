@@ -4,6 +4,8 @@ import { ConfirmDeposit } from "pages/DepositPage/MobileDepositPage/ConfirmDepos
 import { DepositReceipt } from "pages/DepositPage/MobileDepositPage/DepositReceipt";
 import { IDepositProps } from "pages/DepositPage";
 import { PoofAccountGlobal } from "hooks/poofAccount";
+import { useRecoilState } from "recoil";
+import { depositBackup } from "../state";
 
 enum DepositStep {
   PICKER = "PICKER",
@@ -30,13 +32,10 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
   txHash,
   deposit,
   depositLoading,
-  poofRate,
-  apRate,
-  backup,
-  setBackup,
 }) => {
   const [depositStep, setDepositStep] = React.useState(DepositStep.PICKER);
   const { poofAccount, actWithPoofAccount } = PoofAccountGlobal.useContainer();
+  const [backup] = useRecoilState(depositBackup);
 
   switch (depositStep) {
     case DepositStep.PICKER:
@@ -52,8 +51,6 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
           setUsingCustom={setUsingCustom}
           usingCustom={usingCustom}
           actualAmount={actualAmount}
-          poofRate={poofRate}
-          apRate={apRate}
         />
       );
     case DepositStep.CONFIRM:
@@ -84,8 +81,6 @@ const MobileDepositPage: React.FC<IDepositProps> = ({
           currency={currency}
           notes={notes}
           depositLoading={depositLoading}
-          backup={backup}
-          setBackup={setBackup}
         />
       );
     case DepositStep.RECEIPT:

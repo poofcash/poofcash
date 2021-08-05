@@ -116,10 +116,10 @@ export const NoteList: React.FC<IListProps> = ({ mode, onFill }) => {
   let title;
   if (mode === NoteListMode.DEPOSITS) {
     rows = deposits;
-    title = "Deposit List";
+    title = "Active Notes";
   } else if (mode === NoteListMode.WITHDRAWS) {
     rows = withdrawals;
-    title = "Withdrawal List";
+    title = "Withdrawn Notes";
   }
 
   return (

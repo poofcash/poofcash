@@ -10,6 +10,8 @@ import { PoofAccountGlobal } from "hooks/poofAccount";
 import { Page } from "state/global";
 import { NoteList } from "components/NoteList";
 import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { depositBackup } from "../state";
 
 interface IProps {
   onBackClick: () => void;
@@ -18,8 +20,6 @@ interface IProps {
   currency: string;
   notes: NoteStringCommitment[];
   depositLoading: boolean;
-  backup: boolean;
-  setBackup: (backup: boolean) => void;
 }
 
 export const NETWORK_COST = 0.0001;
@@ -31,9 +31,8 @@ export const ConfirmDeposit: React.FC<IProps> = ({
   currency,
   notes,
   depositLoading,
-  backup,
-  setBackup,
 }) => {
+  const [backup, setBackup] = useRecoilState(depositBackup);
   const [confirmed, setConfirmed] = React.useState(false);
   const totalCost = Number(amount) + Number(NETWORK_COST);
   const history = useHistory();
@@ -103,7 +102,7 @@ export const ConfirmDeposit: React.FC<IProps> = ({
         onClick={() => setConfirmed(!confirmed)}
       >
         <Checkbox readOnly checked={confirmed} />
-        <Text sx={{ pt: 1 }}>I backed up the Magic Password</Text>
+        <Text sx={{ pt: 1 }}>I backed up the Magic Password(s)</Text>
       </Flex>
       <Flex
         sx={{ my: 4, alignItems: "center" }}
