@@ -250,7 +250,7 @@ export const PickDeposit: React.FC<IProps> = ({
         <Container mt={4}>
           {notes && notes.length > 0 && (
             <>
-              <Text sx={{ display: "block" }} variant="form">
+              <Text sx={{ display: "block", mb: 1 }} variant="form">
                 Magic Password
               </Text>
               <NoteList notes={notes.map((note) => note.noteString)} />
