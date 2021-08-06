@@ -28,6 +28,9 @@ import { NoteStringCommitment } from "pages/DepositPage/types";
 import { useMiningRate } from "hooks/useMiningRate";
 import { useRecoilState } from "recoil";
 import { depositBackup } from "../state";
+import { PoofAccountGlobal } from "hooks/poofAccount";
+import { useHistory } from "react-router-dom";
+import { Page } from "state/global";
 
 interface IProps {
   onDepositClick?: () => void;
@@ -56,6 +59,7 @@ export const PickDeposit: React.FC<IProps> = ({
   notes,
 }) => {
   const [backup, setBackup] = useRecoilState(depositBackup);
+  const { poofAccount } = PoofAccountGlobal.useContainer();
   const { connect, address, network } = useContractKit();
   const { poofRate, apRate, depositApr } = useMiningRate();
   const breakpoint = useBreakpoint();
@@ -84,6 +88,8 @@ export const PickDeposit: React.FC<IProps> = ({
       ).sort(),
     [currency, network]
   );
+  const history = useHistory();
+
   const loading = approveLoading;
 
   const depositHandler = async () => {
@@ -117,6 +123,23 @@ export const PickDeposit: React.FC<IProps> = ({
     </Button>
   );
 
+  const poofAccountButton = (
+    <Button
+      onClick={() => history.push(`/${Page.SETUP}`)}
+      disabled={(() => {
+        if (Number(actualAmount) === 0) {
+          return true;
+        }
+        if (breakpoint === Breakpoint.DESKTOP && !confirmed) {
+          return true;
+        }
+        return false;
+      })()}
+    >
+      Connect Poof account
+    </Button>
+  );
+
   const depositButton = (
     <Button
       onClick={depositHandler}
@@ -142,6 +165,8 @@ export const PickDeposit: React.FC<IProps> = ({
       toBN(allowance).lt(toBN(toWei(Number(actualAmount).toString())))
     ) {
       button = approveButton;
+    } else if (backup && !poofAccount) {
+      button = poofAccountButton;
     } else {
       button = depositButton;
     }
