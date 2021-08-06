@@ -309,7 +309,7 @@ export const DoStake: React.FC<IProps> = ({ amount, setAmount }) => {
   );
 
   return (
-    <Grid sx={{ gridTemplateColumns: ["1fr", "1fr 1fr"] }}>
+    <Grid sx={{ gridTemplateColumns: ["1fr", "1.3fr 1fr"], gridGap: 6 }}>
       <Container>
         <Text sx={{ display: "block" }} variant="title">
           {t("stake.title")}

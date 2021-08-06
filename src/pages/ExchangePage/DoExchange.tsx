@@ -161,7 +161,7 @@ export const DoExchange: React.FC<IProps> = ({
   }
 
   return (
-    <Grid sx={{ gridTemplateColumns: ["1fr", "1fr 1fr"] }}>
+    <Grid sx={{ gridTemplateColumns: ["1fr", "1.3fr 1fr"], gridGap: 6 }}>
       <Container>
         <Text sx={{ display: "block" }} variant="title">
           {t("exchange.title")}
