@@ -8,6 +8,7 @@ import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { humanFriendlyNumber } from "utils/number";
 import { RelayerOption } from "hooks/useRelayer";
+import { getMinerEvents } from "utils/getMinerEvents";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -61,30 +62,34 @@ export const DoRedeem: React.FC<IProps> = ({
 
     setLoading(true);
     actWithPoofAccount(
-      (privateKey) => {
-        poofKit
-          ?.swap(privateKey, amount, recipient, selectedRelayer.url)
-          .then((txHash) => {
-            if (txHash) {
-              setTxHash(txHash);
-              onRedeemClick();
-            } else {
-              alert(
-                "No response from relayer. Check your account in the explorer or try again"
-              );
-            }
-          })
-          .catch((e) => {
-            if (e.response) {
-              console.error(e.response.data.error);
-            } else {
-              console.debug(e);
-              alert(e.message);
-            }
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+      async (privateKey) => {
+        try {
+          const accountEvents = await getMinerEvents("NewAccount", poofKit);
+          const txHash = await poofKit?.swap(
+            privateKey,
+            amount,
+            recipient,
+            selectedRelayer.url,
+            accountEvents
+          );
+          if (txHash) {
+            setTxHash(txHash);
+            onRedeemClick();
+          } else {
+            alert(
+              "No response from relayer. Check your account in the explorer or try again"
+            );
+          }
+        } catch (e) {
+          if (e.response) {
+            console.error(e.response.data.error);
+          } else {
+            console.debug(e);
+            alert(e.message);
+          }
+        } finally {
+          setLoading(false);
+        }
       },
       () => setLoading(false)
     );

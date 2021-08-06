@@ -3,17 +3,17 @@ import { PoofKitV2 } from "@poofcash/poof-kit";
 import { EventData } from "web3-eth-contract";
 import { localForageVersion } from "config";
 
-export const getEncryptedNoteEvents = async (poofKit: PoofKitV2) => {
-  const KEY = `EncryptedNote${localForageVersion}`;
+export const getTreeEvents = async (eventName: string, poofKit: PoofKitV2) => {
+  const KEY = `${eventName}${localForageVersion}`;
   let events = await localForage.getItem<EventData[]>(KEY);
   if (events && events.length > 0) {
     const lastEvent = events[events.length - 1];
     const lastBlock = lastEvent.blockNumber;
     events = events.concat(
-      ...(await poofKit.encryptedNoteEvents(lastBlock + 1))
+      ...(await poofKit.treeEvents(eventName, lastBlock + 1))
     );
   } else {
-    events = await poofKit.encryptedNoteEvents(0);
+    events = await poofKit.treeEvents(eventName, 0);
   }
   await localForage.setItem(KEY, events);
   return events;

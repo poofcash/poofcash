@@ -198,7 +198,12 @@ const useDepositList = () => {
             miningRate,
           };
         });
-        const deposits = rows.filter((row) => row.note.withdrawalBlock == null);
+        // TODO: Figure out how why this is not empty
+        // console.log(rows.filter((row) => row.note.depositBlock == null));
+        const deposits = rows.filter(
+          (row) =>
+            row.note.depositBlock != null && row.note.withdrawalBlock == null
+        );
         const withdrawals = (
           await Promise.all(
             rows.map(async (row) => {

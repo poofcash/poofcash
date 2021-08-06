@@ -8,6 +8,10 @@ import { PoofAccountGlobal } from "hooks/poofAccount";
 import { PoofKitLoading } from "components/PoofKitLoading";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { RelayerOption } from "hooks/useRelayer";
+import { getPoofEvents } from "utils/getPoofEvents";
+import { Note } from "@poofcash/poof-kit";
+import { getMinerEvents } from "utils/getMinerEvents";
+import { getTreeEvents } from "utils/getTreeEvents";
 
 interface IProps {
   onBackClick: () => void;
@@ -54,37 +58,57 @@ export const ConfirmMine: React.FC<IProps> = ({
     }
 
     setLoading(true);
+
     actWithPoofAccount(
-      (privateKey) => {
-        poofKit
-          ?.reward(privateKey, note, selectedRelayer.url)
-          .then((txHash) => {
-            if (txHash) {
-              setTxHash(txHash);
-              onConfirmClick();
+      async (privateKey) => {
+        try {
+          const depositEvents = (await getPoofEvents("Deposit", poofKit))[
+            Note.getInstance(note)
+          ];
+          const withdrawalEvents = (await getPoofEvents("Withdrawal", poofKit))[
+            Note.getInstance(note)
+          ];
+          const accountEvents = await getMinerEvents("NewAccount", poofKit);
+          const depositDataEvents = await getTreeEvents("DepositData", poofKit);
+          const withdrawalDataEvents = await getTreeEvents(
+            "WithdrawalData",
+            poofKit
+          );
+
+          const txHash = await poofKit?.reward(
+            privateKey,
+            note,
+            selectedRelayer.url,
+            depositEvents,
+            withdrawalEvents,
+            accountEvents,
+            depositDataEvents,
+            withdrawalDataEvents
+          );
+          if (txHash) {
+            setTxHash(txHash);
+            onConfirmClick();
+          } else {
+            alert(
+              "No response from relayer. Check your account in the explorer or try again"
+            );
+          }
+        } catch (e) {
+          if (e.response) {
+            console.error(e.response.data.error);
+          } else {
+            console.debug(e);
+            if (e.message.includes("already spent")) {
+              alert(e.message);
             } else {
               alert(
-                "No response from relayer. Check your account in the explorer or try again"
+                `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once every few minutes, so try again later.`
               );
             }
-          })
-          .catch((e) => {
-            if (e.response) {
-              console.error(e.response.data.error);
-            } else {
-              console.debug(e);
-              if (e.message.includes("already spent")) {
-                alert(e.message);
-              } else {
-                alert(
-                  `${e.message}. This can happen if the trees contract has not been updated since your withdrawal. The contract updates once every few minutes, so try again later.`
-                );
-              }
-            }
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+          }
+        } finally {
+          setLoading(false);
+        }
       },
       () => setLoading(false)
     );

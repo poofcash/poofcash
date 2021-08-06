@@ -10,6 +10,8 @@ import { humanFriendlyNumber } from "utils/number";
 import { RelayerOption } from "hooks/useRelayer";
 import { PoofKitGlobal } from "hooks/usePoofKit";
 import { PoofKitLoading } from "components/PoofKitLoading";
+import { Note } from "@poofcash/poof-kit";
+import { getPoofEvents } from "utils/getPoofEvents";
 
 interface IProps {
   onBackClick: () => void;
@@ -48,13 +50,22 @@ export const ConfirmWithdraw: React.FC<IProps> = ({
       return;
     }
 
+    if (poofKitLoading) {
+      alert("Poof kit is still loading");
+      return;
+    }
+
     setLoading(true);
     try {
+      const depositEvents = (await getPoofEvents("Deposit", poofKit))[
+        Note.getInstance(note)
+      ];
       const txHash = await poofKit.withdrawNote(
         note,
         "0",
         recipient,
-        selectedRelayer.url
+        selectedRelayer.url,
+        depositEvents
       );
       if (txHash) {
         setTxHash(txHash);

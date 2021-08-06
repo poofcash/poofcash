@@ -42,6 +42,7 @@ interface IProps {
   usingCustom: boolean;
   actualAmount: string;
   notes?: NoteStringCommitment[];
+  depositLoading?: boolean;
 }
 
 const supportedCurrencies = ["CELO", "rCELO"];
@@ -57,6 +58,7 @@ export const PickDeposit: React.FC<IProps> = ({
   setUsingCustom,
   actualAmount,
   notes,
+  depositLoading,
 }) => {
   const [backup, setBackup] = useRecoilState(depositBackup);
   const { poofAccount } = PoofAccountGlobal.useContainer();
@@ -90,7 +92,7 @@ export const PickDeposit: React.FC<IProps> = ({
   );
   const history = useHistory();
 
-  const loading = approveLoading;
+  const loading = approveLoading || depositLoading;
 
   const depositHandler = async () => {
     try {

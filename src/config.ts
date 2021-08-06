@@ -76,3 +76,5 @@ export const STAKE_MAP: Record<ChainId, Record<string, string>> = {
 export const exchangeCurrencies = ["CELO", "sCELO", "rCELO"];
 
 export const UBESWAP_ROUTER = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
+
+export const localForageVersion = 1;

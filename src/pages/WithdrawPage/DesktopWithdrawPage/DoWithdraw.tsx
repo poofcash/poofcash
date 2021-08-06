@@ -10,6 +10,8 @@ import { formatCurrency } from "utils/currency";
 import { RelayerOption } from "hooks/useRelayer";
 import { NoteList, NoteListMode } from "components/DepositList";
 import { PoofKitGlobal } from "hooks/usePoofKit";
+import { getPoofEvents } from "utils/getPoofEvents";
+import { Note } from "@poofcash/poof-kit";
 
 interface IProps {
   onWithdrawClick: () => void;
@@ -64,11 +66,15 @@ export const DoWithdraw: React.FC<IProps> = ({
 
     setLoading(true);
     try {
+      const depositEvents = (await getPoofEvents("Deposit", poofKit))[
+        Note.getInstance(note)
+      ];
       const txHash = await poofKit?.withdrawNote(
         note,
         "0",
         recipient,
-        selectedRelayer.url
+        selectedRelayer.url,
+        depositEvents
       );
       if (txHash) {
         setTxHash(txHash);

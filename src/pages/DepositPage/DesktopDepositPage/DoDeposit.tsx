@@ -35,6 +35,7 @@ export const DoDeposit: React.FC<IProps> = ({
   setUsingCustom,
   usingCustom,
   actualAmount,
+  depositLoading,
 }) => {
   const { t } = useTranslation();
   const { address } = useContractKit();
@@ -124,6 +125,7 @@ export const DoDeposit: React.FC<IProps> = ({
             usingCustom={usingCustom}
             actualAmount={actualAmount}
             notes={notes}
+            depositLoading={depositLoading}
           />
         </Container>
         <Container>
