@@ -10,7 +10,7 @@ const HeaderLink: React.FC<{ page: Page }> = ({ page, children }) => {
   const location = useLocation();
   const selected = location.pathname.includes(page);
   return (
-    <Box mr={3}>
+    <Box mr={2}>
       <StyledLink to={page}>
         <Text
           sx={{

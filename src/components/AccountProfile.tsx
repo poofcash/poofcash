@@ -47,15 +47,15 @@ export const AccountProfile: React.FC = () => {
             ref={accountCard}
             sx={{ cursor: "pointer" }}
             variant="warning"
-            ml={5}
+            ml={1}
             onClick={() => {
               setAccountDetailsOpen(!accountDetailsOpen);
             }}
           >
             <Flex sx={{ alignItems: "center", color: "primaryText" }}>
               <UserCircle size={32} />
-              <Text variant="primary" ml={2} mt={1}>
-                {shortenAccount("0x" + poofAccount.address)}
+              <Text variant="primary" ml={1} mt={1}>
+                {shortenAccount("0x" + poofAccount.address, 3)}
               </Text>
             </Flex>
           </Card>
@@ -85,7 +85,7 @@ export const AccountProfile: React.FC = () => {
           ref={walletCard}
           sx={{ cursor: "pointer" }}
           variant="warning"
-          ml={5}
+          ml={3}
           onClick={() => {
             if (address) {
               setWalletDetailsOpen(!walletDetailsOpen);
@@ -96,8 +96,8 @@ export const AccountProfile: React.FC = () => {
         >
           <Flex sx={{ alignItems: "center", color: "primaryText" }}>
             <Wallet size={32} />
-            <Text variant="primary" ml={2} mt={1}>
-              {address ? shortenAccount(address) : "Connect Wallet"}
+            <Text variant="primary" ml={1} mt={1}>
+              {address ? shortenAccount(address, 3) : "Connect Wallet"}
             </Text>
           </Flex>
         </Card>

@@ -31,7 +31,7 @@ const App: React.FC = () => {
     <>
       <Container
         sx={{
-          mx: [0, "15%"],
+          mx: [0, "5%"],
           my: [0, 4],
           maxWidth: "100%",
           width: "auto",
