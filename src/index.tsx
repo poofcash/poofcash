@@ -35,6 +35,7 @@ ReactDOM.render(
                 name: "Poof.cash",
                 description: "Decentralized, private transactions for Celo",
                 url: "https://app.poof.cash",
+                icon: "https://www.poof.cash/images/Logo.svg",
               }}
             >
               <PoofKitGlobal.Provider>
