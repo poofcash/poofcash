@@ -13,7 +13,6 @@ import AirdropPage from "pages/AirdropPage";
 import ExchangePage from "pages/ExchangePage";
 import Modal from "react-modal";
 import { PoofAccountGlobal } from "hooks/poofAccount";
-import StakePage from "pages/StakePage";
 import { ToastContainer } from "react-toastify";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import { WalletDrawer } from "components/Wallet/WalletDrawer";
@@ -81,9 +80,6 @@ const App: React.FC = () => {
             </Route>
             <Route exact path={`/${Page.EXCHANGE}`}>
               <ExchangePage />
-            </Route>
-            <Route exact path={`/${Page.STAKE}`}>
-              <StakePage />
             </Route>
           </Switch>
         </Container>

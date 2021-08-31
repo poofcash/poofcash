@@ -59,7 +59,6 @@ export const MobileHeader: React.FC = () => {
           <HeaderButton page={Page.EXCHANGE}>Swap</HeaderButton>
           <HeaderButton page={Page.COMPLIANCE}>Report</HeaderButton>
           <HeaderButton page={Page.AIRDROP}>Airdrop</HeaderButton>
-          <HeaderButton page={Page.STAKE}>Stake</HeaderButton>
         </Flex>
       </Container>
     </Container>
