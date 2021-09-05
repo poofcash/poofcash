@@ -79,6 +79,10 @@
     "title": "Airdrop",
     "subtitle": "If your wallet address was used to deposit into Poof, lock CELO for voting, or deposit into Tornado, you may have receieved a vPOOF airdrop. vPOOF can be exchanged for POOF at a 1:1 rate."
   },
+  "refund": {
+    "title": "Refund",
+    "subtitle": "If you lost LP in the POOF<>UBE dual rewards contract, you can redeem your refund here."
+  },
   "stake": {
     "title": "Stake",
     "subtitle": "Stake POOF/UBE farm tokens to earn POOF+UBE rewards.",

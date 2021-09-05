@@ -78,3 +78,5 @@ export const exchangeCurrencies = ["CELO", "sCELO", "rCELO"];
 export const UBESWAP_ROUTER = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
 
 export const localForageVersion = 1;
+
+export const REFUND_CONTRACT = "0x265B332AF87fd5924F9b974f8F9da0aB8718E205";

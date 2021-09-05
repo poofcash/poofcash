@@ -54,6 +54,7 @@ export const DesktopHeader: React.FC = () => {
             <HeaderLink page={Page.EXCHANGE}>Swap</HeaderLink>
             <HeaderLink page={Page.COMPLIANCE}>Report</HeaderLink>
             <HeaderLink page={Page.AIRDROP}>Airdrop</HeaderLink>
+            <HeaderLink page={Page.REFUND}>Refund</HeaderLink>
           </Flex>
           <Box ml={4}>
             <AccountProfile />

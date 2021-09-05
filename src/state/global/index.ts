@@ -10,6 +10,7 @@ export enum Page {
   COMPLIANCE = "report",
   AIRDROP = "airdrop",
   STAKE = "stake",
+  REFUND = "refund",
 
   SETUP = "account",
   SETUP_CREATE = "account/create",

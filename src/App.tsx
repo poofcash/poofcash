@@ -17,6 +17,7 @@ import { ToastContainer } from "react-toastify";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import { WalletDrawer } from "components/Wallet/WalletDrawer";
 import { PoofAccountDrawer } from "components/PoofAccount/PoofAccountDrawer";
+import RefundPage from "pages/RefundPage";
 
 // pass props and State interface to Component class
 const App: React.FC = () => {
@@ -71,6 +72,9 @@ const App: React.FC = () => {
             </Route>
             <Route exact path={`/${Page.REDEEM}`}>
               <RedeemPage />
+            </Route>
+            <Route exact path={`/${Page.REFUND}`}>
+              <RefundPage />
             </Route>
             <Route path={`/${Page.SETUP}`}>
               <SetupAccount />
