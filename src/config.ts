@@ -3,6 +3,10 @@ import { ChainId } from "@celo-tools/use-contractkit";
 export const CURRENCY_MAP: Record<ChainId, Record<string, string>> = {
   [ChainId.Mainnet]: {
     scelo: "0x2879BFD5e7c4EF331384E908aaA3Bd3014b703fA",
+    bitcelo: "0x97775f815206daeb81188af20940def61c7d6d3b",
+    vcapcelo: "0x5d4e32975bcf3aca47282c580cf5bc0f8135d218",
+    ucelo: "0xb05e342117f7cce1646e0016804bcaa09741c593",
+    tptcelo: "0x5afdb9c5a20ee5bb36d9c81bd5e1be56fbf52cd8",
     rcelo: "0x1a8Dbe5958c597a744Ba51763AbEBD3355996c3e",
     celo: "0x471ece3750da237f93b8e339c536989b8978a438",
   },
@@ -21,6 +25,10 @@ export const CURRENCY_MAP: Record<ChainId, Record<string, string>> = {
 export const rCELOMap: Record<ChainId, Record<string, number>> = {
   [ChainId.Mainnet]: {
     scelo: 0,
+    bitcelo: 1,
+    vcapcelo: 2,
+    ucelo: 3,
+    tptcelo: 4,
   },
   [ChainId.Alfajores]: {
     scelo: 1,
@@ -74,7 +82,15 @@ export const STAKE_MAP: Record<ChainId, Record<string, string>> = {
   },
 };
 
-export const exchangeCurrencies = ["CELO", "sCELO", "rCELO"];
+export const exchangeCurrencies = [
+  "CELO",
+  "sCELO",
+  "bitCELO",
+  "vcapCELO",
+  "uCELO",
+  "tptCELO",
+  "rCELO",
+];
 
 export const UBESWAP_ROUTER = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
 
