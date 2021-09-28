@@ -56,6 +56,12 @@ export const PickExchange: React.FC<Props> = ({
             value={fromCurrency}
           >
             {exchangeCurrencies.map((curr, idx) => {
+              console.log(
+                fromCurrency,
+                fromCurrency.toLowerCase() === "rcelo",
+                curr.toLowerCase(),
+                curr.toLowerCase() !== "celo"
+              );
               return (
                 <option value={curr} key={idx}>
                   {curr}
@@ -87,7 +93,14 @@ export const PickExchange: React.FC<Props> = ({
           >
             {exchangeCurrencies.map((curr, idx) => {
               return (
-                <option value={curr} key={idx}>
+                <option
+                  value={curr}
+                  key={idx}
+                  disabled={
+                    fromCurrency.toLowerCase() === "rcelo" &&
+                    curr.toLowerCase() !== "celo"
+                  }
+                >
                   {curr}
                 </option>
               );
