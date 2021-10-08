@@ -40,9 +40,9 @@ export const rCELOMap: Record<ChainId, Record<string, number>> = {
 
 export const RELAYERS = {
   [ChainId.Mainnet]: [
-    "https://adamaris.privatedns.org",
-    "https://bellagio.privatedns.org",
-    "https://maralago.privatedns.org",
+    "https://adamaris.mooo.com",
+    "https://bellagio.mooo.com",
+    "https://maralago.mooo.com",
     "https://aarde.thkpool.com",
   ],
   [ChainId.Alfajores]: ["https://relayer-test.poof.cash"],
