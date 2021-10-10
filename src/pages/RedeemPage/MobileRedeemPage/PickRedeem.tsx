@@ -24,6 +24,7 @@ import { RelayerOption } from "hooks/useRelayer";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { redeemMaxAmount } from "../state";
+import { getMinerEvents } from "utils/getMinerEvents";
 
 interface IProps {
   onRedeemClick: () => void;
@@ -106,11 +107,13 @@ export const PickRedeem: React.FC<IProps> = ({
     actWithPoofAccount(
       (privateKey) => {
         setUnlockLoading(true);
-        poofKit
-          ?.apBalance(privateKey)
-          .then((apBalance) => setMaxRedeemAmount(apBalance.toString()))
-          .catch(console.error)
-          .finally(() => setUnlockLoading(false));
+        getMinerEvents("NewAccount", poofKit).then((accountEvents) =>
+          poofKit
+            ?.apBalance(privateKey, accountEvents)
+            .then((apBalance) => setMaxRedeemAmount(apBalance.toString()))
+            .catch(console.error)
+            .finally(() => setUnlockLoading(false))
+        );
       },
       () => {}
     );

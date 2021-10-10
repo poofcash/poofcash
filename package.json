@@ -10,7 +10,7 @@
     "@ethersproject/contracts": "^5.0.12",
     "@ethersproject/providers": "^5.0.24",
     "@ethersproject/solidity": "^5.0.10",
-    "@poofcash/poof-kit": "=1.0.32",
+    "@poofcash/poof-kit": "=1.0.34",
     "@poofcash/rewardscelo": "1.0.2",
     "@reduxjs/toolkit": "^1.5.0",
     "@testing-library/jest-dom": "^5.11.4",
