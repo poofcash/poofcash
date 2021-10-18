@@ -13,7 +13,7 @@ export const humanFriendlyNumber = (v: number | string) => {
   const formatted = num.toLocaleString(undefined, {
     minimumFractionDigits: 20,
   });
-  const decimalIdx = formatted.indexOf(".");
+  const decimalIdx = formatted.indexOf(".") !== -1 ? formatted.indexOf(".") : formatted.indexOf(',')
   if (decimalIdx === -1) {
     return formatted;
   }
