@@ -193,6 +193,7 @@ const useDepositList = () => {
             depositEvents ? depositEvents[poofAddress] : [],
             withdrawEvents ? withdrawEvents[poofAddress] : []
           );
+          console.log(noteString, note.depositBlock, note.withdrawalBlock);
           return {
             note,
             miningRate,
