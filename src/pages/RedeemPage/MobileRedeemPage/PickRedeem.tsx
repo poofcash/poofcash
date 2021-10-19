@@ -164,20 +164,22 @@ export const PickRedeem: React.FC<IProps> = ({
         }}
       >
         <Text variant="form">AP Amount</Text>
-        <Text variant="form">
-          <Link
-            onClick={() => {
-              const balance = Number(maxRedeemAmount || 0);
-              // Fee + a 0.001 wiggle
-              const fee =
-                Number(selectedRelayer?.miningServiceFee || 0) + 0.001;
-              const max = Math.floor(balance * (1 - fee / 100));
-              setAmount(max.toString());
-            }}
-          >
-            max: {Number(maxRedeemAmount || 0).toLocaleString()} AP
-          </Link>
-        </Text>
+        {maxRedeemAmount && (
+          <Text variant="form">
+            <Link
+              onClick={() => {
+                const balance = Number(maxRedeemAmount);
+                // Fee + a 0.001 wiggle
+                const fee =
+                  Number(selectedRelayer?.miningServiceFee || 0) + 0.001;
+                const max = Math.floor(balance * (1 - fee / 100));
+                setAmount(max.toString());
+              }}
+            >
+              max: {Number(maxRedeemAmount).toLocaleString()} AP
+            </Link>
+          </Text>
+        )}
       </Flex>
       <Input
         mb={2}
