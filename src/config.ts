@@ -44,6 +44,7 @@ export const RELAYERS = {
     "https://bellagio.mooo.com",
     "https://maralago.mooo.com",
     "https://aarde.thkpool.com",
+    "https://privatecelo.com",
   ],
   [ChainId.Alfajores]: ["https://relayer-test.poof.cash"],
   [ChainId.Baklava]: [],
