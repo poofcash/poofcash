@@ -45,6 +45,7 @@ export const RELAYERS = {
     "https://maralago.mooo.com",
     "https://aarde.thkpool.com",
     "https://privatecelo.com",
+    "https://poof.vercel.app"
   ],
   [ChainId.Alfajores]: ["https://relayer-test.poof.cash"],
   [ChainId.Baklava]: [],
