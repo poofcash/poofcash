@@ -27,7 +27,7 @@ export const useRelayer = () => {
       const statuses = (
         await Promise.all(
           RELAYERS[network.chainId].map((relayerUrl: string) => {
-            return axios.get(relayerUrl + "/status").catch((e) => e);
+            return axios.get(relayerUrl + "/status", { timeout: 5000 }).catch((e) => e);
           })
         )
       ).filter((result) => {
